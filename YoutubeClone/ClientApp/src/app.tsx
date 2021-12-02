@@ -17,7 +17,7 @@ function App() {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Header />
-            <Container maxWidth="lg" disableGutters>
+            <Container maxWidth="xl" disableGutters>
                 <Main />
             </Container>
         </ThemeProvider>
