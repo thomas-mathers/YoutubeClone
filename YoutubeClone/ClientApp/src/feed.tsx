@@ -1,4 +1,4 @@
-﻿import { Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import FeedItem from "./feed-item";
 
 const Feed = () => (

@@ -1,5 +1,5 @@
 import { Close, Search } from "@mui/icons-material";
-import { Button, FilledInput, IconButton, InputAdornment, OutlinedInput, Stack } from "@mui/material";
+import { Button, FilledInput, IconButton, InputAdornment, Stack } from "@mui/material";
 
 function SearchField() {
     return (

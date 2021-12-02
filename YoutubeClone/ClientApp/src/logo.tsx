@@ -1,4 +1,4 @@
-﻿import { Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 
 const Logo = () => (
     <Stack direction="row" spacing={1} alignItems="center" paddingLeft={1} paddingRight={1}>

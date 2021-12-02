@@ -1,4 +1,4 @@
-﻿import { Avatar, Card, CardActionArea, CardContent, CardMedia, Stack, Typography } from "@mui/material";
+import { Avatar, Card, CardActionArea, CardContent, CardMedia, Stack, Typography } from "@mui/material";
 
 const FeedItem = () => (
     <Card>
