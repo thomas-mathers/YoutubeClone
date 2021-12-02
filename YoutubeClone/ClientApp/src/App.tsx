@@ -1,5 +1,5 @@
 import { Container, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
-import './App.css';
+import './app.css';
 import Header from './header';
 import Main from './main';
 
