@@ -27,8 +27,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\feed-item.tsx" />
+    <None Remove="ClientApp\src\feed.tsx" />
+    <None Remove="ClientApp\src\hamburgerButton.tsx" />
+    <None Remove="ClientApp\src\logo.tsx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\YoutubeClone.Domain\YoutubeClone.Domain.csproj" />
     <ProjectReference Include="..\YoutubeClone.Infrastructure\YoutubeClone.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\feed-item.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\feed.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\hamburgerButton.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\logo.tsx" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

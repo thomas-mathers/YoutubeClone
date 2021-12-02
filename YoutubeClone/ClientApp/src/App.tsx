@@ -1,24 +1,27 @@
-import React from 'react';
+import { Container, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import './App.css';
+import Header from './header';
+import Main from './main';
+
+let theme = createTheme({
+    palette: {
+        mode: 'dark'
+    },
+    shape: {
+        borderRadius: 1
+    }
+});
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Header />
+            <Container maxWidth="lg" disableGutters>
+                <Main />
+            </Container>
+        </ThemeProvider>
+    );
 }
 
 export default App;
