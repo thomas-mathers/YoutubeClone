@@ -1,4 +1,4 @@
-import { Container, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import './app.css';
 import Header from './header';
 import Main from './main';
@@ -17,9 +17,7 @@ function App() {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Header />
-            <Container maxWidth="xl" disableGutters>
-                <Main />
-            </Container>
+            <Main />
         </ThemeProvider>
     );
 }

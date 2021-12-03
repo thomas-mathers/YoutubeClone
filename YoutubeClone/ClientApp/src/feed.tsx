@@ -3,7 +3,7 @@ import FeedItem from "./feed-item";
 
 const Feed = () => {
     return (
-        <CssGrid xl="1fr 1fr 1fr 1fr" lg="1fr 1fr 1fr" md="1fr 1fr 1fr" sm="1fr 1fr" xs="1fr" gap={2}>
+        <CssGrid xl="1fr 1fr 1fr 1fr 1fr 1fr" lg="1fr 1fr 1fr" md="1fr 1fr" sm="1fr 1fr" xs="1fr" gap={2}>
             <FeedItem />
             <FeedItem />
             <FeedItem />

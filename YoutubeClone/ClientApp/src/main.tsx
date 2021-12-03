@@ -4,7 +4,6 @@ import FeedFilterChipBar from "./feed-filter-chip-bar";
 
 const Main = () => (
     <Stack component="main" spacing={2} padding={2}>
-        <FeedFilterChipBar/>
         <Feed/>
     </Stack>
 );

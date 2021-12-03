@@ -16,18 +16,22 @@ const Header = () => {
 
     return (
         <AppBar color="default" position="static">
-            <Stack direction="row" spacing={1} padding={1} alignItems="center">
-                <HamburgerButton onClick={openAppDrawer} />
-                <AppDrawer open={appDrawerOpen} onClose={closeAppDrawer} />
-                <Hidden smDown>
-                    <Logo />
-                </Hidden>
-                <Box flex={1}>
+            <Stack direction="row" spacing={1} padding={1} alignItems="center" justifyContent="space-between">
+                <Stack direction="row" spacing={1}>
+                    <HamburgerButton onClick={openAppDrawer} />
+                    <AppDrawer open={appDrawerOpen} onClose={closeAppDrawer} />
+                    <Hidden mdDown>
+                        <Logo />
+                    </Hidden>
+                </Stack>
+                <Box flexGrow={0} flexShrink={1} flexBasis={720}>
                     <SearchField />
                 </Box>
-                <CreateButton />
-                <LoginButton />
-                <AccountMenu />
+                <Stack direction="row" spacing={2}>
+                    <CreateButton />
+                    <LoginButton />
+                    <AccountMenu />
+                </Stack>
             </Stack>
         </AppBar>
     )
