@@ -1,10 +1,12 @@
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import Feed from "./feed";
+import FeedFilterChipBar from "./feed-filter-chip-bar";
 
 const Main = () => (
-    <Box component="main">
+    <Stack component="main" spacing={2} padding={2}>
+        <FeedFilterChipBar/>
         <Feed/>
-    </Box>
+    </Stack>
 );
 
 export default Main;

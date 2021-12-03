@@ -1,57 +1,26 @@
-import { Grid } from "@mui/material";
+import CssGrid from "./css-grid";
 import FeedItem from "./feed-item";
 
-const Feed = () => (
-    <Grid container rowSpacing={2} columnSpacing={2} padding={2}>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
+const Feed = () => {
+    return (
+        <CssGrid xl="1fr 1fr 1fr 1fr" lg="1fr 1fr 1fr" md="1fr 1fr 1fr" sm="1fr 1fr" xs="1fr" gap={2}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
             <FeedItem />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-            <FeedItem />
-        </Grid>
-    </Grid>
-)
+        </CssGrid>
+    );
+}
 
 export default Feed;

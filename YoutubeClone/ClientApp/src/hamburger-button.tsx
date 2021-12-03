@@ -1,9 +1,13 @@
 import { IconButton } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 
-function HamburgerButton() {
+interface HamburgerButtonProps {
+    onClick: () => void;
+}
+
+function HamburgerButton({onClick}: HamburgerButtonProps) {
     return (
-        <IconButton>
+        <IconButton onClick={onClick}>
             <MenuIcon/>
         </IconButton>
     )
