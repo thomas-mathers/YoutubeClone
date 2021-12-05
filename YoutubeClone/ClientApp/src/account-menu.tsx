@@ -1,4 +1,5 @@
-﻿import { Avatar, Menu, MenuItem } from "@mui/material";
+﻿import * as React from 'react';
+import { Avatar, Menu, MenuItem } from "@mui/material";
 import { Fragment, useState } from "react";
 
 const AccountMenu = () => {

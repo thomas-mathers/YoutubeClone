@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\account-menu.tsx" />
+    <None Remove="ClientApp\src\app-bar-spacer.tsx" />
     <None Remove="ClientApp\src\app-drawer.tsx" />
     <None Remove="ClientApp\src\create-button.tsx" />
     <None Remove="ClientApp\src\css-grid.tsx" />
@@ -35,7 +36,9 @@
     <None Remove="ClientApp\src\feed-item.tsx" />
     <None Remove="ClientApp\src\feed.tsx" />
     <None Remove="ClientApp\src\hamburger-button.tsx" />
+    <None Remove="ClientApp\src\login.tsx" />
     <None Remove="ClientApp\src\logo.tsx" />
+    <None Remove="ClientApp\src\theme.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +48,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\account-menu.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\app-bar-spacer.tsx" />
     <TypeScriptCompile Include="ClientApp\src\app-drawer.tsx" />
     <TypeScriptCompile Include="ClientApp\src\create-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\css-grid.tsx" />
@@ -52,7 +56,9 @@
     <TypeScriptCompile Include="ClientApp\src\feed-item.tsx" />
     <TypeScriptCompile Include="ClientApp\src\feed.tsx" />
     <TypeScriptCompile Include="ClientApp\src\hamburger-button.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\login.tsx" />
     <TypeScriptCompile Include="ClientApp\src\logo.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\theme.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

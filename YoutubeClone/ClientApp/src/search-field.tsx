@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Close, Search } from "@mui/icons-material";
 import { Button, FilledInput, IconButton, InputAdornment, Stack } from "@mui/material";
 
