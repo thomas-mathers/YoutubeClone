@@ -30,15 +30,21 @@
     <None Remove="ClientApp\src\account-menu.tsx" />
     <None Remove="ClientApp\src\app-bar-spacer.tsx" />
     <None Remove="ClientApp\src\app-drawer.tsx" />
+    <None Remove="ClientApp\src\change-password.tsx" />
     <None Remove="ClientApp\src\create-button.tsx" />
     <None Remove="ClientApp\src\css-grid.tsx" />
     <None Remove="ClientApp\src\feed-filter-chip-bar.tsx" />
     <None Remove="ClientApp\src\feed-item.tsx" />
     <None Remove="ClientApp\src\feed.tsx" />
+    <None Remove="ClientApp\src\forgot-password.tsx" />
     <None Remove="ClientApp\src\hamburger-button.tsx" />
     <None Remove="ClientApp\src\login.tsx" />
     <None Remove="ClientApp\src\logo.tsx" />
+    <None Remove="ClientApp\src\password-field.tsx" />
+    <None Remove="ClientApp\src\reset-password.tsx" />
+    <None Remove="ClientApp\src\sign-up.tsx" />
     <None Remove="ClientApp\src\theme.ts" />
+    <None Remove="ClientApp\src\username-field.tsx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,10 +61,24 @@
     <TypeScriptCompile Include="ClientApp\src\feed-filter-chip-bar.tsx" />
     <TypeScriptCompile Include="ClientApp\src\feed-item.tsx" />
     <TypeScriptCompile Include="ClientApp\src\feed.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\change-password.tsx">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="ClientApp\src\reset-password.tsx">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="ClientApp\src\hamburger-button.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\sign-up.tsx">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="ClientApp\src\forgot-password.tsx">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="ClientApp\src\login.tsx" />
     <TypeScriptCompile Include="ClientApp\src\logo.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\password-field.tsx" />
     <TypeScriptCompile Include="ClientApp\src\theme.ts" />
+    <TypeScriptCompile Include="ClientApp\src\username-field.tsx" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

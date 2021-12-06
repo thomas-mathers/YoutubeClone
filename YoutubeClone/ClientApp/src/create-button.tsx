@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import { IconButton } from "@mui/material";
 import { VideoCall } from '@mui/icons-material';
 

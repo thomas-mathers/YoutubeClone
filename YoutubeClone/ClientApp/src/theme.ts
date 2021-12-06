@@ -1,4 +1,4 @@
-﻿import { createTheme, darkScrollbar } from '@mui/material';
+import { createTheme, darkScrollbar } from '@mui/material';
 
 let theme = createTheme({
     components: {

@@ -1,6 +1,6 @@
-﻿import * as React from 'react';
-import { Explore, Home, Subscriptions, VideoLibrary, History, WatchLater, ThumbUp, PlaylistPlay, Circle } from '@mui/icons-material';
-import { Avatar, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, ListSubheader, useMediaQuery, useTheme } from '@mui/material';
+import { Circle, Explore, History, Home, PlaylistPlay, Subscriptions, ThumbUp, VideoLibrary, WatchLater } from '@mui/icons-material';
+import { Avatar, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, useMediaQuery, useTheme } from '@mui/material';
+import * as React from 'react';
 import AppBarSpacer from './app-bar-spacer';
 
 interface AppDrawerProps {
