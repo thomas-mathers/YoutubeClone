@@ -39,6 +39,12 @@ builder.Services.AddTransient<IMapper>(serviceProvider =>
         cfg.CreateMap<Comment, CommentSummary>();
         cfg.CreateMap<Subscription, SubscriptionSummary>();
         cfg.CreateMap<Video, VideoSummary>();
+
+        cfg.CreateMap<Video, FeedItemSummary>().ForMember(m => m.VideoId, opt => opt.MapFrom(src => src.Id));
+        cfg.CreateMap<Video, FeedItemSummary>().ForMember(m => m.Title, opt => opt.MapFrom(src => src.Name));
+        cfg.CreateMap<Video, FeedItemSummary>().ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name));
+        cfg.CreateMap<Video, FeedItemSummary>().ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl));
+
         cfg.CreateMap<User, UserSummary>();
     });
 

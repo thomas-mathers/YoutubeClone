@@ -168,5 +168,25 @@ namespace YoutubeClone.Controllers
 
             return Ok(subscriptionSummary);
         }
+
+        [HttpGet("{userId}/feed")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<FeedItemSummary>>> GetFeedItemsAsync(Guid userId, [FromQuery] int skip = 0, [FromQuery] int take = 100)
+        {
+            var userChannels = databaseContext.Subscriptions.Where(s => s.UserId == userId).Select(s => s.ChannelId);
+
+            List<Video> userVideos = await databaseContext.Videos
+                .Join(userChannels, video => video.ChannelId, channelId => channelId, (video, channelId) => video)
+                .OrderByDescending(v => v.DateCreated)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+
+            var feedItems = userVideos.Select(v => mapper.Map<FeedItemSummary>(v)).ToList();
+
+            return Ok(feedItems);
+        }
     }
 }

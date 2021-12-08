@@ -1,4 +1,6 @@
-﻿namespace YoutubeClone.Infrastructure.Services
+﻿using YoutubeClone.Domain;
+
+namespace YoutubeClone.Infrastructure.Services
 {
     public interface ITokenGenerator
     {

@@ -1,20 +1,17 @@
 import * as React from 'react';
 import { Chip, Stack } from "@mui/material";
 
-const FeedFilterChipBar = () => {
+interface FeedFilterChipBarProps {
+    filters: string[]
+    onClick?: (filter: string) => void;
+}
+
+const FeedFilterChipBar = (props: FeedFilterChipBarProps) => {
     return (
         <Stack direction="row" spacing={1} overflow="auto">
-            <Chip clickable label="All" />
-            <Chip clickable label="Gaming" />
-            <Chip clickable label="Gaming" />
-            <Chip clickable label="Gaming" />
-            <Chip clickable label="Gaming" />
-            <Chip clickable label="Gaming" />
-            <Chip clickable label="Gaming" />
-            <Chip clickable label="Gaming" />
-            <Chip clickable label="Gaming" />
-            <Chip clickable label="Gaming" />
-            <Chip clickable label="Gaming" />
+            {
+                props.filters.map((v, i) => <Chip key={i} label={v} clickable/>)
+            }
         </Stack>
     )
 }

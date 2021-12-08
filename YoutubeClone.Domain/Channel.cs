@@ -5,15 +5,17 @@
         private readonly HashSet<Video> videos = new();
 
         public Guid Id { get; private set; } = Guid.NewGuid();
-        public Guid OwnerId { get; private set; }
+        public Guid UserId { get; private set; }
+        public User User { get; private set; } = null!;
         public string Name { get; private set; }
-        public string Description { get; init; } = string.Empty;
-        public DateTime Created { get; } = DateTime.UtcNow;
+        public string Description { get; set; } = string.Empty;
+        public string ThumbnailUrl { get; set; } = string.Empty;
+        public DateTime DateCreated { get; private set; } = DateTime.UtcNow;
         public IEnumerable<Video> Videos => videos;
 
-        public Channel(Guid ownerId, string name)
+        public Channel(Guid userId, string name)
         {
-            OwnerId = ownerId;
+            UserId = userId;
             Name = name;
         }
 

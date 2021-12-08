@@ -10,5 +10,6 @@
         public long Views { get; set; }
         public long Likes { get; set; }
         public long Dislikes { get; set; }
+        public DateTime DateCreated { get; set; }
     }
 }

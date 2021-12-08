@@ -47,7 +47,7 @@ namespace YoutubeClone.Controllers
 
             var videoUrl = await fileService.UploadAsync(blobPath, fileStream);
 
-            var video = new Video(videoId, channelId, request.Name, videoUrl.ToString());
+            var video = new Video(videoId, channelId, request.Name, videoUrl.ToString(), videoUrl.ToString());
 
             channel.AddVideo(video);
 

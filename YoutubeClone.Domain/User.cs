@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using YoutubeClone.Domain;
 
-namespace YoutubeClone.Infrastructure
+namespace YoutubeClone.Domain
 {
     public class User : IdentityUser<Guid>
     {
@@ -11,7 +11,7 @@ namespace YoutubeClone.Infrastructure
         public string GivenName { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
         public string? ProfilePictureUrl { get; set; }
-        public DateTime Created { get; } = DateTime.UtcNow;
+        public DateTime DateCreated { get; private set; } = DateTime.UtcNow;
         public IEnumerable<Channel> Channels => channels;
         public IEnumerable<Subscription> Subscriptions => subscriptions;
 
