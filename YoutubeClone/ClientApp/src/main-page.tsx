@@ -5,22 +5,32 @@ import AppDrawer from "./app-drawer";
 import Feed from "./feed";
 import FeedFilterChipBar from "./feed-filter-chip-bar";
 import Header from './header';
-import VideoSummary from './video-summary';
+import FeedItemSummary from './feed-item-summary';
 
 const MainPage = () => {
-    const [videos, setVideos] = useState<VideoSummary[]>([
+    const [feedItems, setFeedItems] = useState<FeedItemSummary[]>([
         {
-            id: '12345678',
-            channelId: '12345678',
-            name: 'Thomas Mathers',
-            url: 'https://i.ytimg.com/an_webp/bzMTlBddJ-E/mqdefault_6s.webp?du=3000&sqp=COKpv40G&rs=AOn4CLAuCtxj7RdvpH4PHrdIVOpW-2N0Lg',
-            description: 'Test description',
+            videoId: '12345678',
+            title: 'Thomas Mathers',
+            channelName: 'Thomas Mathers',
+            channelThumbnailUrl: '',
+            thumbnailUrl: 'https://i.ytimg.com/an_webp/bzMTlBddJ-E/mqdefault_6s.webp?du=3000&sqp=COKpv40G&rs=AOn4CLAuCtxj7RdvpH4PHrdIVOpW-2N0Lg',
             views: 0,
-            likes: 0,
-            dislikes: 0
+            dateCreated: ''
         }
     ]);
     const [filters, setFilters] = useState<string[]>([
+        'All',
+        'Filter 1',
+        'Filter 2',
+        'Filter 3',
+        'Filter 4',
+        'Filter 5',
+        'Filter 6',
+        'Filter 7',
+        'Filter 8',
+        'Filter 9',
+        'Filter 10',
     ]);
 
     return (
@@ -30,7 +40,7 @@ const MainPage = () => {
                 <AppDrawer open={true} />
                 <Stack component="main" spacing={2} padding={2} flexGrow={1} overflow="hidden">
                     <FeedFilterChipBar filters={filters} />
-                    <Feed videos={videos} />
+                    <Feed items={feedItems} />
                 </Stack>
             </Box>
         </Fragment>
