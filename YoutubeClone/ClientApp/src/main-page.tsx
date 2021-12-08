@@ -6,8 +6,10 @@ import Feed from "./feed";
 import FeedFilterChipBar from "./feed-filter-chip-bar";
 import Header from './header';
 import FeedItemSummary from './feed-item-summary';
+import UserSummary from './user-summary';
 
 const MainPage = () => {
+    const [user, setUser] = useState<UserSummary | null>(null);
     const [feedItems, setFeedItems] = useState<FeedItemSummary[]>([
         {
             videoId: '12345678',
@@ -35,7 +37,7 @@ const MainPage = () => {
 
     return (
         <Fragment>
-            <Header />
+            <Header user={user}/>
             <Box display="flex">
                 <AppDrawer open={true} />
                 <Stack component="main" spacing={2} padding={2} flexGrow={1} overflow="hidden">

@@ -6,8 +6,16 @@ import HamburgerButton from './hamburger-button';
 import Logo from './logo';
 import AccountMenu from './account-menu';
 import CreateButton from './create-button';
+import UserSummary from './user-summary';
+import { Fragment } from 'react';
 
-const Header = () => {
+interface HeaderProps {
+    user: UserSummary | null;
+}
+
+const Header = (props: HeaderProps) => {
+    const { user } = props;
+    const isLoggedIn = user !== null;
     return (
         <AppBar color="default" position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
             <Stack direction="row" spacing={1} padding={1} justifyContent="space-between" alignItems="center">
@@ -21,9 +29,15 @@ const Header = () => {
                     <SearchField />
                 </Box>
                 <Stack direction="row" spacing={1}>
-                    <CreateButton />
-                    <LoginButton />
-                    <AccountMenu />
+                    {
+                        isLoggedIn ?
+                            <Fragment>
+                                <CreateButton />
+                                <AccountMenu />
+                            </Fragment>
+                            :
+                            <LoginButton />
+                    }
                 </Stack>
             </Stack>
         </AppBar>

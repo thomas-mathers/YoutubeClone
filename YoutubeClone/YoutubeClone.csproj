@@ -49,6 +49,7 @@
     <None Remove="ClientApp\src\reset-password.tsx" />
     <None Remove="ClientApp\src\sign-up.tsx" />
     <None Remove="ClientApp\src\theme.ts" />
+    <None Remove="ClientApp\src\user-summary.ts" />
     <None Remove="ClientApp\src\username-field.tsx" />
   </ItemGroup>
 
@@ -84,6 +85,7 @@
     <TypeScriptCompile Include="ClientApp\src\logo.tsx" />
     <TypeScriptCompile Include="ClientApp\src\password-field.tsx" />
     <TypeScriptCompile Include="ClientApp\src\theme.ts" />
+    <TypeScriptCompile Include="ClientApp\src\user-summary.ts" />
     <TypeScriptCompile Include="ClientApp\src\username-field.tsx" />
   </ItemGroup>
 
