@@ -6,16 +6,20 @@ using YoutubeClone.Infrastructure;
 using YoutubeClone.Infrastructure.Services;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DatabaseContext>(
     options => options.UseSqlServer(
-        builder.Configuration.GetConnectionString("AzureSqlServer"), 
+        builder.Configuration.GetConnectionString("AzureSqlServer"),
             x => x.MigrationsAssembly("YoutubeClone.Infrastructure")));
 
 builder.Services.AddTransient<IFileService, AzureBlobFileService>(serviceProvider =>

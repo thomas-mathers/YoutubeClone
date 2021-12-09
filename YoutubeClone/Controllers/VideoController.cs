@@ -28,18 +28,6 @@ namespace YoutubeClone.Controllers
             return Ok(videoSummarys);
         }
 
-        [HttpGet("names")]
-        public async Task<ActionResult<List<string>>> GetNamesAsync([FromQuery] string prefix, [FromQuery] int take)
-        {
-            var videoNames = await databaseContext.Videos
-                .Select(v => v.Name)
-                .Where(s => s.ToLower().StartsWith(prefix.ToLower()))
-                .OrderBy(s => s)
-                .Take(take)
-                .ToListAsync();
-            return Ok(videoNames);
-        }
-
         [HttpPost("{videoId}/comments")]
         [Consumes("application/json")]
         [Produces("application/json")]
