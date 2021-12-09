@@ -21,6 +21,8 @@ namespace YoutubeClone.Controllers
         }
 
         [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<SubscriptionSummary>>> GetAsync()
         {
             var subscriptions = await databaseContext.Subscriptions.ToListAsync();

@@ -59,6 +59,8 @@ namespace YoutubeClone.Controllers
         }
 
         [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ChannelSummary>>> GetAsync()
         {
             var channels = await databaseContext.Channels.ToListAsync();
@@ -67,6 +69,8 @@ namespace YoutubeClone.Controllers
         }
 
         [HttpGet("{channelId}/videos")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<VideoSummary>>> GetVideosAsync(Guid channelId)
         {
             var videos = await databaseContext.Videos.Where(v => v.ChannelId == channelId).ToListAsync();

@@ -46,6 +46,8 @@ namespace YoutubeClone.Controllers
         }
 
         [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<CommentSummary>>> GetAsync()
         {
             var channels = await databaseContext.Comments.ToListAsync();

@@ -53,6 +53,7 @@ namespace YoutubeClone.Controllers
 
         [HttpGet]
         [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<UserSummary>>> GetAsync()
         {
             var users = await databaseContext.Users.ToListAsync();
@@ -61,6 +62,10 @@ namespace YoutubeClone.Controllers
         }
 
         [HttpPut("{userId}")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserSummary>> UpdateAsync(Guid userId, UpdateUserRequest request)
         {
             var user = await userManager.FindByIdAsync(userId.ToString());
@@ -86,35 +91,6 @@ namespace YoutubeClone.Controllers
             var userSummary = mapper.Map<UserSummary>(user);
 
             return Ok(userSummary);
-        }
-
-        [HttpPost("login")]
-        [Consumes("application/json")]
-        [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<LoginResponse>> LoginAsync(LoginRequest loginRequest)
-        {
-            var user = await userManager.FindByNameAsync(loginRequest.UserName);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var isPasswordCorrect = await userManager.CheckPasswordAsync(user, loginRequest.Password);
-
-            if (isPasswordCorrect == false)
-            {
-                return Unauthorized();
-            }
-
-            var userSummary = mapper.Map<UserSummary>(user);
-            var token = userTokenGenerator.Generate(user);
-
-            return Ok(new LoginResponse(userSummary, token));
         }
 
         [HttpPost("{userId}/channels")]
@@ -170,7 +146,6 @@ namespace YoutubeClone.Controllers
         }
 
         [HttpGet("{userId}/feed")]
-        [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<VideoSummary>>> GetFeedItemsAsync(Guid userId, [FromQuery] int skip = 0, [FromQuery] int take = 100)
@@ -190,7 +165,6 @@ namespace YoutubeClone.Controllers
         }
 
         [HttpGet("{userId}/subscriptions")]
-        [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<SubscriptionSummary>>> GetSubscriptionsAsync(Guid userId)
