@@ -1,7 +1,7 @@
 import * as React from 'react';
 import CssGrid from "./css-grid";
 import FeedItem from "./feed-item";
-import FeedItemSummary from "./feed-item-summary";
+import FeedItemSummary from "./video-summary";
 
 interface FeedProps {
     items: FeedItemSummary[];
@@ -12,7 +12,7 @@ const Feed = (props: FeedProps) => {
     return (
         <CssGrid minWidth={350} gap={2}>
             {
-                items.map(v => <FeedItem key={v.videoId} thumbnailUrl={v.thumbnailUrl} title={v.title} channelThumbnailUrl={v.channelThumbnailUrl} channelName={v.channelName} views={v.views} dateCreated={v.dateCreated} />)}
+                items.map(v => <FeedItem key={v.id} thumbnailUrl={v.thumbnailUrl} title={v.name} channelThumbnailUrl={v.channelThumbnailUrl} channelName={v.channelName} views={v.views} dateCreated={v.dateCreated} />)}
         </CssGrid>
     );
 }

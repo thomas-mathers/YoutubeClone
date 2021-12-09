@@ -36,14 +36,22 @@ builder.Services.AddTransient<IMapper>(serviceProvider =>
     var config = new MapperConfiguration(cfg =>
     {
         cfg.CreateMap<Channel, ChannelSummary>();
-        cfg.CreateMap<Comment, CommentSummary>();
-        cfg.CreateMap<Subscription, SubscriptionSummary>();
-        cfg.CreateMap<Video, VideoSummary>();
+        cfg.CreateMap<Channel, ChannelSummary>().ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.UserName));
+        cfg.CreateMap<Channel, ChannelSummary>().ForMember(m => m.UserProfilePictureUrl, opt => opt.MapFrom(src => src.User.ProfilePictureUrl));
 
-        cfg.CreateMap<Video, FeedItemSummary>().ForMember(m => m.VideoId, opt => opt.MapFrom(src => src.Id));
-        cfg.CreateMap<Video, FeedItemSummary>().ForMember(m => m.Title, opt => opt.MapFrom(src => src.Name));
-        cfg.CreateMap<Video, FeedItemSummary>().ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name));
-        cfg.CreateMap<Video, FeedItemSummary>().ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl));
+        cfg.CreateMap<Comment, CommentSummary>();
+        cfg.CreateMap<Comment, CommentSummary>().ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.UserName));
+        cfg.CreateMap<Comment, CommentSummary>().ForMember(m => m.UserProfilePictureUrl, opt => opt.MapFrom(src => src.User.ProfilePictureUrl));
+
+        cfg.CreateMap<Subscription, SubscriptionSummary>();
+        cfg.CreateMap<Subscription, SubscriptionSummary>().ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.UserName));
+        cfg.CreateMap<Subscription, SubscriptionSummary>().ForMember(m => m.UserProfilePictureUrl, opt => opt.MapFrom(src => src.User.ProfilePictureUrl));
+        cfg.CreateMap<Subscription, SubscriptionSummary>().ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name));
+        cfg.CreateMap<Subscription, SubscriptionSummary>().ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl));
+
+        cfg.CreateMap<Video, VideoSummary>();
+        cfg.CreateMap<Video, VideoSummary>().ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name));
+        cfg.CreateMap<Video, VideoSummary>().ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl));
 
         cfg.CreateMap<User, UserSummary>();
     });

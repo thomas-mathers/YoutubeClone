@@ -9,8 +9,8 @@
         public Channel Channel { get; private set; } = null!;
         public string Name { get; private set; }
         public string Description { get; set; } = string.Empty;
-        public string Url { get; private set; } = string.Empty;
-        public string ThumbnailUrl { get; private set; } = string.Empty;
+        public string Url { get; private set; }
+        public string ThumbnailUrl { get; private set; }
         public long Views { get; private set; }
         public long Likes { get; private set; }
         public long Dislikes { get; private set; }

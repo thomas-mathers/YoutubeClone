@@ -17,10 +17,14 @@ namespace YoutubeClone.Infrastructure
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<User>().Property(p => p.ProfilePictureUrl).HasDefaultValue(string.Empty);
+
             builder.Entity<Channel>().Property(p => p.Id).ValueGeneratedNever();
             builder.Entity<Comment>().Property(p => p.Id).ValueGeneratedNever();
             builder.Entity<Subscription>().Property(p => p.Id).ValueGeneratedNever();
             builder.Entity<Video>().Property(p => p.Id).ValueGeneratedNever();
+
+            builder.Entity<Subscription>().HasOne(p => p.Channel).WithOne().OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

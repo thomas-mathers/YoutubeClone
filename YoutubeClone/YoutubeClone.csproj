@@ -38,19 +38,21 @@
     <None Remove="ClientApp\src\create-button.tsx" />
     <None Remove="ClientApp\src\css-grid.tsx" />
     <None Remove="ClientApp\src\feed-filter-chip-bar.tsx" />
-    <None Remove="ClientApp\src\feed-item-summary.ts" />
     <None Remove="ClientApp\src\feed-item.tsx" />
     <None Remove="ClientApp\src\feed.tsx" />
     <None Remove="ClientApp\src\forgot-password.tsx" />
     <None Remove="ClientApp\src\hamburger-button.tsx" />
+    <None Remove="ClientApp\src\hooks\useDebounce.ts" />
     <None Remove="ClientApp\src\login.tsx" />
     <None Remove="ClientApp\src\logo.tsx" />
     <None Remove="ClientApp\src\password-field.tsx" />
     <None Remove="ClientApp\src\reset-password.tsx" />
     <None Remove="ClientApp\src\sign-up.tsx" />
+    <None Remove="ClientApp\src\subscription-summary.ts" />
     <None Remove="ClientApp\src\theme.ts" />
     <None Remove="ClientApp\src\user-summary.ts" />
     <None Remove="ClientApp\src\username-field.tsx" />
+    <None Remove="ClientApp\src\video-summary.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,7 +67,11 @@
     <TypeScriptCompile Include="ClientApp\src\create-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\css-grid.tsx" />
     <TypeScriptCompile Include="ClientApp\src\feed-filter-chip-bar.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\feed-item-summary.ts" />
+    <TypeScriptCompile Include="ClientApp\src\hooks\useDebounce.ts" />
+    <TypeScriptCompile Include="ClientApp\src\subscription-summary.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="ClientApp\src\video-summary.ts" />
     <TypeScriptCompile Include="ClientApp\src\feed-item.tsx" />
     <TypeScriptCompile Include="ClientApp\src\feed.tsx" />
     <TypeScriptCompile Include="ClientApp\src\change-password.tsx">

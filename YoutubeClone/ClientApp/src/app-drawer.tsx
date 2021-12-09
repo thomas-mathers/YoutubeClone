@@ -2,13 +2,16 @@ import { Circle, Explore, History, Home, PlaylistPlay, Subscriptions, ThumbUp, V
 import { Avatar, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, useMediaQuery, useTheme } from '@mui/material';
 import * as React from 'react';
 import AppBarSpacer from './app-bar-spacer';
+import SubscriptionSummary from './subscription-summary';
 
 interface AppDrawerProps {
     open: boolean;
+    subscriptions: SubscriptionSummary[];
     onClose?: () => void;
 }
 
-function AppDrawer({ open, onClose }: AppDrawerProps) {
+function AppDrawer(props: AppDrawerProps) {
+    const { open, subscriptions, onClose } = props;
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const variant = isSmall ? 'temporary' : 'permanent';
@@ -20,7 +23,7 @@ function AppDrawer({ open, onClose }: AppDrawerProps) {
     };
 
     return (
-        <Drawer anchor="left" open={false} onClose={onClose} ModalProps={{ keepMounted: isSmall }} variant={variant} sx={sx}>
+        <Drawer anchor="left" open={open} onClose={onClose} ModalProps={{ keepMounted: isSmall }} variant={variant} sx={sx}>
             <AppBarSpacer />
             <List>
                 <ListItem button>
@@ -61,118 +64,14 @@ function AppDrawer({ open, onClose }: AppDrawerProps) {
                     <ListItemText>Favourites</ListItemText>
                 </ListItem>
                 <Divider />
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }}/></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
-                <ListItem button secondaryAction={<Circle />}>
-                    <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} /></ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ noWrap: true }}>Anthony Brian Logan</ListItemText>
-                </ListItem>
+                {
+                    subscriptions.map(s => (
+                        <ListItem key={s.id} secondaryAction={<Circle />} button>
+                            <ListItemIcon><Avatar sx={{ width: 24, height: 24 }} src={s.channelThumbnailUrl} /></ListItemIcon>
+                            <ListItemText primaryTypographyProps={{ noWrap: true }}>{s.channelName}</ListItemText>
+                        </ListItem>
+                    ))
+                }
             </List>
         </Drawer>
     );

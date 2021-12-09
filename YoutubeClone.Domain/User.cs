@@ -10,7 +10,7 @@ namespace YoutubeClone.Domain
 
         public string GivenName { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
-        public string? ProfilePictureUrl { get; set; }
+        public string ProfilePictureUrl { get; set; } = string.Empty;
         public DateTime DateCreated { get; private set; } = DateTime.UtcNow;
         public IEnumerable<Channel> Channels => channels;
         public IEnumerable<Subscription> Subscriptions => subscriptions;

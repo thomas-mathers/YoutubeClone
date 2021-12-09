@@ -1,23 +1,26 @@
 import * as React from 'react';
-import { Close, Search } from "@mui/icons-material";
-import { Button, FilledInput, IconButton, InputAdornment, Stack } from "@mui/material";
+import { Search } from "@mui/icons-material";
+import { Autocomplete, Button, Stack, TextField } from "@mui/material";
 
-function SearchField() {
+interface SearchFieldProps {
+    value: string;
+    options: string[];
+    onChange: (text: string) => void;
+}
+
+function SearchField(props: SearchFieldProps) {
+    const { value, options, onChange } = props;
     return (
         <Stack direction="row" alignItems="center">
-            <FilledInput
-                size="small"
+            <Autocomplete
+                renderInput={params => <TextField {...params} size="small" placeholder="Search" />}
+                value={value}
+                inputValue={value}
+                onInputChange={(e, newValue: string | null) => onChange(newValue === null ? '' : newValue)}
+                options={options}
+                filterOptions={x => x}
+                freeSolo
                 fullWidth
-                hiddenLabel
-                disableUnderline
-                endAdornment={
-                    <InputAdornment position="end">
-                        <IconButton size="small" edge="end">
-                            <Close />
-                        </IconButton>
-                    </InputAdornment>
-                }
-                placeholder="Search"
             />
             <Button variant="contained" style={{height: 40}}>
                 <Search/>

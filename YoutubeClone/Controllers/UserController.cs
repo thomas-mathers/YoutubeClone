@@ -173,7 +173,7 @@ namespace YoutubeClone.Controllers
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<FeedItemSummary>>> GetFeedItemsAsync(Guid userId, [FromQuery] int skip = 0, [FromQuery] int take = 100)
+        public async Task<ActionResult<List<VideoSummary>>> GetFeedItemsAsync(Guid userId, [FromQuery] int skip = 0, [FromQuery] int take = 100)
         {
             var userChannels = databaseContext.Subscriptions.Where(s => s.UserId == userId).Select(s => s.ChannelId);
 
@@ -184,9 +184,20 @@ namespace YoutubeClone.Controllers
                 .Take(take)
                 .ToListAsync();
 
-            var feedItems = userVideos.Select(v => mapper.Map<FeedItemSummary>(v)).ToList();
+            var feedItems = userVideos.Select(v => mapper.Map<VideoSummary>(v)).ToList();
 
             return Ok(feedItems);
+        }
+
+        [HttpGet("{userId}/subscriptions")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<SubscriptionSummary>>> GetSubscriptionsAsync(Guid userId)
+        {
+            var userSubscriptions = await databaseContext.Subscriptions.Include(s => s.Channel).Where(s => s.UserId == userId).ToListAsync();
+
+            return Ok(userSubscriptions);
         }
     }
 }
