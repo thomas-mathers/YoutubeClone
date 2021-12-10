@@ -2,7 +2,7 @@ import { Circle, Explore, History, Home, PlaylistPlay, Subscriptions, ThumbUp, V
 import { Avatar, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, useMediaQuery, useTheme } from '@mui/material';
 import * as React from 'react';
 import AppBarSpacer from './app-bar-spacer';
-import SubscriptionSummary from './subscription-summary';
+import { SubscriptionSummary } from './models';
 
 interface AppDrawerProps {
     open: boolean;

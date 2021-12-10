@@ -1,10 +1,10 @@
 import * as React from 'react';
 import CssGrid from "./css-grid";
 import FeedItem from "./feed-item";
-import FeedItemSummary from "./video-summary";
+import { VideoSummary } from "./models";
 
 interface FeedProps {
-    items: FeedItemSummary[];
+    items: VideoSummary[];
 }
 
 const Feed = (props: FeedProps) => {

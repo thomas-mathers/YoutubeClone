@@ -6,7 +6,7 @@ import HamburgerButton from './hamburger-button';
 import Logo from './logo';
 import AccountMenu from './account-menu';
 import CreateButton from './create-button';
-import UserSummary from './user-summary';
+import { UserSummary } from './models';
 import { Fragment, useEffect, useState } from 'react';
 import { useDebounce } from './hooks/useDebounce';
 

@@ -5,9 +5,7 @@ import AppDrawer from "./app-drawer";
 import Feed from "./feed";
 import FeedFilterChipBar from "./feed-filter-chip-bar";
 import Header from './header';
-import VideoSummary from './video-summary';
-import UserSummary from './user-summary';
-import SubscriptionSummary from './subscription-summary';
+import { VideoSummary, UserSummary, SubscriptionSummary } from './models';
 
 interface AppState {
     user: UserSummary | null;
@@ -31,7 +29,7 @@ const initialState: AppState = {
     user: null,
     subscriptions: [
         {
-            id: '12345678',
+            id: '1234567',
             channelId: '12345678',
             channelName: 'Anthony Brian Logan',
             channelThumbnailUrl: '',
@@ -40,7 +38,7 @@ const initialState: AppState = {
             userProfilePictureUrl: ''
         },
         {
-            id: '12345678',
+            id: '123456',
             channelId: '12345678',
             channelName: 'Anthony Brian Logan',
             channelThumbnailUrl: '',
@@ -49,7 +47,7 @@ const initialState: AppState = {
             userProfilePictureUrl: ''
         },
         {
-            id: '12345678',
+            id: '1234',
             channelId: '12345678',
             channelName: 'Anthony Brian Logan',
             channelThumbnailUrl: '',
@@ -60,7 +58,7 @@ const initialState: AppState = {
     ],
     videos: [
         {
-            id: '12345678',
+            id: '123458',
             channelId: '1',
             channelName: 'Thomas Mathers',
             channelThumbnailUrl: '',

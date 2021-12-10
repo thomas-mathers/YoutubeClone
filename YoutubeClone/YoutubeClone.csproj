@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\account-menu.tsx" />
+    <None Remove="ClientApp\src\api.ts" />
     <None Remove="ClientApp\src\app-bar-spacer.tsx" />
     <None Remove="ClientApp\src\app-drawer.tsx" />
     <None Remove="ClientApp\src\change-password.tsx" />
@@ -45,6 +46,18 @@
     <None Remove="ClientApp\src\hooks\useDebounce.ts" />
     <None Remove="ClientApp\src\login.tsx" />
     <None Remove="ClientApp\src\logo.tsx" />
+    <None Remove="ClientApp\src\models\channel-summary.ts" />
+    <None Remove="ClientApp\src\models\comment-summary.ts" />
+    <None Remove="ClientApp\src\models\create-channel-request.ts" />
+    <None Remove="ClientApp\src\models\create-comment-request.ts" />
+    <None Remove="ClientApp\src\models\create-reply-request.ts" />
+    <None Remove="ClientApp\src\models\create-subscription-request.ts" />
+    <None Remove="ClientApp\src\models\create-user-request.ts" />
+    <None Remove="ClientApp\src\models\create-video-request.ts" />
+    <None Remove="ClientApp\src\models\index.ts" />
+    <None Remove="ClientApp\src\models\login-request.ts" />
+    <None Remove="ClientApp\src\models\login-response.ts" />
+    <None Remove="ClientApp\src\models\update-user-request.ts" />
     <None Remove="ClientApp\src\password-field.tsx" />
     <None Remove="ClientApp\src\reset-password.tsx" />
     <None Remove="ClientApp\src\sign-up.tsx" />
@@ -62,16 +75,29 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\account-menu.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\api.ts" />
     <TypeScriptCompile Include="ClientApp\src\app-bar-spacer.tsx" />
     <TypeScriptCompile Include="ClientApp\src\app-drawer.tsx" />
     <TypeScriptCompile Include="ClientApp\src\create-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\css-grid.tsx" />
     <TypeScriptCompile Include="ClientApp\src\feed-filter-chip-bar.tsx" />
     <TypeScriptCompile Include="ClientApp\src\hooks\useDebounce.ts" />
-    <TypeScriptCompile Include="ClientApp\src\subscription-summary.ts">
+    <TypeScriptCompile Include="ClientApp\src\models\channel-summary.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\comment-summary.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\create-channel-request.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\create-comment-request.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\create-reply-request.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\create-subscription-request.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\create-user-request.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\create-video-request.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\index.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\login-request.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\login-response.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\subscription-summary.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="ClientApp\src\video-summary.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\update-user-request.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\video-summary.ts" />
     <TypeScriptCompile Include="ClientApp\src\feed-item.tsx" />
     <TypeScriptCompile Include="ClientApp\src\feed.tsx" />
     <TypeScriptCompile Include="ClientApp\src\change-password.tsx">
@@ -91,7 +117,7 @@
     <TypeScriptCompile Include="ClientApp\src\logo.tsx" />
     <TypeScriptCompile Include="ClientApp\src\password-field.tsx" />
     <TypeScriptCompile Include="ClientApp\src\theme.ts" />
-    <TypeScriptCompile Include="ClientApp\src\user-summary.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\user-summary.ts" />
     <TypeScriptCompile Include="ClientApp\src\username-field.tsx" />
   </ItemGroup>
 
