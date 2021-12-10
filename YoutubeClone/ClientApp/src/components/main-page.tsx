@@ -5,7 +5,7 @@ import AppDrawer from "./app-drawer";
 import Feed from "./feed";
 import FeedFilterChipBar from "./feed-filter-chip-bar";
 import Header from './header';
-import { VideoSummary, UserSummary, SubscriptionSummary } from './models';
+import { VideoSummary, UserSummary, SubscriptionSummary } from '../api/models';
 
 interface AppState {
     user: UserSummary | null;

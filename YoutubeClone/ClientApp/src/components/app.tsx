@@ -1,14 +1,13 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import * as React from 'react';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import './app.css';
 import ChangePassword from './change-password';
 import ForgotPassword from './forgot-password';
 import Login from './login';
 import MainPage from './main-page';
 import ResetPassword from './reset-password';
 import SignUp from './sign-up';
-import theme from './theme';
+import theme from '../theme';
 
 function App() {
     return (

@@ -20,14 +20,6 @@ namespace YoutubeClone.Controllers
             this.mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<VideoSummary>>> GetAsync()
-        {
-            var videos = await databaseContext.Videos.ToListAsync();
-            var videoSummarys = videos.Select(x => mapper.Map<VideoSummary>(x)).ToList();
-            return Ok(videoSummarys);
-        }
-
         [HttpPost("{videoId}/comments")]
         [Consumes("application/json")]
         [Produces("application/json")]
@@ -52,6 +44,14 @@ namespace YoutubeClone.Controllers
             var commentSummary = mapper.Map<CommentSummary>(comment);
 
             return Ok(commentSummary);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<VideoSummary>>> GetAsync()
+        {
+            var videos = await databaseContext.Videos.ToListAsync();
+            var videoSummarys = videos.Select(x => mapper.Map<VideoSummary>(x)).ToList();
+            return Ok(videoSummarys);
         }
 
         [HttpDelete("{videoId}")]

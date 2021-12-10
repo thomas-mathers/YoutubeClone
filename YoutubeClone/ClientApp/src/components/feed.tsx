@@ -1,7 +1,7 @@
 import * as React from 'react';
 import CssGrid from "./css-grid";
 import FeedItem from "./feed-item";
-import { VideoSummary } from "./models";
+import { VideoSummary } from "../api/models";
 
 interface FeedProps {
     items: VideoSummary[];
