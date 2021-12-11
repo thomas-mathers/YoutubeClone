@@ -171,7 +171,9 @@ namespace YoutubeClone.Controllers
         {
             var userSubscriptions = await databaseContext.Subscriptions.Include(s => s.Channel).Where(s => s.UserId == userId).ToListAsync();
 
-            return Ok(userSubscriptions);
+            var userSubscriptionsSummary = userSubscriptions.Select(s => mapper.Map<SubscriptionSummary>(s)).ToList();
+
+            return Ok(userSubscriptionsSummary);
         }
     }
 }

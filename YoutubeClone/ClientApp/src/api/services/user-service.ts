@@ -1,4 +1,4 @@
-﻿import { ChannelSummary, CreateChannelRequest, CreateSubscriptionRequest, CreateUserRequest, SubscriptionSummary, UpdateUserRequest, UserSummary } from "../models";
+import { ChannelSummary, CreateChannelRequest, CreateSubscriptionRequest, CreateUserRequest, SubscriptionSummary, UpdateUserRequest, UserSummary } from "../models";
 import { getHeaders } from "../get-headers";
 
 async function createUser(token: string, body: CreateUserRequest): Promise<UserSummary> {
@@ -53,7 +53,7 @@ async function getFeed(token: string, userId: string) {
     return await response.json();
 }
 
-async function getUserSubscriptions(token: string, userId: string): Promise<SubscriptionSummary> {
+async function getUserSubscriptions(token: string, userId: string): Promise<SubscriptionSummary[]> {
     const response = await fetch(`/api/user/${userId}/subscriptions`, {
         method: 'GET',
         headers: getHeaders(token)

@@ -1,9 +1,9 @@
-﻿import { getHeaders } from "../get-headers";
+import { getHeaders } from "../get-headers";
 
-async function getVideoSuggestions(token: string, prefix: string): Promise<string[]> {
-    const response = await fetch(`/api/video-suggestions`, {
+async function getVideoSuggestions(prefix: string, take: number): Promise<string[]> {
+    const response = await fetch(`/api/video-suggestions?prefix=${prefix}&take=${take}`, {
         method: 'GET',
-        headers: getHeaders(token)
+        headers: getHeaders()
     });
     return await response.json();
 }

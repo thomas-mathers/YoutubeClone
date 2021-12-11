@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ChangePassword from './change-password';
 import ForgotPassword from './forgot-password';
 import Login from './login';
-import MainPage from './main-page';
+import HomePage from './home-page';
 import ResetPassword from './reset-password';
 import SignUp from './sign-up';
 import theme from '../theme';
@@ -15,7 +15,7 @@ function App() {
             <CssBaseline />
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<MainPage />} />
+                    <Route path="/" element={<HomePage />} />
                     <Route path="/sign-up" element={<SignUp />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />

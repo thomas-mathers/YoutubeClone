@@ -32,7 +32,6 @@ builder.Services.AddTransient<IFileService, AzureBlobFileService>(serviceProvide
     return blobFileService;
 });
 
-builder.Services.Configure<JwtTokenGeneratorSettings>(builder.Configuration.GetSection(nameof(JwtTokenGeneratorSettings)));
 builder.Services.AddTransient<ITokenGenerator, JwtTokenGenerator>();
 
 builder.Services.AddTransient<IMapper>(serviceProvider =>
@@ -67,6 +66,13 @@ builder.Services.AddTransient<IMapper>(serviceProvider =>
 
 builder.Services.AddIdentity<User, IdentityRole<Guid>>().AddEntityFrameworkStores<DatabaseContext>().AddDefaultTokenProviders();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("All", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+});
+
+builder.Services.Configure<JwtTokenGeneratorSettings>(builder.Configuration.GetSection(nameof(JwtTokenGeneratorSettings)));
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -82,6 +88,8 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.UseCors("All");
 
 app.MapControllerRoute(
     name: "default",

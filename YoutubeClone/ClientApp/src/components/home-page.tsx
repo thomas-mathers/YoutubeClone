@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { Fragment, useReducer } from 'react';
+import { Fragment, useReducer, useEffect } from 'react';
 import { Box, Stack } from "@mui/material";
 import AppDrawer from "./app-drawer";
 import Feed from "./feed";
 import FeedFilterChipBar from "./feed-filter-chip-bar";
 import Header from './header';
 import { VideoSummary, UserSummary, SubscriptionSummary } from '../api/models';
+import { getUserSubscriptions } from '../api/services/user-service';
 
 interface AppState {
     user: UserSummary | null;
@@ -17,7 +18,8 @@ interface AppState {
 
 enum AppActionType {
     OpenDrawer,
-    CloseDrawer
+    CloseDrawer,
+    UpdateSubscriptions
 }
 
 interface AppAction {
@@ -88,7 +90,6 @@ const initialState: AppState = {
     appDrawerOpen: false
 }
 
-
 const reducer = (state: AppState, action: AppAction) => {
     switch (action.type) {
         case AppActionType.OpenDrawer:
@@ -101,14 +102,25 @@ const reducer = (state: AppState, action: AppAction) => {
                 ...state,
                 appDrawerOpen: false
             }
+        case AppActionType.UpdateSubscriptions:
+            return {
+                ...state,
+                subscriptions: action.payload
+            }
         default:
             return state;
     }
 }
 
-const MainPage = () => {
+export { reducer }
+
+const HomePage = () => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const { user, subscriptions, videos, filters, appDrawerOpen } = state;
+
+    useEffect(() => {
+        getUserSubscriptions('', '46332a2b-70a9-4c7c-7895-08d9b5395b3b').then(s => dispatch({ type: AppActionType.UpdateSubscriptions, payload: s }));
+    }, []);
 
     return (
         <Fragment>
@@ -124,4 +136,4 @@ const MainPage = () => {
     )
 };
 
-export default MainPage;
+export default HomePage;

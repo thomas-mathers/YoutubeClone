@@ -18,7 +18,7 @@ namespace YoutubeClone.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<string>>> GetAsync([FromQuery] string prefix, [FromQuery] int take)
+        public async Task<ActionResult<List<string>>> GetAsync([FromQuery] string prefix, [FromQuery] int take = 3)
         {
             var suggestions = await databaseContext.Videos
                 .Select(v => v.Name)

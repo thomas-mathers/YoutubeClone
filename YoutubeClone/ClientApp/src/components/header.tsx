@@ -9,6 +9,7 @@ import CreateButton from './create-button';
 import { UserSummary } from '../api/models';
 import { Fragment, useEffect, useState } from 'react';
 import { useDebounce } from '../hooks/useDebounce';
+import { getVideoSuggestions } from '../api/services/video-suggestions';
 
 interface HeaderProps {
     user: UserSummary | null;
@@ -19,9 +20,15 @@ const Header = (props: HeaderProps) => {
     const { user, openDrawer } = props;
     const isLoggedIn = user !== null;
     const [text, setText] = useState('');
+    const [options, setOptions] = useState<string[]>([]);
     const debouncedText = useDebounce(text, 300);
 
     useEffect(() => {
+        if (debouncedText.length > 0) {
+            getVideoSuggestions(debouncedText, 10).then(setOptions);
+        } else {
+            setOptions([]);
+        }
     }, [debouncedText]);
 
     return (
@@ -34,7 +41,7 @@ const Header = (props: HeaderProps) => {
                     </Hidden>
                 </Stack>
                 <Box flexGrow={0} flexShrink={1} flexBasis={720}>
-                    <SearchField value={text} onChange={setText} options={[]}/>
+                    <SearchField value={text} onChange={setText} options={options}/>
                 </Box>
                 <Stack direction="row" spacing={1}>
                     {
