@@ -2,8 +2,11 @@ import * as React from 'react';
 import { Button, Container, Stack, TextField, Typography } from "@mui/material";
 import PasswordField from './password-field';
 import UsernameField from './username-field';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
+    const navigate = useNavigate();
+    
     return (
         <Container maxWidth="xs">
             <Stack spacing={2} padding={2}>
@@ -15,7 +18,7 @@ const SignUp = () => {
                 <PasswordField required />
                 <PasswordField label="Confirm Password" required />
                 <Button variant="contained">Confirm</Button>
-                <Button variant="contained">Go Back</Button>
+                <Button variant="contained" onClick={() => navigate(-1)}>Go Back</Button>
             </Stack>
         </Container>
     );

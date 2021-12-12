@@ -8,7 +8,7 @@ import Header from './header';
 import { VideoSummary, UserSummary, SubscriptionSummary } from '../api/models';
 import { getUserSubscriptions } from '../api/services/user-service';
 
-interface AppState {
+interface HomePageState {
     user: UserSummary | null;
     videos: VideoSummary[];
     subscriptions: SubscriptionSummary[];
@@ -16,18 +16,19 @@ interface AppState {
     appDrawerOpen: boolean;
 }
 
-enum AppActionType {
+enum HomePageActionType {
+    UpdateUser,
     OpenDrawer,
     CloseDrawer,
     UpdateSubscriptions
 }
 
-interface AppAction {
-    type: AppActionType;
+interface HomePageAction {
+    type: HomePageActionType;
     payload?: any;
 }
 
-const initialState: AppState = {
+const initialState: HomePageState = {
     user: null,
     subscriptions: [
         {
@@ -90,19 +91,24 @@ const initialState: AppState = {
     appDrawerOpen: false
 }
 
-const reducer = (state: AppState, action: AppAction) => {
+const reducer = (state: HomePageState, action: HomePageAction) => {
     switch (action.type) {
-        case AppActionType.OpenDrawer:
+        case HomePageActionType.UpdateUser:
+            return {
+                ...state,
+                user: action.payload
+            }
+        case HomePageActionType.OpenDrawer:
             return {
                 ...state,
                 appDrawerOpen: true
             }
-        case AppActionType.CloseDrawer:
+        case HomePageActionType.CloseDrawer:
             return {
                 ...state,
                 appDrawerOpen: false
             }
-        case AppActionType.UpdateSubscriptions:
+        case HomePageActionType.UpdateSubscriptions:
             return {
                 ...state,
                 subscriptions: action.payload
@@ -119,14 +125,16 @@ const HomePage = () => {
     const { user, subscriptions, videos, filters, appDrawerOpen } = state;
 
     useEffect(() => {
-        getUserSubscriptions('', '46332a2b-70a9-4c7c-7895-08d9b5395b3b').then(s => dispatch({ type: AppActionType.UpdateSubscriptions, payload: s }));
+        getUserSubscriptions('', '46332a2b-70a9-4c7c-7895-08d9b5395b3b').then(s => dispatch({ type: HomePageActionType.UpdateSubscriptions, payload: s }));
     }, []);
 
     return (
         <Fragment>
-            <Header user={user} openDrawer={() => dispatch({ type: AppActionType.OpenDrawer })} />
+            <Header
+                user={user}
+                openDrawer={() => dispatch({ type: HomePageActionType.OpenDrawer })}/>
             <Box display="flex">
-                <AppDrawer open={appDrawerOpen} subscriptions={subscriptions} onClose={() => dispatch({ type: AppActionType.CloseDrawer })} />
+                <AppDrawer open={appDrawerOpen} subscriptions={subscriptions} onClose={() => dispatch({ type: HomePageActionType.CloseDrawer })} />
                 <Stack component="main" spacing={2} padding={2} flexGrow={1} overflow="hidden">
                     <FeedFilterChipBar filters={filters} />
                     <Feed items={videos} />
