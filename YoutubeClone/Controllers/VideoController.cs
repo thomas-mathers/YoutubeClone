@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YoutubeClone.Domain;
@@ -20,6 +21,7 @@ namespace YoutubeClone.Controllers
             this.mapper = mapper;
         }
 
+        [Authorize]
         [HttpPost("{videoId}/comments")]
         [Consumes("application/json")]
         [Produces("application/json")]
@@ -54,17 +56,24 @@ namespace YoutubeClone.Controllers
             return Ok(videoSummarys);
         }
 
+        [Authorize]
+        [ClaimsFilter]
         [HttpDelete("{videoId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> DeleteAsync(Guid videoId)
+        public async Task<ActionResult> DeleteAsync(Guid claimsUserId, Guid claimsRoleId, Guid videoId)
         {
-            var video = await databaseContext.Videos.FindAsync(videoId);
+            var video = await databaseContext.Videos.Include(x => x.Channel).FirstOrDefaultAsync(x => x.Id == videoId);
 
             if (video == null)
             {
                 return NotFound();
+            }
+
+            if (video.Channel.UserId != claimsUserId)
+            {
+                return Unauthorized();
             }
 
             databaseContext.Videos.Remove(video);

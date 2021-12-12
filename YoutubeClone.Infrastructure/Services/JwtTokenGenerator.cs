@@ -10,14 +10,17 @@ namespace YoutubeClone.Infrastructure.Services
     public class JwtTokenGenerator : ITokenGenerator
     {
         private readonly SigningCredentials signingCredentials;
+        private readonly string issuer;
+        private readonly string audience;
         private readonly long lifeSpanInDays;
 
-        public JwtTokenGenerator(IOptions<JwtTokenGeneratorSettings> settings)
+        public JwtTokenGenerator(IOptions<JwtTokenGeneratorSettings> options)
         {
-            var keyBytes = Encoding.ASCII.GetBytes(settings.Value.Key);
-            var key = new SymmetricSecurityKey(keyBytes);
-            signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
-            lifeSpanInDays = settings.Value.LifespanInDays;
+            var settings = options.Value;
+            signingCredentials = GetSigningCredentials(settings);
+            issuer = settings.Issuer;
+            audience = settings.Audience;
+            lifeSpanInDays = settings.LifespanInDays;
         }
 
         public string Generate(User user)
@@ -25,6 +28,8 @@ namespace YoutubeClone.Infrastructure.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Issuer = issuer,
+                Audience = audience,
                 Subject = new ClaimsIdentity(new[] 
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -38,6 +43,14 @@ namespace YoutubeClone.Infrastructure.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
+
+        private static SigningCredentials GetSigningCredentials(JwtTokenGeneratorSettings settings)
+        {
+            var keyBytes = Encoding.ASCII.GetBytes(settings.Key);
+            var key = new SymmetricSecurityKey(keyBytes);
+
+            return new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
         }
     }
 }

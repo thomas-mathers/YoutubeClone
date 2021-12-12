@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -61,13 +62,20 @@ namespace YoutubeClone.Controllers
             return Ok(userSummarys);
         }
 
-        [HttpPut("{userId}")]
+        [Authorize]
+        [ClaimsFilter]
+        [HttpPut("{userToUpdateId}")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<UserSummary>> UpdateAsync(Guid userId, UpdateUserRequest request)
+        public async Task<ActionResult<UserSummary>> UpdateAsync(Guid claimsUserId, Guid claimsRoleId, Guid userId, UpdateUserRequest request)
         {
+            if (userId != claimsUserId)
+            {
+                return Unauthorized();
+            }
+
             var user = await userManager.FindByIdAsync(userId.ToString());
 
             if (user == null)
@@ -93,14 +101,21 @@ namespace YoutubeClone.Controllers
             return Ok(userSummary);
         }
 
+        [Authorize]
+        [ClaimsFilter]
         [HttpPost("{userId}/channels")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ChannelSummary>> CreateChannelAsync(Guid userId, CreateChannelRequest request)
+        public async Task<ActionResult<ChannelSummary>> CreateChannelAsync(Guid claimsUserId, Guid claimsRoleId, Guid userId, CreateChannelRequest request)
         {
+            if (userId != claimsUserId)
+            {
+                return Unauthorized();
+            }
+
             var user = await databaseContext.Users.FindAsync(userId);
 
             if (user == null)
@@ -119,14 +134,21 @@ namespace YoutubeClone.Controllers
             return Ok(channelSummary);
         }
 
+        [Authorize]
+        [ClaimsFilter]
         [HttpPost("{userId}/subscriptions")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<SubscriptionSummary>> CreateSubscriptionAsync(Guid userId, CreateSubscriptionRequest request)
+        public async Task<ActionResult<SubscriptionSummary>> CreateSubscriptionAsync(Guid claimsUserId, Guid claimsRoleId, Guid userId, CreateSubscriptionRequest request)
         {
+            if (userId != claimsUserId)
+            {
+                return Unauthorized();
+            }
+
             var user = await databaseContext.Users.FindAsync(userId);
 
             if (user == null)
@@ -145,11 +167,18 @@ namespace YoutubeClone.Controllers
             return Ok(subscriptionSummary);
         }
 
+        [Authorize]
+        [ClaimsFilter]
         [HttpGet("{userId}/feed")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<VideoSummary>>> GetFeedItemsAsync(Guid userId, [FromQuery] int skip = 0, [FromQuery] int take = 100)
+        public async Task<ActionResult<List<VideoSummary>>> GetFeedItemsAsync(Guid claimsUserId, Guid claimsRoleId, Guid userId, [FromQuery] int skip = 0, [FromQuery] int take = 100)
         {
+            if (userId != claimsUserId)
+            {
+                return Unauthorized();
+            }
+
             var userChannels = databaseContext.Subscriptions.Where(s => s.UserId == userId).Select(s => s.ChannelId);
 
             List<Video> userVideos = await databaseContext.Videos
@@ -164,11 +193,18 @@ namespace YoutubeClone.Controllers
             return Ok(feedItems);
         }
 
+        [Authorize]
+        [ClaimsFilter]
         [HttpGet("{userId}/subscriptions")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<SubscriptionSummary>>> GetSubscriptionsAsync(Guid userId)
+        public async Task<ActionResult<List<SubscriptionSummary>>> GetSubscriptionsAsync(Guid claimsUserId, Guid claimsRoleId, Guid userId)
         {
+            if (userId != claimsUserId)
+            {
+                return Unauthorized();
+            }
+
             var userSubscriptions = await databaseContext.Subscriptions.Include(s => s.Channel).Where(s => s.UserId == userId).ToListAsync();
 
             var userSubscriptionsSummary = userSubscriptions.Select(s => mapper.Map<SubscriptionSummary>(s)).ToList();

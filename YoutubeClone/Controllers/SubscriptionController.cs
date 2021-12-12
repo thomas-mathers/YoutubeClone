@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,16 +31,23 @@ namespace YoutubeClone.Controllers
             return Ok(subscriptionSummarys);
         }
 
+        [Authorize]
+        [ClaimsFilter]
         [HttpDelete("{subscriptionId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> DeleteAsync(Guid subscriptionId)
+        public async Task<ActionResult> DeleteAsync(Guid claimsUserId, Guid claimsRoleId, Guid subscriptionId)
         {
             var subscription = await databaseContext.Subscriptions.FindAsync(subscriptionId);
 
             if (subscription == null)
             {
                 return NotFound();
+            }
+
+            if (subscription.UserId != claimsUserId)
+            {
+                return Unauthorized();
             }
 
             databaseContext.Subscriptions.Remove(subscription);

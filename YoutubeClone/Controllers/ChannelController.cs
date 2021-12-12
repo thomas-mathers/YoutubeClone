@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YoutubeClone.Domain;
@@ -23,6 +24,8 @@ namespace YoutubeClone.Controllers
             this.fileService = fileService;
         }
 
+        [Authorize]
+        [ClaimsFilter]
         [HttpPost("{channelId}/videos")]
         [RequestSizeLimit(100_000_000)]
         [Consumes("multipart/form-data")]
@@ -30,13 +33,18 @@ namespace YoutubeClone.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<VideoSummary>> CreateVideoAsync(Guid channelId, [FromForm] CreateVideoRequest request)
+        public async Task<ActionResult<VideoSummary>> CreateVideoAsync(Guid claimsUserId, Guid claimsRoleId, Guid channelId, [FromForm] CreateVideoRequest request)
         {
             var channel = await databaseContext.Channels.FindAsync(channelId);
 
             if (channel == null)
             {
                 return NotFound();
+            }
+
+            if (channel.UserId != claimsUserId)
+            {
+                return Unauthorized();
             }
 
             using var fileStream = request.File.OpenReadStream();
@@ -78,16 +86,23 @@ namespace YoutubeClone.Controllers
             return Ok(videoSummarys);
         }
 
+        [Authorize]
+        [ClaimsFilter]
         [HttpDelete("{channelId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> DeleteAsync(Guid channelId)
+        public async Task<ActionResult> DeleteAsync(Guid claimsUserId, Guid claimsRoleId, Guid channelId)
         {
             var channel = await databaseContext.Channels.FindAsync(channelId);
 
             if (channel == null)
             {
                 return NotFound();
+            }
+
+            if (channel.UserId != claimsUserId)
+            {
+                return Unauthorized();
             }
 
             databaseContext.Channels.Remove(channel);

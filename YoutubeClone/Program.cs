@@ -7,6 +7,9 @@ using YoutubeClone.Infrastructure.Services;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,7 +74,30 @@ builder.Services.AddCors(options =>
     options.AddPolicy("All", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 });
 
-builder.Services.Configure<JwtTokenGeneratorSettings>(builder.Configuration.GetSection(nameof(JwtTokenGeneratorSettings)));
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+builder.Services.Configure<JwtTokenGeneratorSettings>(builder.Configuration.GetSection("Jwt"));
 
 var app = builder.Build();
 
@@ -90,6 +116,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseCors("All");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

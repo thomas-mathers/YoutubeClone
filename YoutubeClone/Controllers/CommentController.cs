@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YoutubeClone.Domain;
@@ -20,6 +21,7 @@ namespace YoutubeClone.Controllers
             this.mapper = mapper;
         }
 
+        [Authorize]
         [HttpPost("{commentId}/replies")]
         [Consumes("application/json")]
         [Produces("application/json")]
