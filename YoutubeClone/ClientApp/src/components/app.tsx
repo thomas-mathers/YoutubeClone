@@ -8,21 +8,24 @@ import HomePage from './home-page';
 import ResetPassword from './reset-password';
 import SignUp from './sign-up';
 import theme from '../theme';
+import { UserProvider } from './user-provider';
 
 function App() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/sign-up" element={<SignUp />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                    <Route path="/change-password" element={<ChangePassword />} />
-                </Routes>
-            </BrowserRouter>
+            <UserProvider>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/sign-up" element={<SignUp />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/forgot-password" element={<ForgotPassword />} />
+                        <Route path="/reset-password" element={<ResetPassword />} />
+                        <Route path="/change-password" element={<ChangePassword />} />
+                    </Routes>
+                </BrowserRouter>
+            </UserProvider>
         </ThemeProvider>
     );
 }

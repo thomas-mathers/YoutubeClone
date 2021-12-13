@@ -16,15 +16,8 @@ namespace YoutubeClone
                 throw new ArgumentException(userId, nameof(userId));
             }
 
-            var roleId = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (string.IsNullOrEmpty(roleId))
-            {
-                throw new ArgumentException(roleId, nameof(roleId));
-            }
-
             context.ActionArguments["claimsUserId"] = Guid.Parse(userId);
-            context.ActionArguments["claimsRoleId"] = Guid.Parse(roleId);
+            context.ActionArguments["claimsRoleId"] = Guid.Empty;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿import { LoginRequest, LoginResponse } from "../models";
+import { LoginRequest, LoginResponse } from "../models";
 import { getHeaders } from "../get-headers";
 
 async function login(body: LoginRequest): Promise<LoginResponse> {

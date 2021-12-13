@@ -35,7 +35,7 @@ namespace YoutubeClone.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<LoginResponse>> LoginAsync(LoginRequest loginRequest)
         {
-            var user = await userManager.FindByNameAsync(loginRequest.UserName);
+            var user = await userManager.FindByNameAsync(loginRequest.Username);
 
             if (user == null)
             {

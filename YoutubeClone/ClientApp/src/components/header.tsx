@@ -6,19 +6,19 @@ import HamburgerButton from './hamburger-button';
 import Logo from './logo';
 import AccountMenu from './account-menu';
 import CreateButton from './create-button';
-import { UserSummary } from '../api/models';
 import { Fragment, useEffect, useState } from 'react';
-import { useDebounce } from '../hooks/useDebounce';
+import { useDebounce } from '../hooks/use-debounce';
 import { getVideoSuggestions } from '../api/services/video-suggestions';
+import { useUser } from '../hooks/use-user';
 
 interface HeaderProps {
-    user: UserSummary | null;
     openDrawer: () => void;
 }
 
 const Header = (props: HeaderProps) => {
-    const { user, openDrawer } = props;
-    const isLoggedIn = user !== null;
+    const { openDrawer } = props;
+    const { user } = useUser();
+    const isLoggedIn = user !== undefined;
     const [text, setText] = useState('');
     const [options, setOptions] = useState<string[]>([]);
     const debouncedText = useDebounce(text, 300);

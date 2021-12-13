@@ -1,29 +1,43 @@
 import * as React from 'react';
-import { Key, Visibility } from "@mui/icons-material";
+import { Key, Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
+import { useState } from 'react';
 
 interface PasswordFieldProps {
+    value?: string;
+    onChange?: (value: string) => void;
     label?: string;
     required?: boolean;
 }
 
-const PasswordField = ({ label = 'Password', required = false }: PasswordFieldProps) => (
-    <TextField
-        label={label}
-        InputProps={{
-            startAdornment:
-                <InputAdornment position="start">
-                    <Key />
-                </InputAdornment>,
-            endAdornment:
-                <InputAdornment position="end">
-                    <IconButton>
-                        <Visibility />
-                    </IconButton>
-                </InputAdornment>
-        }}
-        required={required}
-    />
-)
+const PasswordField = (props: PasswordFieldProps) => {
+    const { value, onChange, label = 'Password', required = false } = props;
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const toggleVisibility = () => setShowPassword(!showPassword);
+    return (
+        <TextField
+            value={value}
+            onChange={(e) => onChange?.(e.target.value)}
+            label={label}
+            InputProps={{
+                type: showPassword ? 'text' : 'password',
+                startAdornment:
+                    <InputAdornment position="start">
+                        <Key />
+                    </InputAdornment>,
+                endAdornment:
+                    <InputAdornment position="end">
+                        <IconButton onClick={(e) => toggleVisibility()}>
+                            {
+                                showPassword ? <VisibilityOff /> : <Visibility />
+                            }
+                            
+                        </IconButton>
+                    </InputAdornment>
+            }}
+            required={required}
+        />
+    );
+}
 
 export default PasswordField;
