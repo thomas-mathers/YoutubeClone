@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Fragment, useReducer, useEffect } from 'react';
 import { Box, Stack } from "@mui/material";
 import { VideoSummary, SubscriptionSummary, UserSummary } from '../api/models';
-import { getUserSubscriptions } from '../api/services/user-service';
+import { getFeed, getUserSubscriptions } from '../api/services/user-service';
 import AppDrawer from "./app-drawer";
 import Feed from "./feed";
 import FeedFilterChipBar from "./feed-filter-chip-bar";
@@ -19,7 +19,8 @@ enum HomePageActionType {
     UpdateUser,
     OpenDrawer,
     CloseDrawer,
-    UpdateSubscriptions
+    UpdateSubscriptions,
+    UpdateVideos
 }
 
 interface HomePageAction {
@@ -56,6 +57,11 @@ const reducer = (state: HomePageState, action: HomePageAction) => {
                 ...state,
                 subscriptions: action.payload
             }
+        case HomePageActionType.UpdateVideos:
+            return {
+                ...state,
+                videos: action.payload
+            }
         default:
             return state;
     }
@@ -73,14 +79,20 @@ const HomePage = (props: HomePageProps) => {
     const { subscriptions, videos, filters, appDrawerOpen } = state;
 
     function updateSubscriptions(subscriptions: SubscriptionSummary[]) {
-        dispatch({ type: HomePageActionType.UpdateSubscriptions, payload: subscriptions })
+        dispatch({ type: HomePageActionType.UpdateSubscriptions, payload: subscriptions });
+    }
+
+    function updateVideos(videos: VideoSummary[]) {
+        dispatch({ type: HomePageActionType.UpdateVideos, payload: videos });
     }
 
     useEffect(() => {
         if (token && user) {
             getUserSubscriptions(token, user.id).then(updateSubscriptions);
+            getFeed(token, user.id).then(updateVideos);
         } else {
             updateSubscriptions([]);
+            updateVideos([]);
         }
     }, [token, user]);
 

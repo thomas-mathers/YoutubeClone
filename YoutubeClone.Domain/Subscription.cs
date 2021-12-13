@@ -7,6 +7,7 @@
         public User User { get; private set; } = null!;
         public Guid ChannelId { get; private set; }
         public Channel Channel { get; private set; } = null!;
+        public DateTime DateCreated { get; private set; } = DateTime.UtcNow;
 
         public Subscription(Guid userId, Guid channelId)
         {

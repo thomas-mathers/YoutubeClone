@@ -69,20 +69,90 @@ namespace YoutubeClone.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<ChannelSummary>>> GetAsync()
+        public async Task<ActionResult<List<ChannelSummary>>> GetAsync([FromQuery] string? filterBy = nameof(Video.Name), [FromQuery] string? filter = null, [FromQuery] string orderBy = nameof(Channel.DateCreated), [FromQuery] string orderDir = "ASC", [FromQuery] int skip = 0, [FromQuery] int take = 100)
         {
-            var channels = await databaseContext.Channels.ToListAsync();
+            var query = databaseContext.Channels.AsQueryable();
+
+            if (string.IsNullOrEmpty(filter) == false)
+            {
+                switch (filterBy)
+                {
+                    case nameof(Channel.Description):
+                        query = query.Where(x => x.Description.ToLower().Contains(filter.ToLower()));
+                        break;
+                    default:
+                        query = query.Where(x => x.Name.ToLower().Contains(filter.ToLower()));
+                        break;
+                }                
+            }
+
+            switch (orderBy)
+            {
+                case nameof(Channel.Name):
+                    query = orderDir == "ASC" ? 
+                        query.OrderBy(x => x.Name) : 
+                        query.OrderByDescending(x => x.Name);
+                    break;
+                default:
+                    query = orderDir == "ASC" ? 
+                        query.OrderBy(x => x.DateCreated) : 
+                        query.OrderByDescending(x => x.DateCreated);
+                    break;
+            }
+
+            var channels = await query.Skip(skip).Take(take).ToListAsync();
             var channelSummarys = channels.Select(x => mapper.Map<ChannelSummary>(x)).ToList();
+
             return Ok(channelSummarys);
         }
 
         [HttpGet("{channelId}/videos")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<VideoSummary>>> GetVideosAsync(Guid channelId)
+        public async Task<ActionResult<List<VideoSummary>>> GetVideosAsync(Guid channelId, [FromQuery] string? filterBy = nameof(Video.Name), [FromQuery] string? filter = null, [FromQuery] string orderBy = nameof(Video.DateCreated), [FromQuery] string orderDir = "ASC", [FromQuery] int skip = 0, [FromQuery] int take = 100)
         {
-            var videos = await databaseContext.Videos.Where(v => v.ChannelId == channelId).ToListAsync();
+            var query = databaseContext.Videos.Where(v => v.ChannelId == channelId);
+
+            if (string.IsNullOrEmpty(filter) == false)
+            {
+                switch (filterBy)
+                {
+                    case nameof(Video.Description):
+                        query = query.Where(x => x.Description.ToLower().Contains(filter.ToLower()));
+                        break;
+                    default:
+                        query = query.Where(x => x.Name.ToLower().Contains(filter.ToLower()));
+                        break;
+                }
+            }
+
+            switch (orderBy)
+            {
+                case nameof(Video.Name):
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.Name) :
+                        query.OrderByDescending(x => x.Name);
+                    break;
+                case nameof(Video.Likes):
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.Likes) :
+                        query.OrderByDescending(x => x.Likes);
+                    break;
+                case nameof(Video.Dislikes):
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.Dislikes) :
+                        query.OrderByDescending(x => x.Dislikes);
+                    break;
+                default:
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.DateCreated) :
+                        query.OrderByDescending(x => x.DateCreated);
+                    break;
+            }
+
+            var videos = await query.Skip(skip).Take(take).ToListAsync();
             var videoSummarys = videos.Select(v => mapper.Map<VideoSummary>(v)).ToList();
+
             return Ok(videoSummarys);
         }
 

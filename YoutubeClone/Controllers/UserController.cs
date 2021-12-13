@@ -55,16 +55,67 @@ namespace YoutubeClone.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<UserSummary>>> GetAsync()
+        public async Task<ActionResult<List<UserSummary>>> GetAsync([FromQuery] string? filterBy = nameof(Domain.User.UserName), [FromQuery] string? filter = null, [FromQuery] string orderBy = nameof(Domain.User.DateCreated), [FromQuery] string orderDir = "ASC", [FromQuery] int skip = 0, [FromQuery] int take = 100)
         {
+            var query = databaseContext.Users.AsQueryable();
+
+            if (string.IsNullOrEmpty(filter) == false)
+            {
+                switch (filterBy)
+                {
+                    case nameof(Domain.User.UserName):
+                        query = query.Where(x => x.UserName.ToLower().Contains(filter.ToLower()));
+                        break;
+                    case nameof(Domain.User.GivenName):
+                        query = query.Where(x => x.GivenName.ToLower().Contains(filter.ToLower()));
+                        break;
+                    case nameof(Domain.User.Surname):
+                        query = query.Where(x => x.Surname.ToLower().Contains(filter.ToLower()));
+                        break;
+                    default:
+                        query = query.Where(x => x.Email.ToLower().Contains(filter.ToLower()));
+                        break;
+                }
+            }
+
+            switch (orderBy)
+            {
+                case nameof(Domain.User.UserName):
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.UserName) :
+                        query.OrderByDescending(x => x.UserName);
+                    break;
+                case nameof(Domain.User.GivenName):
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.GivenName) :
+                        query.OrderByDescending(x => x.GivenName);
+                    break;
+                case nameof(Domain.User.Surname):
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.Surname) :
+                        query.OrderByDescending(x => x.Surname);
+                    break;
+                case nameof(Domain.User.Email):
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.Email) :
+                        query.OrderByDescending(x => x.Email);
+                    break;
+                default:
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.DateCreated) :
+                        query.OrderByDescending(x => x.DateCreated);
+                    break;
+            }
+
             var users = await databaseContext.Users.ToListAsync();
-            var userSummarys = users.Select(x => mapper.Map<UserSummary>(x)).ToList();
-            return Ok(userSummarys);
+            var userSummaries = users.Select(x => mapper.Map<UserSummary>(x)).ToList();
+
+            return Ok(userSummaries);
         }
 
         [Authorize]
         [ClaimsFilter]
-        [HttpPut("{userToUpdateId}")]
+        [HttpPut("{userId}")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]

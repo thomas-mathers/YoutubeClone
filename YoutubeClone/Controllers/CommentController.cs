@@ -50,11 +50,33 @@ namespace YoutubeClone.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<CommentSummary>>> GetAsync()
+        public async Task<ActionResult<List<CommentSummary>>> GetAsync([FromQuery] string? filterBy = nameof(Comment.Text), [FromQuery] string? filter = null, [FromQuery] string orderBy = nameof(Comment.DateCreated), [FromQuery] string orderDir = "ASC", [FromQuery] int skip = 0, [FromQuery] int take = 100)
         {
-            var channels = await databaseContext.Comments.ToListAsync();
-            var channelSummarys = channels.Select(x => mapper.Map<CommentSummary>(x)).ToList();
-            return Ok(channelSummarys);
+            var query = databaseContext.Comments.AsQueryable();
+
+            if (string.IsNullOrEmpty(filter) == false)
+            {
+                switch (filterBy)
+                {
+                    default:
+                        query = query.Where(x => x.Text.ToLower().Contains(filter.ToLower()));
+                        break;
+                }
+            }
+
+            switch (orderBy)
+            {
+                default:
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.DateCreated) :
+                        query.OrderByDescending(x => x.DateCreated);
+                    break;
+            }
+
+            var comments = await query.Skip(skip).Take(take).ToListAsync();
+            var commentSummaries = comments.Select(x => mapper.Map<CommentSummary>(x)).ToList();
+
+            return Ok(commentSummaries);
         }
     }
 }

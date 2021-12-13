@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using YoutubeClone.Domain;
 using YoutubeClone.DTO;
 using YoutubeClone.Infrastructure;
 
@@ -24,11 +25,23 @@ namespace YoutubeClone.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<SubscriptionSummary>>> GetAsync()
+        public async Task<ActionResult<List<SubscriptionSummary>>> GetAsync([FromQuery] string orderBy = nameof(Subscription.DateCreated), [FromQuery] string orderDir = "ASC", [FromQuery] int skip = 0, [FromQuery] int take = 100)
         {
-            var subscriptions = await databaseContext.Subscriptions.ToListAsync();
-            var subscriptionSummarys = subscriptions.Select(x => mapper.Map<SubscriptionSummary>(x)).ToList();
-            return Ok(subscriptionSummarys);
+            var query = databaseContext.Subscriptions.AsQueryable();
+            
+            switch (orderBy)
+            {
+                default:
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.DateCreated) :
+                        query.OrderByDescending(x => x.DateCreated);
+                    break;
+            }
+
+            var subscriptions = await query.Skip(skip).Take(take).ToListAsync();
+            var subscriptionSummaries = subscriptions.Select(x => mapper.Map<SubscriptionSummary>(x)).ToList();
+
+            return Ok(subscriptionSummaries);
         }
 
         [Authorize]

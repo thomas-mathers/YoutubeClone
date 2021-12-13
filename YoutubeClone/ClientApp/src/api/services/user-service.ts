@@ -1,4 +1,4 @@
-import { ChannelSummary, CreateChannelRequest, CreateSubscriptionRequest, CreateUserRequest, SubscriptionSummary, UpdateUserRequest, UserSummary } from "../models";
+import { ChannelSummary, CreateChannelRequest, CreateSubscriptionRequest, CreateUserRequest, SubscriptionSummary, UpdateUserRequest, UserSummary, VideoSummary } from "../models";
 import { getHeaders } from "../get-headers";
 
 async function createUser(token: string, body: CreateUserRequest): Promise<UserSummary> {
@@ -45,7 +45,7 @@ async function createSubscription(token: string, userId: string, body: CreateSub
     return await response.json();
 }
 
-async function getFeed(token: string, userId: string) {
+async function getFeed(token: string, userId: string): Promise<VideoSummary[]> {
     const response = await fetch(`/api/user/${userId}/feed`, {
         method: 'GET',
         headers: getHeaders(token)
