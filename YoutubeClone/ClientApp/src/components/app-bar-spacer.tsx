@@ -1,6 +1,6 @@
+import * as React from 'react';
 import { Box, Theme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import * as React from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
     toolbar: theme.mixins.toolbar,

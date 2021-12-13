@@ -1,8 +1,8 @@
-import { Circle, Explore, History, Home, PlaylistPlay, Subscriptions, ThumbUp, VideoLibrary, WatchLater } from '@mui/icons-material';
-import { Avatar, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, useMediaQuery, useTheme } from '@mui/material';
 import * as React from 'react';
-import AppBarSpacer from './app-bar-spacer';
+import { Avatar, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, useMediaQuery, useTheme } from '@mui/material';
+import { Circle, Explore, History, Home, PlaylistPlay, Subscriptions, ThumbUp, VideoLibrary, WatchLater } from '@mui/icons-material';
 import { SubscriptionSummary } from '../api/models';
+import AppBarSpacer from './app-bar-spacer';
 
 interface AppDrawerProps {
     open: boolean;

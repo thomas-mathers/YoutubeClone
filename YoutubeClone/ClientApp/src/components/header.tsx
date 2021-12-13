@@ -1,15 +1,15 @@
 import * as React from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { AppBar, Box, Hidden, Stack } from '@mui/material';
+import { UserSummary } from '../api/models';
+import { getVideoSuggestions } from '../api/services/video-suggestions';
+import { useDebounce } from '../hooks/use-debounce';
 import SearchField from './search-field';
-import LoginButton from './loginButton';
+import LoginButton from './login-button';
 import HamburgerButton from './hamburger-button';
 import Logo from './logo';
 import AccountMenu from './account-menu';
 import CreateButton from './create-button';
-import { Fragment, useEffect, useState } from 'react';
-import { useDebounce } from '../hooks/use-debounce';
-import { getVideoSuggestions } from '../api/services/video-suggestions';
-import { UserSummary } from '../api/models';
 
 interface HeaderProps {
     user?: UserSummary;

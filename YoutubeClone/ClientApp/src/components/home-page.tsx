@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Fragment, useReducer, useEffect } from 'react';
 import { Box, Stack } from "@mui/material";
+import { VideoSummary, SubscriptionSummary, UserSummary } from '../api/models';
+import { getUserSubscriptions } from '../api/services/user-service';
 import AppDrawer from "./app-drawer";
 import Feed from "./feed";
 import FeedFilterChipBar from "./feed-filter-chip-bar";
 import Header from './header';
-import { VideoSummary, SubscriptionSummary, UserSummary } from '../api/models';
-import { getUserSubscriptions } from '../api/services/user-service';
 
 interface HomePageState {
     videos: VideoSummary[];

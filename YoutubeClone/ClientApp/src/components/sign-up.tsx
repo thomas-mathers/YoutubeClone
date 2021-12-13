@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Container, Stack, TextField, Typography } from "@mui/material";
 import PasswordField from './password-field';
 import UsernameField from './username-field';
-import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
     const navigate = useNavigate();
