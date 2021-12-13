@@ -30,24 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\src\components\user-context.ts" />
-    <None Remove="ClientApp\src\components\user-provider.tsx" />
-    <None Remove="ClientApp\src\hooks\use-user.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="ClientApp\tsconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\YoutubeClone.Domain\YoutubeClone.Domain.csproj" />
     <ProjectReference Include="..\YoutubeClone.Infrastructure\YoutubeClone.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\src\components\user-context.ts" />
-    <TypeScriptCompile Include="ClientApp\src\components\user-provider.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\hooks\use-user.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

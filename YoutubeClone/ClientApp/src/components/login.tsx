@@ -1,14 +1,19 @@
 import * as React from 'react';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button, Container, Divider, Stack, Typography } from "@mui/material";
+import { UserSummary } from '../api/models';
+import { login } from '../api/services/auth-service';
 import UsernameField from './username-field';
 import PasswordField from './password-field';
-import { Link, useNavigate } from 'react-router-dom';
-import { useUser } from '../hooks/use-user';
-import { login } from '../api/services/auth-service';
-import { useState } from 'react';
 
-const Login = () => {
-    const { handleLogin } = useUser();
+interface LoginProps {
+    onClickLogin: (user: UserSummary, token: string) => void;
+}
+
+const Login = (props: LoginProps) => {
+    const { onClickLogin } = props;
+
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const navigate = useNavigate();
@@ -16,7 +21,7 @@ const Login = () => {
     const handleLoginClick = async () => {
         try {
             const response = await login({ username: username, password: password });
-            handleLogin(response);
+            onClickLogin(response.user, response.token);
             navigate('/');
         } catch (e) {
             console.error(e);

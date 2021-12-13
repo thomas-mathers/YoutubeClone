@@ -5,9 +5,8 @@ import AppDrawer from "./app-drawer";
 import Feed from "./feed";
 import FeedFilterChipBar from "./feed-filter-chip-bar";
 import Header from './header';
-import { VideoSummary, SubscriptionSummary } from '../api/models';
+import { VideoSummary, SubscriptionSummary, UserSummary } from '../api/models';
 import { getUserSubscriptions } from '../api/services/user-service';
-import { useUser } from '../hooks/use-user';
 
 interface HomePageState {
     videos: VideoSummary[];
@@ -29,64 +28,9 @@ interface HomePageAction {
 }
 
 const initialState: HomePageState = {
-    subscriptions: [
-        {
-            id: '1234567',
-            channelId: '12345678',
-            channelName: 'Anthony Brian Logan',
-            channelThumbnailUrl: '',
-            userId: '12345678',
-            userName: 'Thomas Mathers',
-            userProfilePictureUrl: ''
-        },
-        {
-            id: '123456',
-            channelId: '12345678',
-            channelName: 'Anthony Brian Logan',
-            channelThumbnailUrl: '',
-            userId: '12345678',
-            userName: 'Thomas Mathers',
-            userProfilePictureUrl: ''
-        },
-        {
-            id: '1234',
-            channelId: '12345678',
-            channelName: 'Anthony Brian Logan',
-            channelThumbnailUrl: '',
-            userId: '12345678',
-            userName: 'Thomas Mathers',
-            userProfilePictureUrl: ''
-        }
-    ],
-    videos: [
-        {
-            id: '123458',
-            channelId: '1',
-            channelName: 'Thomas Mathers',
-            channelThumbnailUrl: '',
-            name: 'Thomas Mathers',
-            description: '',
-            thumbnailUrl: 'https://i.ytimg.com/an_webp/bzMTlBddJ-E/mqdefault_6s.webp?du=3000&sqp=COKpv40G&rs=AOn4CLAuCtxj7RdvpH4PHrdIVOpW-2N0Lg',
-            url: '',
-            views: 0,
-            likes: 0,
-            dislikes: 0,
-            dateCreated: ''
-        }
-    ],
-    filters: [
-        'All',
-        'Filter 1',
-        'Filter 2',
-        'Filter 3',
-        'Filter 4',
-        'Filter 5',
-        'Filter 6',
-        'Filter 7',
-        'Filter 8',
-        'Filter 9',
-        'Filter 10',
-    ],
+    subscriptions: [],
+    videos: [],
+    filters: [],
     appDrawerOpen: false
 }
 
@@ -117,20 +61,32 @@ const reducer = (state: HomePageState, action: HomePageAction) => {
     }
 }
 
-const HomePage = () => {
+interface HomePageProps {
+    user?: UserSummary;
+    token?: string;
+    onClickLogout?: () => void;
+}
+
+const HomePage = (props: HomePageProps) => {
+    const { user, token, onClickLogout } = props;
     const [state, dispatch] = useReducer(reducer, initialState);
     const { subscriptions, videos, filters, appDrawerOpen } = state;
-    const { token, user } = useUser();
+
+    function updateSubscriptions(subscriptions: SubscriptionSummary[]) {
+        dispatch({ type: HomePageActionType.UpdateSubscriptions, payload: subscriptions })
+    }
 
     useEffect(() => {
         if (token && user) {
-            getUserSubscriptions(token, user.id).then(s => dispatch({ type: HomePageActionType.UpdateSubscriptions, payload: s }));
+            getUserSubscriptions(token, user.id).then(updateSubscriptions);
+        } else {
+            updateSubscriptions([]);
         }
     }, [token, user]);
 
     return (
         <Fragment>
-            <Header openDrawer={() => dispatch({ type: HomePageActionType.OpenDrawer })}/>
+            <Header user={user} onClickLogout={onClickLogout} onClickDrawer={() => dispatch({ type: HomePageActionType.OpenDrawer })} />
             <Box display="flex">
                 <AppDrawer open={appDrawerOpen} subscriptions={subscriptions} onClose={() => dispatch({ type: HomePageActionType.CloseDrawer })} />
                 <Stack component="main" spacing={2} padding={2} flexGrow={1} overflow="hidden">

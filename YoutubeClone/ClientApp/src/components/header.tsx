@@ -9,15 +9,16 @@ import CreateButton from './create-button';
 import { Fragment, useEffect, useState } from 'react';
 import { useDebounce } from '../hooks/use-debounce';
 import { getVideoSuggestions } from '../api/services/video-suggestions';
-import { useUser } from '../hooks/use-user';
+import { UserSummary } from '../api/models';
 
 interface HeaderProps {
-    openDrawer: () => void;
+    user?: UserSummary;
+    onClickLogout?: () => void;
+    onClickDrawer?: () => void;
 }
 
 const Header = (props: HeaderProps) => {
-    const { openDrawer } = props;
-    const { user } = useUser();
+    const { user, onClickLogout, onClickDrawer } = props;
     const isLoggedIn = user !== undefined;
     const [text, setText] = useState('');
     const [options, setOptions] = useState<string[]>([]);
@@ -35,7 +36,7 @@ const Header = (props: HeaderProps) => {
         <AppBar color="default" position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
             <Stack direction="row" spacing={1} padding={1} justifyContent="space-between" alignItems="center">
                 <Stack direction="row" spacing={1}>
-                    <HamburgerButton onClick={openDrawer}/>
+                    <HamburgerButton onClick={onClickDrawer}/>
                     <Hidden mdDown>
                         <Logo />
                     </Hidden>
@@ -48,7 +49,7 @@ const Header = (props: HeaderProps) => {
                         isLoggedIn ?
                             <Fragment>
                                 <CreateButton />
-                                <AccountMenu />
+                                <AccountMenu onClickLogout={onClickLogout}/>
                             </Fragment>
                             :
                             <LoginButton />
