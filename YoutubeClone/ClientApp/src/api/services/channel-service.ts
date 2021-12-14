@@ -1,4 +1,4 @@
-﻿import { ChannelSummary, CreateVideoRequest, VideoSummary } from "../models";
+﻿import { ChannelSummary, CreateVideoRequest, VideoSummary, Page } from "../models";
 import { getHeaders } from "../get-headers";
 
 async function createChannelVideo(token: string, body: CreateVideoRequest): Promise<VideoSummary> {
@@ -10,19 +10,88 @@ async function createChannelVideo(token: string, body: CreateVideoRequest): Prom
     return await response.json();
 }
 
-async function getChannels(token: string): Promise<ChannelSummary[]> {
-    const response = await fetch('/api/channel', {
+async function getChannels(
+    token: string,
+    filterBy?: string,
+    filter?: string,
+    orderBy?: string,
+    orderDir?: string,
+    continuationToken?: string,
+    take: number = 100): Promise<Page<ChannelSummary>> {
+    const url = '/api/channel';
+
+    const searchParams = new URLSearchParams();
+
+    if (filterBy) {
+        searchParams.append('filterBy', filterBy);
+    }
+
+    if (filter) {
+        searchParams.append('filter', filter);
+    }
+
+    if (orderBy) {
+        searchParams.append('orderBy', orderBy);
+    }
+
+    if (orderDir) {
+        searchParams.append('orderDir', orderDir);
+    }
+
+    if (continuationToken) {
+        searchParams.append('continuationToken', continuationToken);
+    }
+
+    searchParams.append('take', take.toString());
+
+    const response = await fetch(url + searchParams, {
         method: 'GET',
         headers: getHeaders(token)
     });
+
     return await response.json();
 }
 
-async function getChannelVideos(token: string, channelId: string): Promise<VideoSummary[]> {
-    const response = await fetch(`/api/channel/${channelId}/videos`, {
+async function getChannelVideos(
+    token: string,
+    channelId: string,
+    filterBy?: string,
+    filter?: string,
+    orderBy?: string,
+    orderDir?: string,
+    continuationToken?: string,
+    take: number = 100): Promise<Page<VideoSummary>> {
+    const url = `/api/channel/${channelId}/videos`;
+
+    const searchParams = new URLSearchParams();
+
+    if (filterBy) {
+        searchParams.append('filterBy', filterBy);
+    }
+
+    if (filter) {
+        searchParams.append('filter', filter);
+    }
+
+    if (orderBy) {
+        searchParams.append('orderBy', orderBy);
+    }
+
+    if (orderDir) {
+        searchParams.append('orderDir', orderDir);
+    }
+
+    if (continuationToken) {
+        searchParams.append('continuationToken', continuationToken);
+    }
+
+    searchParams.append('take', take.toString());
+
+    const response = await fetch(url + searchParams, {
         method: 'GET',
         headers: getHeaders(token)
     });
+
     return await response.json();
 }
 

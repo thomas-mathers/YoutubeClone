@@ -2,7 +2,7 @@
 {
     public class Page<T>
     {
-        public long? ContinuationToken { get; set; }
+        public DateTime? ContinuationToken { get; set; }
         public IEnumerable<T> Rows { get; set; }
     }
 }

@@ -12,6 +12,7 @@ import SubscriptionSummary from './subscription-summary';
 import UpdateUserRequest from './update-user-request';
 import UserSummary from './user-summary';
 import VideoSummary from './video-summary';
+import Page from './page';
 
 export type {
     ChannelSummary,
@@ -27,5 +28,6 @@ export type {
     SubscriptionSummary,
     UpdateUserRequest,
     UserSummary,
-    VideoSummary
+    VideoSummary,
+    Page
 }

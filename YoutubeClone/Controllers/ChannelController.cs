@@ -74,10 +74,15 @@ namespace YoutubeClone.Controllers
             [FromQuery] string? filter = null, 
             [FromQuery] string orderBy = nameof(Channel.DateCreated), 
             [FromQuery] string orderDir = "ASC", 
-            [FromQuery] long continuationToken = 0, 
+            [FromQuery] DateTime? continuationToken = null, 
             [FromQuery] int take = 100)
         {
-            var query = databaseContext.Channels.Where(x => x.DateCreated.Ticks > continuationToken).AsQueryable();
+            var query = databaseContext.Channels.AsQueryable();
+            
+            if (continuationToken != null)
+            {
+                query = query.Where(x => x.DateCreated > continuationToken);
+            }
 
             if (string.IsNullOrEmpty(filter) == false)
             {
@@ -110,7 +115,7 @@ namespace YoutubeClone.Controllers
            
             var page = new Page<ChannelSummary> 
             {
-                ContinuationToken = rows.Count > 0 ? rows.Last().DateCreated.Ticks : null, 
+                ContinuationToken = rows.LastOrDefault()?.DateCreated, 
                 Rows = rows.Select(x => mapper.Map<ChannelSummary>(x)).ToList() 
             };
 
@@ -126,10 +131,15 @@ namespace YoutubeClone.Controllers
             [FromQuery] string? filter = null, 
             [FromQuery] string orderBy = nameof(Video.DateCreated), 
             [FromQuery] string orderDir = "ASC", 
-            [FromQuery] long continuationToken = 0, 
+            [FromQuery] DateTime? continuationToken = null, 
             [FromQuery] int take = 100)
         {
-            var query = databaseContext.Videos.Where(v => v.ChannelId == channelId && v.DateCreated.Ticks > continuationToken);
+            var query = databaseContext.Videos.Where(x => x.ChannelId == channelId);
+
+            if (continuationToken != null)
+            {
+                query = query.Where(x => x.DateCreated > continuationToken);
+            }
 
             if (string.IsNullOrEmpty(filter) == false)
             {
@@ -172,7 +182,7 @@ namespace YoutubeClone.Controllers
 
             var page = new Page<VideoSummary>
             {
-                ContinuationToken = rows.Count > 0 ? rows.Last().DateCreated.Ticks : null,
+                ContinuationToken = rows.LastOrDefault()?.DateCreated,
                 Rows = rows.Select(v => mapper.Map<VideoSummary>(v)).ToList()
             };
 

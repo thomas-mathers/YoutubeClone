@@ -54,10 +54,15 @@ namespace YoutubeClone.Controllers
             [FromQuery] string? filter = null, 
             [FromQuery] string orderBy = nameof(Video.DateCreated), 
             [FromQuery] string orderDir = "ASC", 
-            [FromQuery] long continuationToken = 0, 
+            [FromQuery] DateTime? continuationToken = null, 
             [FromQuery] int take = 100)
         {
-            var query = databaseContext.Videos.Where(x => x.DateCreated.Ticks > continuationToken);
+            var query = databaseContext.Videos.AsQueryable();
+
+            if (continuationToken != null)
+            {
+                query = query.Where(x => x.DateCreated > continuationToken);
+            }
 
             if (string.IsNullOrEmpty(filter) == false)
             {
@@ -95,7 +100,7 @@ namespace YoutubeClone.Controllers
 
             var page = new Page<VideoSummary>
             {
-                ContinuationToken = rows.Count > 0 ? rows.Last().DateCreated.Ticks : null,
+                ContinuationToken = rows.LastOrDefault()?.DateCreated,
                 Rows = rows.Select(v => mapper.Map<VideoSummary>(v)).ToList()
             };
 

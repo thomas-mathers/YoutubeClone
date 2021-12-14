@@ -27,11 +27,16 @@ namespace YoutubeClone.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Page<SubscriptionSummary>>> GetAsync(
             [FromQuery] string orderBy = nameof(Subscription.DateCreated), 
-            [FromQuery] string orderDir = "ASC", 
-            [FromQuery] long continuationToken = 0, 
+            [FromQuery] string orderDir = "ASC",
+            [FromQuery] DateTime? continuationToken = null,
             [FromQuery] int take = 100)
         {
-            var query = databaseContext.Subscriptions.Where(x => x.DateCreated.Ticks > continuationToken);
+            var query = databaseContext.Subscriptions.AsQueryable();
+            
+            if (continuationToken != null)
+            {
+                query = query.Where(x => x.DateCreated > continuationToken);
+            }
             
             switch (orderBy)
             {
@@ -46,7 +51,7 @@ namespace YoutubeClone.Controllers
 
             var page = new Page<SubscriptionSummary>
             {
-                ContinuationToken = rows.Count > 0 ? rows.Last().DateCreated.Ticks : null,
+                ContinuationToken = rows.LastOrDefault()?.DateCreated,
                 Rows = rows.Select(x => mapper.Map<SubscriptionSummary>(x)).ToList()
             };
 

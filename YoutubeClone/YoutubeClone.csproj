@@ -30,12 +30,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\api\models\page.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="ClientApp\tsconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\YoutubeClone.Domain\YoutubeClone.Domain.csproj" />
     <ProjectReference Include="..\YoutubeClone.Infrastructure\YoutubeClone.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\api\models\page.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

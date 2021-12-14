@@ -88,8 +88,8 @@ const HomePage = (props: HomePageProps) => {
 
     useEffect(() => {
         if (token && user) {
-            getUserSubscriptions(token, user.id).then(updateSubscriptions);
-            getFeed(token, user.id).then(updateVideos);
+            getUserSubscriptions(token, user.id).then(page => updateSubscriptions(page.rows));
+            getFeed(token, user.id).then(page => updateVideos(page.rows));
         } else {
             updateSubscriptions([]);
             updateVideos([]);
