@@ -49,11 +49,57 @@ namespace YoutubeClone.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<VideoSummary>>> GetAsync()
+        public async Task<ActionResult<Page<VideoSummary>>> GetAsync(
+            [FromQuery] string? filterBy = nameof(Video.Name), 
+            [FromQuery] string? filter = null, 
+            [FromQuery] string orderBy = nameof(Video.DateCreated), 
+            [FromQuery] string orderDir = "ASC", 
+            [FromQuery] long continuationToken = 0, 
+            [FromQuery] int take = 100)
         {
-            var videos = await databaseContext.Videos.ToListAsync();
-            var videoSummarys = videos.Select(x => mapper.Map<VideoSummary>(x)).ToList();
-            return Ok(videoSummarys);
+            var query = databaseContext.Videos.Where(x => x.DateCreated.Ticks > continuationToken);
+
+            if (string.IsNullOrEmpty(filter) == false)
+            {
+                switch (filterBy)
+                {
+                    case nameof(Video.Description):
+                        query = query.Where(x => x.Description.ToLower().Contains(filter.ToLower()));
+                        break;
+                    default:
+                        query = query.Where(x => x.Name.ToLower().Contains(filter.ToLower()));
+                        break;
+                }
+            }
+
+            switch (orderBy)
+            {
+                case nameof(Video.Description):
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.Description) :
+                        query.OrderByDescending(x => x.Description);
+                    break;
+                case nameof(Video.Name):
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.Name) :
+                        query.OrderByDescending(x => x.Name);
+                    break;
+                default:
+                    query = orderDir == "ASC" ?
+                        query.OrderBy(x => x.DateCreated) :
+                        query.OrderByDescending(x => x.DateCreated);
+                    break;
+            }
+
+            var rows = await query.Take(take).ToListAsync();
+
+            var page = new Page<VideoSummary>
+            {
+                ContinuationToken = rows.Count > 0 ? rows.Last().DateCreated.Ticks : null,
+                Rows = rows.Select(v => mapper.Map<VideoSummary>(v)).ToList()
+            };
+
+            return Ok(page);
         }
 
         [Authorize]

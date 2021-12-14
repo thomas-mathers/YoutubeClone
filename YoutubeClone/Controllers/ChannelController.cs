@@ -69,9 +69,15 @@ namespace YoutubeClone.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<ChannelSummary>>> GetAsync([FromQuery] string? filterBy = nameof(Video.Name), [FromQuery] string? filter = null, [FromQuery] string orderBy = nameof(Channel.DateCreated), [FromQuery] string orderDir = "ASC", [FromQuery] int skip = 0, [FromQuery] int take = 100)
+        public async Task<ActionResult<Page<ChannelSummary>>> GetAsync(
+            [FromQuery] string? filterBy = nameof(Video.Name), 
+            [FromQuery] string? filter = null, 
+            [FromQuery] string orderBy = nameof(Channel.DateCreated), 
+            [FromQuery] string orderDir = "ASC", 
+            [FromQuery] long continuationToken = 0, 
+            [FromQuery] int take = 100)
         {
-            var query = databaseContext.Channels.AsQueryable();
+            var query = databaseContext.Channels.Where(x => x.DateCreated.Ticks > continuationToken).AsQueryable();
 
             if (string.IsNullOrEmpty(filter) == false)
             {
@@ -100,18 +106,30 @@ namespace YoutubeClone.Controllers
                     break;
             }
 
-            var channels = await query.Skip(skip).Take(take).ToListAsync();
-            var channelSummarys = channels.Select(x => mapper.Map<ChannelSummary>(x)).ToList();
+            var rows = await query.Take(take).ToListAsync();
+           
+            var page = new Page<ChannelSummary> 
+            {
+                ContinuationToken = rows.Count > 0 ? rows.Last().DateCreated.Ticks : null, 
+                Rows = rows.Select(x => mapper.Map<ChannelSummary>(x)).ToList() 
+            };
 
-            return Ok(channelSummarys);
+            return Ok(page);
         }
 
         [HttpGet("{channelId}/videos")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<VideoSummary>>> GetVideosAsync(Guid channelId, [FromQuery] string? filterBy = nameof(Video.Name), [FromQuery] string? filter = null, [FromQuery] string orderBy = nameof(Video.DateCreated), [FromQuery] string orderDir = "ASC", [FromQuery] int skip = 0, [FromQuery] int take = 100)
+        public async Task<ActionResult<Page<VideoSummary>>> GetVideosAsync(
+            Guid channelId, 
+            [FromQuery] string? filterBy = nameof(Video.Name), 
+            [FromQuery] string? filter = null, 
+            [FromQuery] string orderBy = nameof(Video.DateCreated), 
+            [FromQuery] string orderDir = "ASC", 
+            [FromQuery] long continuationToken = 0, 
+            [FromQuery] int take = 100)
         {
-            var query = databaseContext.Videos.Where(v => v.ChannelId == channelId);
+            var query = databaseContext.Videos.Where(v => v.ChannelId == channelId && v.DateCreated.Ticks > continuationToken);
 
             if (string.IsNullOrEmpty(filter) == false)
             {
@@ -150,10 +168,15 @@ namespace YoutubeClone.Controllers
                     break;
             }
 
-            var videos = await query.Skip(skip).Take(take).ToListAsync();
-            var videoSummarys = videos.Select(v => mapper.Map<VideoSummary>(v)).ToList();
+            var rows = await query.Take(take).ToListAsync();
 
-            return Ok(videoSummarys);
+            var page = new Page<VideoSummary>
+            {
+                ContinuationToken = rows.Count > 0 ? rows.Last().DateCreated.Ticks : null,
+                Rows = rows.Select(v => mapper.Map<VideoSummary>(v)).ToList()
+            };
+
+            return Ok(page);
         }
 
         [Authorize]

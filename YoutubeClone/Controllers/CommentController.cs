@@ -50,9 +50,15 @@ namespace YoutubeClone.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<CommentSummary>>> GetAsync([FromQuery] string? filterBy = nameof(Comment.Text), [FromQuery] string? filter = null, [FromQuery] string orderBy = nameof(Comment.DateCreated), [FromQuery] string orderDir = "ASC", [FromQuery] int skip = 0, [FromQuery] int take = 100)
+        public async Task<ActionResult<Page<CommentSummary>>> GetAsync(
+            [FromQuery] string? filterBy = nameof(Comment.Text), 
+            [FromQuery] string? filter = null, 
+            [FromQuery] string orderBy = nameof(Comment.DateCreated),
+            [FromQuery] string orderDir = "ASC", 
+            [FromQuery] long continuationToken = 0, 
+            [FromQuery] int take = 100)
         {
-            var query = databaseContext.Comments.AsQueryable();
+            var query = databaseContext.Comments.Where(x => x.DateCreated.Ticks > continuationToken);
 
             if (string.IsNullOrEmpty(filter) == false)
             {
@@ -73,10 +79,15 @@ namespace YoutubeClone.Controllers
                     break;
             }
 
-            var comments = await query.Skip(skip).Take(take).ToListAsync();
-            var commentSummaries = comments.Select(x => mapper.Map<CommentSummary>(x)).ToList();
+            var rows = await query.Take(take).ToListAsync();
 
-            return Ok(commentSummaries);
+            var page = new Page<CommentSummary>
+            {
+                ContinuationToken = rows.Count > 0 ? rows.Last().DateCreated.Ticks : null,
+                Rows = rows.Select(x => mapper.Map<CommentSummary>(x)).ToList()
+            };
+
+            return Ok(page);
         }
     }
 }

@@ -55,9 +55,15 @@ namespace YoutubeClone.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<UserSummary>>> GetAsync([FromQuery] string? filterBy = nameof(Domain.User.UserName), [FromQuery] string? filter = null, [FromQuery] string orderBy = nameof(Domain.User.DateCreated), [FromQuery] string orderDir = "ASC", [FromQuery] int skip = 0, [FromQuery] int take = 100)
+        public async Task<ActionResult<Page<UserSummary>>> GetAsync(
+            [FromQuery] string? filterBy = nameof(Domain.User.UserName), 
+            [FromQuery] string? filter = null, 
+            [FromQuery] string orderBy = nameof(Domain.User.DateCreated), 
+            [FromQuery] string orderDir = "ASC",
+            [FromQuery] long continuationToken = 0, 
+            [FromQuery] int take = 100)
         {
-            var query = databaseContext.Users.AsQueryable();
+            var query = databaseContext.Users.Where(x => x.DateCreated.Ticks > continuationToken);
 
             if (string.IsNullOrEmpty(filter) == false)
             {
@@ -107,10 +113,15 @@ namespace YoutubeClone.Controllers
                     break;
             }
 
-            var users = await databaseContext.Users.ToListAsync();
-            var userSummaries = users.Select(x => mapper.Map<UserSummary>(x)).ToList();
+            var rows = await query.Take(take).ToListAsync();
 
-            return Ok(userSummaries);
+            var page = new Page<UserSummary>
+            {
+                ContinuationToken = rows.Count > 0 ? rows.Last().DateCreated.Ticks : null,
+                Rows = rows.Select(x => mapper.Map<UserSummary>(x)).ToList()
+            };
+
+            return Ok(page);
         }
 
         [Authorize]
@@ -223,7 +234,12 @@ namespace YoutubeClone.Controllers
         [HttpGet("{userId}/feed")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<VideoSummary>>> GetFeedItemsAsync(Guid claimsUserId, Guid claimsRoleId, Guid userId, [FromQuery] int skip = 0, [FromQuery] int take = 100)
+        public async Task<ActionResult<Page<VideoSummary>>> GetFeedItemsAsync(
+            Guid claimsUserId, 
+            Guid claimsRoleId, 
+            Guid userId, 
+            [FromQuery] long continuationToken = 0, 
+            [FromQuery] int take = 100)
         {
             if (userId != claimsUserId)
             {
@@ -232,16 +248,20 @@ namespace YoutubeClone.Controllers
 
             var userChannels = databaseContext.Subscriptions.Where(s => s.UserId == userId).Select(s => s.ChannelId);
 
-            List<Video> userVideos = await databaseContext.Videos
+            var query = databaseContext.Videos
                 .Join(userChannels, video => video.ChannelId, channelId => channelId, (video, channelId) => video)
                 .OrderByDescending(v => v.DateCreated)
-                .Skip(skip)
-                .Take(take)
-                .ToListAsync();
+                .Where(v => v.DateCreated.Ticks > continuationToken);
 
-            var feedItems = userVideos.Select(v => mapper.Map<VideoSummary>(v)).ToList();
+            var rows = await query.Take(take).ToListAsync();
 
-            return Ok(feedItems);
+            var page = new Page<VideoSummary>
+            {
+                ContinuationToken = rows.Count > 0 ? rows.Last().DateCreated.Ticks : null,
+                Rows = rows.Select(x => mapper.Map<VideoSummary>(x)).ToList()
+            };
+
+            return Ok(page);
         }
 
         [Authorize]
@@ -249,18 +269,29 @@ namespace YoutubeClone.Controllers
         [HttpGet("{userId}/subscriptions")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<SubscriptionSummary>>> GetSubscriptionsAsync(Guid claimsUserId, Guid claimsRoleId, Guid userId)
+        public async Task<ActionResult<Page<SubscriptionSummary>>> GetSubscriptionsAsync(
+            Guid claimsUserId, 
+            Guid claimsRoleId, 
+            Guid userId, 
+            [FromQuery] long continuationToken = 0, 
+            [FromQuery] int take = 100)
         {
             if (userId != claimsUserId)
             {
                 return Unauthorized();
             }
 
-            var userSubscriptions = await databaseContext.Subscriptions.Include(s => s.Channel).Where(s => s.UserId == userId).ToListAsync();
+            var query = databaseContext.Subscriptions.Include(s => s.Channel).Where(s => s.UserId == userId && s.DateCreated.Ticks > continuationToken);
 
-            var userSubscriptionsSummary = userSubscriptions.Select(s => mapper.Map<SubscriptionSummary>(s)).ToList();
+            var rows = await query.Take(take).ToListAsync();
 
-            return Ok(userSubscriptionsSummary);
+            var page = new Page<SubscriptionSummary>
+            {
+                ContinuationToken = rows.Count > 0 ? rows.Last().DateCreated.Ticks : null,
+                Rows = rows.Select(x => mapper.Map<SubscriptionSummary>(x)).ToList()
+            };
+
+            return Ok(page);
         }
     }
 }

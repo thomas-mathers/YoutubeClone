@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using YoutubeClone.Domain;
 using YoutubeClone.DTO;
-using YoutubeClone.Infrastructure;
 using YoutubeClone.Infrastructure.Services;
 
 namespace YoutubeClone.Controllers

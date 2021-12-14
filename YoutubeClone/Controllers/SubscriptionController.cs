@@ -25,9 +25,13 @@ namespace YoutubeClone.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<SubscriptionSummary>>> GetAsync([FromQuery] string orderBy = nameof(Subscription.DateCreated), [FromQuery] string orderDir = "ASC", [FromQuery] int skip = 0, [FromQuery] int take = 100)
+        public async Task<ActionResult<Page<SubscriptionSummary>>> GetAsync(
+            [FromQuery] string orderBy = nameof(Subscription.DateCreated), 
+            [FromQuery] string orderDir = "ASC", 
+            [FromQuery] long continuationToken = 0, 
+            [FromQuery] int take = 100)
         {
-            var query = databaseContext.Subscriptions.AsQueryable();
+            var query = databaseContext.Subscriptions.Where(x => x.DateCreated.Ticks > continuationToken);
             
             switch (orderBy)
             {
@@ -38,10 +42,15 @@ namespace YoutubeClone.Controllers
                     break;
             }
 
-            var subscriptions = await query.Skip(skip).Take(take).ToListAsync();
-            var subscriptionSummaries = subscriptions.Select(x => mapper.Map<SubscriptionSummary>(x)).ToList();
+            var rows = await query.Take(take).ToListAsync();
 
-            return Ok(subscriptionSummaries);
+            var page = new Page<SubscriptionSummary>
+            {
+                ContinuationToken = rows.Count > 0 ? rows.Last().DateCreated.Ticks : null,
+                Rows = rows.Select(x => mapper.Map<SubscriptionSummary>(x)).ToList()
+            };
+
+            return Ok(page);
         }
 
         [Authorize]
