@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Key, Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 
@@ -13,7 +13,9 @@ interface PasswordFieldProps {
 const PasswordField = (props: PasswordFieldProps) => {
     const { value, onChange, label = 'Password', required = false } = props;
     const [showPassword, setShowPassword] = useState<boolean>(false);
-    const toggleVisibility = () => setShowPassword(!showPassword);
+
+    const toggleVisibility = useCallback(() => setShowPassword(!showPassword), [showPassword]);
+
     return (
         <TextField
             value={value}

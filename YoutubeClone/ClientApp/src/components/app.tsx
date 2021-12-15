@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useReducer } from 'react';
+import { useReducer, useCallback } from 'react';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import ChangePassword from './change-password';
@@ -47,13 +47,13 @@ const reducer = (state: AppState, action: AppAction) => {
 function App() {
     const [state, dispatch] = useReducer(reducer, { user: undefined, token: undefined });
 
-    function handleLogin(user: UserSummary, token: string) {
+    const handleLogin = useCallback((user: UserSummary, token: string) => {
         dispatch({ type: AppActionType.Login, payload: { user: user, token: token } });
-    }
+    }, []);
 
-    function handleLogout() {
+    const handleLogout = useCallback(() => {
         dispatch({ type: AppActionType.Logout });
-    }
+    }, []);
 
     return (
         <ThemeProvider theme={theme}>

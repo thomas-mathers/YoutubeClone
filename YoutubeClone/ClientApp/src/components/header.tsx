@@ -1,59 +1,27 @@
 import * as React from 'react';
-import { Fragment, useEffect, useState } from 'react';
-import { AppBar, Box, Hidden, Stack } from '@mui/material';
-import { UserSummary } from '../api/models';
-import { getVideoSuggestions } from '../api/services/video-suggestions';
-import { useDebounce } from '../hooks/use-debounce';
-import SearchField from './search-field';
-import LoginButton from './login-button';
-import HamburgerButton from './hamburger-button';
-import Logo from './logo';
-import AccountMenu from './account-menu';
-import CreateButton from './create-button';
+import { ReactNode } from 'react';
+import { AppBar, Box, Stack } from '@mui/material';
 
 interface HeaderProps {
-    user?: UserSummary;
-    onClickLogout?: () => void;
-    onClickDrawer?: () => void;
+    left?: ReactNode;
+    middle?: ReactNode;
+    right?: ReactNode;
 }
 
 const Header = (props: HeaderProps) => {
-    const { user, onClickLogout, onClickDrawer } = props;
-    const isLoggedIn = user !== undefined;
-    const [text, setText] = useState('');
-    const [options, setOptions] = useState<string[]>([]);
-    const debouncedText = useDebounce(text, 300);
-
-    useEffect(() => {
-        if (debouncedText.length > 0) {
-            getVideoSuggestions(debouncedText, 10).then(setOptions);
-        } else {
-            setOptions([]);
-        }
-    }, [debouncedText]);
+    const { left, middle, right } = props;
 
     return (
         <AppBar color="default" position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
             <Stack direction="row" spacing={1} padding={1} justifyContent="space-between" alignItems="center">
                 <Stack direction="row" spacing={1}>
-                    <HamburgerButton onClick={onClickDrawer}/>
-                    <Hidden mdDown>
-                        <Logo />
-                    </Hidden>
+                    {left}
                 </Stack>
                 <Box flexGrow={0} flexShrink={1} flexBasis={720}>
-                    <SearchField value={text} onChange={setText} options={options}/>
+                    {middle}                    
                 </Box>
                 <Stack direction="row" spacing={1}>
-                    {
-                        isLoggedIn ?
-                            <Fragment>
-                                <CreateButton />
-                                <AccountMenu onClickLogout={onClickLogout}/>
-                            </Fragment>
-                            :
-                            <LoginButton />
-                    }
+                    {right}
                 </Stack>
             </Stack>
         </AppBar>

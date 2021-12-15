@@ -1,6 +1,6 @@
 import * as React from 'react';
+import { Fragment, useCallback, useState } from "react";
 import { Avatar, Menu, MenuItem } from "@mui/material";
-import { Fragment, useState } from "react";
 
 interface AccountMenuProps {
     onClickLogout?: () => void;
@@ -10,13 +10,13 @@ const AccountMenu = (props: AccountMenuProps) => {
     const { onClickLogout } = props;
     const [avatarRef, setAvatarRef] = useState(null);
 
-    const handleClick = (event: any) => {
+    const handleClick = useCallback((event: any) => {
         setAvatarRef(event.currentTarget);
-    }
+    }, []);
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setAvatarRef(null);
-    }
+    }, []);
 
     const open = avatarRef !== null;
 

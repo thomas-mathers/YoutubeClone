@@ -6,10 +6,11 @@ interface SearchFieldProps {
     value: string;
     options: string[];
     onChange: (text: string) => void;
+    onClickSearch?: () => void;
 }
 
 function SearchField(props: SearchFieldProps) {
-    const { value, options, onChange } = props;
+    const { value, options, onChange, onClickSearch } = props;
     return (
         <Stack direction="row" alignItems="center">
             <Autocomplete
@@ -22,7 +23,7 @@ function SearchField(props: SearchFieldProps) {
                 freeSolo
                 fullWidth
             />
-            <Button variant="contained" style={{height: 40}}>
+            <Button variant="contained" style={{ height: 40 }} onClick={onClickSearch}>
                 <Search/>
             </Button>
         </Stack>

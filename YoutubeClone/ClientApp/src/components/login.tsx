@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Container, Divider, Stack, Typography } from "@mui/material";
 import { UserSummary } from '../api/models';
@@ -18,7 +18,7 @@ const Login = (props: LoginProps) => {
     const [password, setPassword] = useState<string>('');
     const navigate = useNavigate();
 
-    const handleLoginClick = async () => {
+    const handleLoginClick = useCallback(async () => {
         try {
             const response = await login({ username: username, password: password });
             onClickLogin(response.user, response.token);
@@ -26,7 +26,7 @@ const Login = (props: LoginProps) => {
         } catch (e) {
             console.error(e);
         }
-    }
+    }, [username, password, navigate, onClickLogin]);
 
     return (
         <Container maxWidth="xs">
