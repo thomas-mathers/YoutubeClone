@@ -1,23 +1,37 @@
 import * as React from 'react';
-import { Autocomplete, Button, Stack, TextField } from "@mui/material";
+import { Autocomplete, AutocompleteInputChangeReason, Button, Stack, TextField } from "@mui/material";
 import { Search } from "@mui/icons-material";
+import { useCallback } from 'react';
 
 interface SearchFieldProps {
     value: string;
     options: string[];
     onChange: (text: string) => void;
-    onClickSearch?: () => void;
+    onSearch?: (text: string) => void;
 }
 
 function SearchField(props: SearchFieldProps) {
-    const { value, options, onChange, onClickSearch } = props;
+    const { value, options, onChange, onSearch } = props;
+
+    const onClickSearch = useCallback(() => onSearch?.(value), [onSearch, value]);
+
+    const onInputChange = useCallback((e, value: string | null, reason: AutocompleteInputChangeReason) => {
+        const newValue = value === null ? '' : value;
+
+        onChange(newValue);
+
+        if (reason === 'clear' || reason === 'reset') {
+            onSearch?.(newValue);
+        }
+    }, [onChange, onSearch]);
+
     return (
         <Stack direction="row" alignItems="center">
             <Autocomplete
                 renderInput={params => <TextField {...params} size="small" placeholder="Search" />}
                 value={value}
                 inputValue={value}
-                onInputChange={(e, newValue: string | null) => onChange(newValue === null ? '' : newValue)}
+                onInputChange={onInputChange}
                 options={options}
                 filterOptions={x => x}
                 freeSolo

@@ -1,4 +1,4 @@
-﻿import { CommentSummary, CreateCommentRequest, VideoSummary, Page } from "../models";
+import { CommentSummary, CreateCommentRequest, VideoSummary, Page } from "../models";
 import { getHeaders } from "../get-headers";
 
 async function createComment(token: string, videoId: string, body: CreateCommentRequest): Promise<CommentSummary> {

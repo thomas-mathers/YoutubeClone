@@ -122,14 +122,14 @@ const HomePage = (props: HomePageProps) => {
         dispatch({ type: HomePageActionType.SearchSuggestionsReceived, payload: suggestions })
     }, []);
 
-    const handleClickSearch = useCallback(async () => {
+    const handleClickSearch = useCallback(async (searchText) => {
         try {
             const page = await getVideos('Name', searchText);
             handleReceiveVideos(page.rows);
         } catch (e) {
             console.error(e);
         }
-    }, [searchText]);
+    }, [handleReceiveVideos]);
 
     useEffect(() => {
         if (token && user) {
@@ -161,7 +161,7 @@ const HomePage = (props: HomePageProps) => {
                     </>
                 }
                 middle={
-                    <SearchField value={searchText} onChange={handleSearchTextChanged} options={searchSuggestions} onClickSearch={handleClickSearch} />
+                    <SearchField value={searchText} onChange={handleSearchTextChanged} options={searchSuggestions} onSearch={handleClickSearch} />
                 }
                 right={
                     user ?
