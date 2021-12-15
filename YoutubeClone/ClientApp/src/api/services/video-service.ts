@@ -11,14 +11,13 @@ async function createComment(token: string, videoId: string, body: CreateComment
 }
 
 async function getVideos(
-    token: string,
     filterBy?: string,
     filter?: string,
     orderBy?: string,
     orderDir?: string,
     continuationToken?: string,
     take: number = 100): Promise<Page<VideoSummary>> {
-    const url = `/api/video`;
+    const url = `/api/video?`;
 
     const searchParams = new URLSearchParams();
 
@@ -46,7 +45,7 @@ async function getVideos(
 
     const response = await fetch(url + searchParams, {
         method: 'GET',
-        headers: getHeaders(token)
+        headers: getHeaders()
     });
 
     return await response.json();

@@ -3,6 +3,7 @@ import { Fragment, useReducer, useEffect, useCallback } from 'react';
 import { Box, Hidden, Stack } from "@mui/material";
 import { VideoSummary, SubscriptionSummary, UserSummary } from '../api/models';
 import { getFeed, getUserSubscriptions } from '../api/services/user-service';
+import { getVideos } from '../api/services/video-service';
 import { getVideoSuggestions } from '../api/services/video-suggestions';
 import { useDebounce } from '../hooks/use-debounce';
 import AppDrawer from "./app-drawer";
@@ -121,6 +122,15 @@ const HomePage = (props: HomePageProps) => {
         dispatch({ type: HomePageActionType.SearchSuggestionsReceived, payload: suggestions })
     }, []);
 
+    const handleClickSearch = useCallback(async () => {
+        try {
+            const page = await getVideos('Name', searchText);
+            handleReceiveVideos(page.rows);
+        } catch (e) {
+            console.error(e);
+        }
+    }, [searchText]);
+
     useEffect(() => {
         if (token && user) {
             getUserSubscriptions(token, user.id).then(page => handleReceiveSubscriptions(page.rows));
@@ -151,7 +161,7 @@ const HomePage = (props: HomePageProps) => {
                     </>
                 }
                 middle={
-                    <SearchField value={searchText} onChange={handleSearchTextChanged} options={searchSuggestions}/>
+                    <SearchField value={searchText} onChange={handleSearchTextChanged} options={searchSuggestions} onClickSearch={handleClickSearch} />
                 }
                 right={
                     user ?

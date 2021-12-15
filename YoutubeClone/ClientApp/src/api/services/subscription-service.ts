@@ -7,7 +7,7 @@ async function getSubscriptions(
     orderDir?: string,
     continuationToken?: string,
     take: number = 100): Promise<Page<SubscriptionSummary>> {
-    const url = '/api/subscription';
+    const url = '/api/subscription?';
 
     const searchParams = new URLSearchParams();
 

@@ -58,8 +58,8 @@ namespace YoutubeClone.Controllers
         public async Task<ActionResult<Page<UserSummary>>> GetAsync(
             [FromQuery] string? filterBy = nameof(Domain.User.UserName),
             [FromQuery] string? filter = null,
-            [FromQuery] string orderBy = nameof(Domain.User.DateCreated),
-            [FromQuery] string orderDir = "ASC",
+            [FromQuery] string? orderBy = nameof(Domain.User.DateCreated),
+            [FromQuery] string? orderDir = "ASC",
             [FromQuery] DateTime? continuationToken = null,
             [FromQuery] int take = 100)
         {

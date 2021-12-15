@@ -18,7 +18,7 @@ async function getChannels(
     orderDir?: string,
     continuationToken?: string,
     take: number = 100): Promise<Page<ChannelSummary>> {
-    const url = '/api/channel';
+    const url = '/api/channel?';
 
     const searchParams = new URLSearchParams();
 
@@ -61,7 +61,7 @@ async function getChannelVideos(
     orderDir?: string,
     continuationToken?: string,
     take: number = 100): Promise<Page<VideoSummary>> {
-    const url = `/api/channel/${channelId}/videos`;
+    const url = `/api/channel/${channelId}/videos?`;
 
     const searchParams = new URLSearchParams();
 

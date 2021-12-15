@@ -53,8 +53,8 @@ namespace YoutubeClone.Controllers
         public async Task<ActionResult<Page<CommentSummary>>> GetAsync(
             [FromQuery] string? filterBy = nameof(Comment.Text), 
             [FromQuery] string? filter = null, 
-            [FromQuery] string orderBy = nameof(Comment.DateCreated),
-            [FromQuery] string orderDir = "ASC",
+            [FromQuery] string? orderBy = nameof(Comment.DateCreated),
+            [FromQuery] string? orderDir = "ASC",
             [FromQuery] DateTime? continuationToken = null,
             [FromQuery] int take = 100)
         {

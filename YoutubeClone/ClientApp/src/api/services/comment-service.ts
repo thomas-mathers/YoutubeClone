@@ -18,7 +18,7 @@ async function getComments(
     orderDir?: string,
     continuationToken?: string,
     take: number = 100): Promise<Page<CommentSummary>> {
-    const url = `/api/comment`;
+    const url = `/api/comment?`;
 
     const searchParams = new URLSearchParams();
 

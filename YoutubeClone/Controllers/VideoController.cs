@@ -52,8 +52,8 @@ namespace YoutubeClone.Controllers
         public async Task<ActionResult<Page<VideoSummary>>> GetAsync(
             [FromQuery] string? filterBy = nameof(Video.Name), 
             [FromQuery] string? filter = null, 
-            [FromQuery] string orderBy = nameof(Video.DateCreated), 
-            [FromQuery] string orderDir = "ASC", 
+            [FromQuery] string? orderBy = nameof(Video.DateCreated), 
+            [FromQuery] string? orderDir = "ASC", 
             [FromQuery] DateTime? continuationToken = null, 
             [FromQuery] int take = 100)
         {
