@@ -23,7 +23,8 @@ const UploadVideoDialog = (props: UploadVideoProps) => {
                                 <Typography variant="h6" align="center">Drag and drop files to upload</Typography>
                                 <Typography variant="subtitle1" align="center">Your videos will be private until you publish them</Typography>
                             </>
-                        } />
+                        }
+                        extensions={['.mp4']}/>
                 </Stack>
             </DialogContent>
         </Dialog>
