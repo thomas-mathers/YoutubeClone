@@ -31,7 +31,9 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\api\models\page.ts" />
-    <None Remove="ClientApp\src\components\upload-video.tsx" />
+    <None Remove="ClientApp\src\components\bootstrap-dialog-title.tsx" />
+    <None Remove="ClientApp\src\components\upload-file.tsx" />
+    <None Remove="ClientApp\src\components\upload-video-dialog.tsx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,7 +47,9 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\api\models\page.ts" />
-    <TypeScriptCompile Include="ClientApp\src\components\upload-video.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\bootstrap-dialog-title.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\upload-video-dialog.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\upload-file.tsx" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

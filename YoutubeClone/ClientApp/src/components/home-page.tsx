@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Fragment, useReducer, useEffect, useCallback } from 'react';
+import { useReducer, useEffect, useCallback } from 'react';
 import { Box, Hidden, Stack } from "@mui/material";
 import { VideoSummary, SubscriptionSummary, UserSummary } from '../api/models';
 import { getFeed, getUserSubscriptions } from '../api/services/user-service';
@@ -16,6 +16,7 @@ import SearchField from './search-field';
 import CreateButton from './create-button';
 import AccountMenu from './account-menu';
 import LoginButton from './login-button';
+import UploadVideoDialog from './upload-video-dialog';
 
 interface HomePageState {
     searchText: string;
@@ -24,11 +25,14 @@ interface HomePageState {
     subscriptions: SubscriptionSummary[];
     filters: string[];
     isAppDrawerOpen: boolean;
+    isUploadVideoDialogOpen: boolean;
 }
 
 enum HomePageActionType {
     OpenDrawer,
     CloseDrawer,
+    OpenUploadVideoDialog,
+    CloseUploadVideoDialog,
     SubscriptionsReceived,
     VideosReceived,
     SearchTextChanged,
@@ -46,7 +50,8 @@ const initialState: HomePageState = {
     subscriptions: [],
     videos: [],
     filters: [],
-    isAppDrawerOpen: false
+    isAppDrawerOpen: false,
+    isUploadVideoDialogOpen: false
 }
 
 const reducer = (state: HomePageState, action: HomePageAction): HomePageState => {
@@ -60,6 +65,16 @@ const reducer = (state: HomePageState, action: HomePageAction): HomePageState =>
             return {
                 ...state,
                 isAppDrawerOpen: false
+            }
+        case HomePageActionType.OpenUploadVideoDialog:
+            return {
+                ...state,
+                isUploadVideoDialogOpen: true
+            }
+        case HomePageActionType.CloseUploadVideoDialog:
+            return {
+                ...state,
+                isUploadVideoDialogOpen: false
             }
         case HomePageActionType.SubscriptionsReceived:
             return {
@@ -95,7 +110,7 @@ interface HomePageProps {
 const HomePage = (props: HomePageProps) => {
     const { user, token, onClickLogout } = props;
     const [state, dispatch] = useReducer(reducer, initialState);
-    const { searchText, searchSuggestions, subscriptions, videos, filters, isAppDrawerOpen } = state;
+    const { searchText, searchSuggestions, subscriptions, videos, filters, isAppDrawerOpen, isUploadVideoDialogOpen } = state;
     const debouncedSearchText = useDebounce(searchText, 500);
 
     const handleCloseDrawer = useCallback(() => {
@@ -131,6 +146,14 @@ const HomePage = (props: HomePageProps) => {
         }
     }, [handleReceiveVideos]);
 
+    const handleOpenUploadVideoDialog = useCallback(() => {
+        dispatch({ type: HomePageActionType.OpenUploadVideoDialog });
+    }, []);
+
+    const handleCloseUploadVideoDialog = useCallback(() => {
+        dispatch({ type: HomePageActionType.CloseUploadVideoDialog });
+    }, []);
+
     useEffect(() => {
         if (token && user) {
             getUserSubscriptions(token, user.id).then(page => handleReceiveSubscriptions(page.rows));
@@ -150,7 +173,7 @@ const HomePage = (props: HomePageProps) => {
     }, [debouncedSearchText, handleReceiveSuggestions]);
 
     return (
-        <Fragment>
+        <>
             <Header
                 left={
                     <>
@@ -166,7 +189,7 @@ const HomePage = (props: HomePageProps) => {
                 right={
                     user ?
                         <>
-                            <CreateButton />
+                            <CreateButton onClick={handleOpenUploadVideoDialog}/>
                             <AccountMenu onClickLogout={onClickLogout} />
                         </>
                         :
@@ -179,7 +202,8 @@ const HomePage = (props: HomePageProps) => {
                     <Feed items={videos} />
                 </Stack>
             </Box>
-        </Fragment>
+            <UploadVideoDialog open={isUploadVideoDialogOpen} onClose={handleCloseUploadVideoDialog} />
+        </>
     )
 };
 
