@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { useReducer, useCallback } from 'react';
+import { useCallback } from 'react';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from '@mui/material';
+import useLocallyPersistedReducer from '../hooks/use-locally-persisted-reducer';
 import ChangePassword from './change-password';
 import ForgotPassword from './forgot-password';
 import Login from './login';
@@ -45,7 +46,7 @@ const reducer = (state: AppState, action: AppAction) => {
 }
 
 function App() {
-    const [state, dispatch] = useReducer(reducer, { user: undefined, token: undefined });
+    const [state, dispatch] = useLocallyPersistedReducer(reducer, { user: undefined, token: undefined }, 'appState');
 
     const handleLogin = useCallback((user: UserSummary, token: string) => {
         dispatch({ type: AppActionType.Login, payload: { user: user, token: token } });

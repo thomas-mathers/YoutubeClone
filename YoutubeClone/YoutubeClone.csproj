@@ -13,9 +13,9 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -32,8 +32,10 @@
   <ItemGroup>
     <None Remove="ClientApp\src\api\models\page.ts" />
     <None Remove="ClientApp\src\components\bootstrap-dialog-title.tsx" />
+    <None Remove="ClientApp\src\components\outlined-box.tsx" />
     <None Remove="ClientApp\src\components\upload-file.tsx" />
     <None Remove="ClientApp\src\components\upload-video-dialog.tsx" />
+    <None Remove="ClientApp\src\hooks\use-locally-persisted-reducer.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,8 +50,10 @@
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\api\models\page.ts" />
     <TypeScriptCompile Include="ClientApp\src\components\bootstrap-dialog-title.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\outlined-box.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\upload-video-dialog.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\upload-file.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\hooks\use-locally-persisted-reducer.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

@@ -7,7 +7,14 @@ async function login(body: LoginRequest): Promise<LoginResponse> {
         headers: getHeaders(),
         body: JSON.stringify(body)
     });
-    return await response.json();
+
+    const responseBody = await response.json();
+
+    if (response.status === 401) {
+        throw new Error('Invalid username or password');
+    }
+
+    return responseBody;
 }
 
 export { login }

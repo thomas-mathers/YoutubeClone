@@ -1,16 +1,16 @@
-import { ReactNode, useRef, useCallback, useMemo } from "react";
-import { Button, IconButton, Stack, Box } from "@mui/material";
+import { useRef, useCallback, useMemo } from "react";
+import { Button, IconButton, Stack, Typography } from "@mui/material";
 import { Upload } from "@mui/icons-material";
 import { ChangeEvent } from "react";
+import OutlinedBox from "./outlined-box";
 
 interface UploadFileProps {
-    title: ReactNode;
     extensions?: string[];
     onSelectFile?: (file: File | null) => void;
 }
 
 const UploadFile = (props: UploadFileProps) => {
-    const { title, extensions = [], onSelectFile } = props;
+    const { extensions = [], onSelectFile } = props;
     const fileInputRef = useRef<HTMLInputElement>(null);
     const accept = useMemo(() => extensions.join(','), [extensions]);
 
@@ -19,27 +19,21 @@ const UploadFile = (props: UploadFileProps) => {
     }, []);
 
     const handleFileInputChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        if (onSelectFile === undefined) {
-            return;
-        }
-
         const files = e.target.files;
-
-        if (files === null) {
-            return;
+        if (files !== null && files.length > 0) {
+            onSelectFile?.(files[0]);
+        } else {
+            onSelectFile?.(null);
         }
-
-        onSelectFile(files.length >= 0 ? files[0] : null);
     }, [onSelectFile]);
 
     return (
-        <Stack padding={2} spacing={3} alignItems="center">
+        <Stack padding={3} spacing={2} alignItems="center">
             <IconButton size="large" onClick={handleClickSelectFilesButton}>
                 <Upload sx={{ width: 100, height: 100 }} />
             </IconButton>
-            <Box>
-                {title}
-            </Box>
+            <Typography align="center">Drag & drop files here</Typography>
+            <Typography align="center">or</Typography>
             <input type="file" accept={accept} ref={fileInputRef} onChange={handleFileInputChanged} hidden />
             <Button variant="contained" onClick={handleClickSelectFilesButton}>Select Files</Button>
         </Stack>
