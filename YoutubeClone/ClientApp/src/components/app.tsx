@@ -50,11 +50,11 @@ function App() {
 
     const handleLogin = useCallback((user: UserSummary, token: string) => {
         dispatch({ type: AppActionType.Login, payload: { user: user, token: token } });
-    }, []);
+    }, [dispatch]);
 
     const handleLogout = useCallback(() => {
         dispatch({ type: AppActionType.Logout });
-    }, []);
+    }, [dispatch]);
 
     return (
         <ThemeProvider theme={theme}>

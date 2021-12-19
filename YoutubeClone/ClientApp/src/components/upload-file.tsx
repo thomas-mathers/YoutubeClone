@@ -2,7 +2,6 @@ import { useRef, useCallback, useMemo } from "react";
 import { Button, IconButton, Stack, Typography } from "@mui/material";
 import { Upload } from "@mui/icons-material";
 import { ChangeEvent } from "react";
-import OutlinedBox from "./outlined-box";
 
 interface UploadFileProps {
     extensions?: string[];
@@ -28,12 +27,12 @@ const UploadFile = (props: UploadFileProps) => {
     }, [onSelectFile]);
 
     return (
-        <Stack padding={3} spacing={2} alignItems="center">
+        <Stack padding={3} spacing={1} alignItems="center">
             <IconButton size="large" onClick={handleClickSelectFilesButton}>
                 <Upload sx={{ width: 100, height: 100 }} />
             </IconButton>
-            <Typography align="center">Drag & drop files here</Typography>
-            <Typography align="center">or</Typography>
+            <Typography variant="subtitle1" align="center">Drag & drop files here</Typography>
+            <Typography variant="subtitle2" align="center">or</Typography>
             <input type="file" accept={accept} ref={fileInputRef} onChange={handleFileInputChanged} hidden />
             <Button variant="contained" onClick={handleClickSelectFilesButton}>Select Files</Button>
         </Stack>

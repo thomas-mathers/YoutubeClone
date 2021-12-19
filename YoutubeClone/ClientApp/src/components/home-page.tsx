@@ -202,7 +202,7 @@ const HomePage = (props: HomePageProps) => {
                     <Feed items={videos} />
                 </Stack>
             </Box>
-            <UploadVideoDialog open={isUploadVideoDialogOpen} onClose={handleCloseUploadVideoDialog} />
+            <UploadVideoDialog token={token!} user={user!} open={isUploadVideoDialogOpen} onClose={handleCloseUploadVideoDialog} />
         </>
     )
 };

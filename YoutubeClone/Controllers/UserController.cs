@@ -307,5 +307,40 @@ namespace YoutubeClone.Controllers
 
             return Ok(page);
         }
+
+        [Authorize]
+        [ClaimsFilter]
+        [HttpGet("{userId}/channels")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Page<ChannelSummary>>> GetChannelsAsync(
+            Guid claimsUserId,
+            Guid claimsRoleId,
+            Guid userId,
+            [FromQuery] DateTime? continuationToken = null,
+            [FromQuery] int take = 100)
+        {
+            if (userId != claimsUserId)
+            {
+                return Unauthorized();
+            }
+
+            var query = databaseContext.Channels.Where(s => s.UserId == userId);
+
+            if (continuationToken != null)
+            {
+                query = query.Where(x => x.DateCreated > continuationToken);
+            }
+
+            var rows = await query.Take(take).ToListAsync();
+
+            var page = new Page<ChannelSummary>
+            {
+                ContinuationToken = rows.LastOrDefault()?.DateCreated,
+                Rows = rows.Select(x => mapper.Map<ChannelSummary>(x)).ToList()
+            };
+
+            return Ok(page);
+        }
     }
 }

@@ -111,7 +111,27 @@ async function getUserSubscriptions(token: string, userId: string, continuationT
         method: 'GET',
         headers: getHeaders(token)
     });
+
     return await response.json();
 }
 
-export { createUser, getUsers, updateUser, createChannel, createSubscription, getFeed, getUserSubscriptions }
+async function getUserChannels(token: string, userId: string, continuationToken?: string, take: number = 100): Promise<Page<ChannelSummary>> {
+    const url = `api/user/${userId}/channels?`;
+
+    const searchParams = new URLSearchParams();
+
+    if (continuationToken) {
+        searchParams.append('continuationToken', continuationToken);
+    }
+
+    searchParams.append('take', take.toString());
+
+    const response = await fetch(url + searchParams, {
+        method: 'GET',
+        headers: getHeaders(token)
+    });
+
+    return await response.json();
+}
+
+export { createUser, getUsers, updateUser, createChannel, createSubscription, getFeed, getUserSubscriptions, getUserChannels }

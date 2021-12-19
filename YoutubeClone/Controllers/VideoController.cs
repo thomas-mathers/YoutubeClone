@@ -50,7 +50,7 @@ namespace YoutubeClone.Controllers
 
         [HttpGet]
         public async Task<ActionResult<Page<VideoSummary>>> GetAsync(
-            [FromQuery] string? filterBy = nameof(Video.Name), 
+            [FromQuery] string? filterBy = nameof(Video.Title), 
             [FromQuery] string? filter = null, 
             [FromQuery] string? orderBy = nameof(Video.DateCreated), 
             [FromQuery] string? orderDir = "ASC", 
@@ -72,7 +72,7 @@ namespace YoutubeClone.Controllers
                         query = query.Where(x => x.Description.ToLower().Contains(filter.ToLower()));
                         break;
                     default:
-                        query = query.Where(x => x.Name.ToLower().Contains(filter.ToLower()));
+                        query = query.Where(x => x.Title.ToLower().Contains(filter.ToLower()));
                         break;
                 }
             }
@@ -84,10 +84,10 @@ namespace YoutubeClone.Controllers
                         query.OrderBy(x => x.Description) :
                         query.OrderByDescending(x => x.Description);
                     break;
-                case nameof(Video.Name):
+                case nameof(Video.Title):
                     query = orderDir == "ASC" ?
-                        query.OrderBy(x => x.Name) :
-                        query.OrderByDescending(x => x.Name);
+                        query.OrderBy(x => x.Title) :
+                        query.OrderByDescending(x => x.Title);
                     break;
                 default:
                     query = orderDir == "ASC" ?

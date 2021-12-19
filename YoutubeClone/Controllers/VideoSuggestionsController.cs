@@ -21,7 +21,7 @@ namespace YoutubeClone.Controllers
         public async Task<ActionResult<List<string>>> GetAsync([FromQuery] string prefix, [FromQuery] int take = 3)
         {
             var suggestions = await databaseContext.Videos
-                .Select(v => v.Name)
+                .Select(v => v.Title)
                 .Where(s => s.ToLower().StartsWith(prefix.ToLower()))
                 .OrderBy(s => s)
                 .Take(take)

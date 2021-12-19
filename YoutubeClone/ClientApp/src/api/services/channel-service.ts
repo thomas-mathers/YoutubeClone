@@ -1,12 +1,20 @@
-﻿import { ChannelSummary, CreateVideoRequest, VideoSummary, Page } from "../models";
+import { ChannelSummary, CreateVideoRequest, VideoSummary, Page } from "../models";
 import { getHeaders } from "../get-headers";
 
-async function createChannelVideo(token: string, body: CreateVideoRequest): Promise<VideoSummary> {
-    const response = await fetch('/api/video', {
+async function createChannelVideo(token: string, channelId: string, body: CreateVideoRequest): Promise<VideoSummary> {
+    const formData = new FormData();
+
+    formData.set('title', body.title);
+    formData.set('description', body.description);
+    formData.set('videoFile', body.videoFile);
+    formData.set('thumbnailFile', body.thumbnailFile);
+
+    const response = await fetch(`/api/channel/${channelId}/videos`, {
         method: 'POST',
-        headers: getHeaders(token),
-        body: JSON.stringify(body)
+        headers: getHeaders(token, null),
+        body: formData
     });
+
     return await response.json();
 }
 
@@ -96,7 +104,7 @@ async function getChannelVideos(
 }
 
 async function deleteChannel(token: string, channelId: string): Promise<void> {
-    const response = await fetch(`/api/channel/${channelId}`, {
+    await fetch(`/api/channel/${channelId}`, {
         method: 'DELETE',
         headers: getHeaders(token)
     });

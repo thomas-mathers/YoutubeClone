@@ -3,7 +3,7 @@
     channelId: string;
     channelName: string;
     channelThumbnailUrl: string;
-    name: string;
+    title: string;
     description: string;
     thumbnailUrl: string;
     url: string;

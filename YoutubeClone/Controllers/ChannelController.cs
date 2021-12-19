@@ -26,9 +26,8 @@ namespace YoutubeClone.Controllers
 
         [Authorize]
         [ClaimsFilter]
+        [DisableRequestSizeLimit]
         [HttpPost("{channelId}/videos")]
-        [RequestSizeLimit(100_000_000)]
-        [Consumes("multipart/form-data")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -41,21 +40,21 @@ namespace YoutubeClone.Controllers
             {
                 return NotFound();
             }
-
+            
             if (channel.UserId != claimsUserId)
             {
                 return Unauthorized();
             }
 
-            using var fileStream = request.File.OpenReadStream();
+            var id = Guid.NewGuid();
 
-            var videoId = Guid.NewGuid();
+            var url = await UploadChannelFile(channel, request.VideoFile, id);
+            var thumbnailUrl = await UploadChannelFile(channel, request.ThumbnailFile, id);
 
-            var blobPath = $"channels/{channel.Id}/videos/{videoId}.mp4";
-
-            var videoUrl = await fileService.UploadAsync(blobPath, fileStream);
-
-            var video = new Video(videoId, channelId, request.Name, videoUrl.ToString(), videoUrl.ToString());
+            var video = new Video(id, channelId, request.Title, url, thumbnailUrl)
+            {
+                Description = request.Description
+            };
 
             channel.AddVideo(video);
 
@@ -66,11 +65,19 @@ namespace YoutubeClone.Controllers
             return Ok(videoSummary);
         }
 
+        private async Task<string> UploadChannelFile(Channel channel, IFormFile file, Guid fileId)
+        {
+            using var fileStream = file.OpenReadStream();
+            var filePath = $"channels/{channel.Id}/videos/{fileId}{Path.GetExtension(file.FileName)}";
+            var url = await fileService.UploadAsync(filePath, fileStream);
+            return url.AbsoluteUri;
+        }
+
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Page<ChannelSummary>>> GetAsync(
-            [FromQuery] string? filterBy = nameof(Video.Name), 
+            [FromQuery] string? filterBy = nameof(Video.Title), 
             [FromQuery] string? filter = null, 
             [FromQuery] string? orderBy = nameof(Channel.DateCreated), 
             [FromQuery] string? orderDir = "ASC", 
@@ -127,7 +134,7 @@ namespace YoutubeClone.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Page<VideoSummary>>> GetVideosAsync(
             Guid channelId, 
-            [FromQuery] string? filterBy = nameof(Video.Name), 
+            [FromQuery] string? filterBy = nameof(Video.Title), 
             [FromQuery] string? filter = null, 
             [FromQuery] string? orderBy = nameof(Video.DateCreated), 
             [FromQuery] string? orderDir = "ASC", 
@@ -149,17 +156,17 @@ namespace YoutubeClone.Controllers
                         query = query.Where(x => x.Description.ToLower().Contains(filter.ToLower()));
                         break;
                     default:
-                        query = query.Where(x => x.Name.ToLower().Contains(filter.ToLower()));
+                        query = query.Where(x => x.Title.ToLower().Contains(filter.ToLower()));
                         break;
                 }
             }
 
             switch (orderBy)
             {
-                case nameof(Video.Name):
+                case nameof(Video.Title):
                     query = orderDir == "ASC" ?
-                        query.OrderBy(x => x.Name) :
-                        query.OrderByDescending(x => x.Name);
+                        query.OrderBy(x => x.Title) :
+                        query.OrderByDescending(x => x.Title);
                     break;
                 case nameof(Video.Likes):
                     query = orderDir == "ASC" ?

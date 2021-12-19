@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,9 +70,11 @@ builder.Services.AddTransient<IMapper>(serviceProvider =>
 
 builder.Services.AddIdentity<User, IdentityRole<Guid>>().AddEntityFrameworkStores<DatabaseContext>().AddDefaultTokenProviders();
 
+var corsPolicy = "All";
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("All", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+    options.AddPolicy(name: corsPolicy, builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
 builder.Services
@@ -115,7 +118,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseCors("All");
+app.UseCors(corsPolicy);
 
 app.UseAuthentication();
 app.UseAuthorization();

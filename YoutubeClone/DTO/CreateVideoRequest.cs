@@ -4,10 +4,9 @@ namespace YoutubeClone.DTO
 {
     public class CreateVideoRequest
     {
-        [Required]
-        [MinLength(1)]
-        public string Name { get; set; } = string.Empty;
-        [Required]
-        public IFormFile File { get; set; } = null!;
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public IFormFile VideoFile { get; set; } = null!;
+        public IFormFile ThumbnailFile { get; set; } = null!;
     }
 }

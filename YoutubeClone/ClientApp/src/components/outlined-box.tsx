@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { ReactNode } from "react";
 import { styled } from '@mui/system';
 
@@ -14,7 +14,8 @@ const Fieldset = styled('fieldset')(({ theme }) => ({
 
 const Legend = styled('legend')(({ theme }) => ({
     paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1)
+    paddingRight: theme.spacing(1),
+    fontSize: '0.75em'
 }));
 
 const OutlinedBox = ({ children, label }: OutlinedBoxProps) => {

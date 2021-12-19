@@ -1,4 +1,6 @@
 ﻿export default interface CreateVideoRequest {
-    name: string;
-    file: File;
+    title: string;
+    description: string;
+    videoFile: File;
+    thumbnailFile: File;
 }

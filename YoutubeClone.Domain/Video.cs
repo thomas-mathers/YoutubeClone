@@ -7,7 +7,7 @@
         public Guid Id { get; private set; }
         public Guid ChannelId { get; private set; }
         public Channel Channel { get; private set; } = null!;
-        public string Name { get; private set; }
+        public string Title { get; private set; }
         public string Description { get; set; } = string.Empty;
         public string Url { get; private set; }
         public string ThumbnailUrl { get; private set; }
@@ -17,11 +17,11 @@
         public DateTime DateCreated { get; private set; } = DateTime.UtcNow;
         public IEnumerable<Comment> Comments => comments;
 
-        public Video(Guid id, Guid channelId, string name, string url, string thumbnailUrl)
+        public Video(Guid id, Guid channelId, string title, string url, string thumbnailUrl)
         {
             Id = id;
             ChannelId = channelId;
-            Name = name;    
+            Title = title;    
             Url = url;
             ThumbnailUrl = thumbnailUrl;
         }
