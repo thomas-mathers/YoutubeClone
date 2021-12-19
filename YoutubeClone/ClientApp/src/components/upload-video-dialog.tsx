@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, useMediaQuery, useTheme, Stack, Button, TextField, Select, MenuItem, SelectChangeEvent, InputLabel, FormControl } from "@mui/material"
+import { Dialog, DialogContent, useMediaQuery, useTheme, Stack, Button, TextField, Select, MenuItem, SelectChangeEvent, InputLabel, FormControl, CircularProgress, Box } from "@mui/material"
 import { MouseEvent } from "react";
 import { useEffect } from "react";
 import { ChangeEvent, useCallback, useReducer } from "react";
@@ -13,7 +13,7 @@ interface UploadVideoProps {
     token: string;
     user: UserSummary;
     open: boolean;
-    onClose: () => void;
+    onClose: (e?: any, reason?: any) => void;
 }
 
 interface UploadVideoState {
@@ -33,12 +33,15 @@ enum UploadVideoActionType {
     UpdateTitle,
     UpdateDescription,
     UpdateVideo,
-    UpdateThumbnail
+    UpdateThumbnail,
+    PostVideo,
+    PostVideoSuccess,
+    PostVideoFailure
 }
 
 interface UploadVideoAction {
     type: UploadVideoActionType;
-    payload: any;
+    payload?: any;
 }
 
 const reducer = (state: UploadVideoState, action: UploadVideoAction): UploadVideoState => {
@@ -74,6 +77,23 @@ const reducer = (state: UploadVideoState, action: UploadVideoAction): UploadVide
                 ...state,
                 thumbnailFile: payload
             }
+        case UploadVideoActionType.PostVideo:
+            return {
+                ...state,
+                loading: true,
+                errorMessage: ''
+            }
+        case UploadVideoActionType.PostVideoSuccess:
+            return {
+                ...state,
+                loading: false
+            }
+        case UploadVideoActionType.PostVideoFailure:
+            return {
+                ...state,
+                loading: false,
+                errorMessage: payload
+            }
         default:
             return state;
     }
@@ -95,7 +115,7 @@ const UploadVideoDialog = (props: UploadVideoProps) => {
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    const { channels, channelId, title, description, videoFile, thumbnailFile } = state;
+    const { channels, channelId, title, description, videoFile, thumbnailFile, loading } = state;
 
     const handleChangeChannels = useCallback((channels: ChannelSummary[]) => {
         dispatch({ type: UploadVideoActionType.UpdateChannels, payload: channels });
@@ -136,10 +156,12 @@ const UploadVideoDialog = (props: UploadVideoProps) => {
         var body = { title: title, description: description, videoFile: videoFile, thumbnailFile: thumbnailFile };
 
         try {
+            dispatch({ type: UploadVideoActionType.PostVideo });
             await createChannelVideo(token, channelId, body);
+            dispatch({ type: UploadVideoActionType.PostVideoSuccess });
             onClose();
         } catch (e) {
-            console.error(e);
+            dispatch({ type: UploadVideoActionType.PostVideoFailure });
         }
     }, [token, channelId, title, description, videoFile, thumbnailFile, onClose]);
 
@@ -148,28 +170,35 @@ const UploadVideoDialog = (props: UploadVideoProps) => {
     }, [token, user, handleChangeChannels]);
 
     return (
-        <Dialog open={open} fullScreen={fullScreen} onClose={onClose} maxWidth="md" fullWidth>
+        <Dialog open={open} fullScreen={fullScreen} onClose={onClose} maxWidth="md" fullWidth disableEscapeKeyDown>
             <BootstrapDialogTitle onClose={onClose}>Upload video</BootstrapDialogTitle>
             <DialogContent dividers>
-                <Stack spacing={2}>
-                    <FormControl>
-                        <InputLabel id="Channel">Channel</InputLabel>
-                        <Select labelId="Channel" label="Channel" value={channelId} onChange={handleChangeChannel}>
-                            {
-                                channels.map(c => <MenuItem value={c.id}>{c.name}</MenuItem>)
-                            }
-                        </Select>
-                    </FormControl>
-                    <TextField variant="outlined" label="Title" value={title} onChange={handleChangeTitle} />
-                    <TextField variant="outlined" label="Description" value={description} onChange={handleChangeDescription} rows={8} multiline />
-                    <OutlinedBox label="Video">
-                        <UploadFile extensions={['.mp4']} onSelectFile={handleSelectVideoFile} />
-                    </OutlinedBox>
-                    <OutlinedBox label="Thumbnail">
-                        <UploadFile extensions={['.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tga', '.tiff']} onSelectFile={handleSelectThumbnailFile} />
-                    </OutlinedBox>
-                    <Button variant="contained" onClick={handleClickUpload}>Upload</Button>
-                </Stack>
+                {
+                    loading ?
+                        <Box height={300} display="flex" justifyContent="center" alignItems="center">
+                            <CircularProgress size={200} />
+                        </Box>
+                        :
+                        <Stack spacing={2}>
+                            <FormControl>
+                                <InputLabel id="Channel">Channel</InputLabel>
+                                <Select labelId="Channel" label="Channel" value={channelId} onChange={handleChangeChannel}>
+                                    {
+                                        channels.map(c => <MenuItem value={c.id}>{c.name}</MenuItem>)
+                                    }
+                                </Select>
+                            </FormControl>
+                            <TextField variant="outlined" label="Title" value={title} onChange={handleChangeTitle} />
+                            <TextField variant="outlined" label="Description" value={description} onChange={handleChangeDescription} rows={8} multiline />
+                            <OutlinedBox label="Video">
+                                <UploadFile extensions={['.mp4']} onSelectFile={handleSelectVideoFile} />
+                            </OutlinedBox>
+                            <OutlinedBox label="Thumbnail">
+                                <UploadFile extensions={['.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tga', '.tiff']} onSelectFile={handleSelectThumbnailFile} />
+                            </OutlinedBox>
+                            <Button variant="contained" onClick={handleClickUpload}>Upload</Button>
+                        </Stack>
+                }
             </DialogContent>
         </Dialog>
     )

@@ -150,14 +150,18 @@ const HomePage = (props: HomePageProps) => {
         dispatch({ type: HomePageActionType.OpenUploadVideoDialog });
     }, []);
 
-    const handleCloseUploadVideoDialog = useCallback(() => {
+    const handleCloseUploadVideoDialog = useCallback((e: any, reason: any) => {
+        if (reason === 'backdropClick') {
+            return;
+        }
+
         dispatch({ type: HomePageActionType.CloseUploadVideoDialog });
     }, []);
 
     useEffect(() => {
         if (token && user) {
-            getUserSubscriptions(token, user.id).then(page => handleReceiveSubscriptions(page.rows));
-            getFeed(token, user.id).then(page => handleReceiveVideos(page.rows));
+            getUserSubscriptions(token, user.id).then(page => page.rows).then(handleReceiveSubscriptions);
+            getFeed(token, user.id).then(page => page.rows).then(handleReceiveVideos);
         } else {
             handleReceiveSubscriptions([]);
             handleReceiveVideos([]);
