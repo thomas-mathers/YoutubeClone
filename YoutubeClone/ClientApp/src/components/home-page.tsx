@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useReducer, useEffect, useCallback } from 'react';
 import { Box, Hidden, Stack } from "@mui/material";
-import { VideoSummary, SubscriptionSummary, UserSummary } from '../api/models';
+import { VideoSummary, SubscriptionSummary, UserSummary, Page } from '../api/models';
 import { getFeed, getUserSubscriptions } from '../api/services/user-service';
 import { getVideos } from '../api/services/video-service';
 import { getVideoSuggestions } from '../api/services/video-suggestions';
@@ -21,20 +21,32 @@ import UploadVideoDialog from './upload-video-dialog';
 interface HomePageState {
     searchText: string;
     searchSuggestions: string[];
-    videos: VideoSummary[];
+    feed: VideoSummary[];
+    fetchFeedContinuationToken?: string | null;
+    fetchFeed: boolean;
+    fetchFeedError: string;
     subscriptions: SubscriptionSummary[];
+    fetchSubscriptionsContinuationToken?: string | null;
+    fetchSubscriptions: boolean;
+    fetchSubscriptionsError: string;
     filters: string[];
-    isAppDrawerOpen: boolean;
-    isUploadVideoDialogOpen: boolean;
+    isDrawerOpen: boolean;
+    isUploadDialogOpen: boolean;    
 }
 
 enum HomePageActionType {
     OpenDrawer,
     CloseDrawer,
-    OpenUploadVideoDialog,
-    CloseUploadVideoDialog,
-    SubscriptionsReceived,
-    VideosReceived,
+    OpenUploadDialog,
+    CloseUploadDialog,
+    ClearSubscriptions,
+    FetchSubscriptions,
+    FetchSubscriptionsSuccess,
+    FetchSubscriptionsFailure,
+    ClearFeed,
+    FetchFeed,
+    FetchFeedSuccess,
+    FetchFeedFailure,
     SearchTextChanged,
     SearchSuggestionsReceived
 }
@@ -47,11 +59,15 @@ interface HomePageAction {
 const initialState: HomePageState = {
     searchText: '',
     searchSuggestions: [],
+    feed: [],
+    fetchFeed: false,
+    fetchFeedError: '',
     subscriptions: [],
-    videos: [],
+    fetchSubscriptions: false,
+    fetchSubscriptionsError: '',
     filters: [],
-    isAppDrawerOpen: false,
-    isUploadVideoDialogOpen: false
+    isDrawerOpen: false,
+    isUploadDialogOpen: false
 }
 
 const reducer = (state: HomePageState, action: HomePageAction): HomePageState => {
@@ -59,32 +75,70 @@ const reducer = (state: HomePageState, action: HomePageAction): HomePageState =>
         case HomePageActionType.OpenDrawer:
             return {
                 ...state,
-                isAppDrawerOpen: true
+                isDrawerOpen: true
             }
         case HomePageActionType.CloseDrawer:
             return {
                 ...state,
-                isAppDrawerOpen: false
+                isDrawerOpen: false
             }
-        case HomePageActionType.OpenUploadVideoDialog:
+        case HomePageActionType.OpenUploadDialog:
             return {
                 ...state,
-                isUploadVideoDialogOpen: true
+                isUploadDialogOpen: true
             }
-        case HomePageActionType.CloseUploadVideoDialog:
+        case HomePageActionType.CloseUploadDialog:
             return {
                 ...state,
-                isUploadVideoDialogOpen: false
+                isUploadDialogOpen: false
             }
-        case HomePageActionType.SubscriptionsReceived:
+        case HomePageActionType.ClearSubscriptions:
             return {
                 ...state,
-                subscriptions: action.payload
+                subscriptions: []
             }
-        case HomePageActionType.VideosReceived:
+        case HomePageActionType.FetchSubscriptions:
             return {
                 ...state,
-                videos: action.payload
+                fetchSubscriptions: true,
+                fetchSubscriptionsError: '',
+            }
+        case HomePageActionType.FetchSubscriptionsSuccess:
+            return {
+                ...state,
+                subscriptions: state.subscriptions.concat(action.payload.rows),
+                fetchSubscriptionsContinuationToken: action.payload.continuationToken,
+                fetchSubscriptions: false
+            }
+        case HomePageActionType.FetchSubscriptionsFailure:
+            return {
+                ...state,
+                fetchSubscriptions: false,
+                fetchSubscriptionsError: action.payload
+            }
+        case HomePageActionType.ClearFeed:
+            return {
+                ...state,
+                feed: []
+            }
+        case HomePageActionType.FetchFeed:
+            return {
+                ...state,
+                fetchFeed: true,
+                fetchFeedError: ''
+            }
+        case HomePageActionType.FetchFeedSuccess:
+            return {
+                ...state,
+                feed: state.feed.concat(action.payload.rows),
+                fetchFeedContinuationToken: action.payload.continuationToken,
+                fetchFeed: false
+            }
+        case HomePageActionType.FetchFeedFailure:
+            return {
+                ...state,
+                fetchFeed: false,
+                fetchFeedError: action.payload
             }
         case HomePageActionType.SearchTextChanged:
             return {
@@ -107,10 +161,27 @@ interface HomePageProps {
     onClickLogout?: () => void;
 }
 
+const wait = function (ms: number) {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, ms);
+    });
+}
+
 const HomePage = (props: HomePageProps) => {
     const { user, token, onClickLogout } = props;
     const [state, dispatch] = useReducer(reducer, initialState);
-    const { searchText, searchSuggestions, subscriptions, videos, filters, isAppDrawerOpen, isUploadVideoDialogOpen } = state;
+    const {
+        searchText,
+        searchSuggestions,
+        feed,
+        fetchFeed,
+        fetchFeedContinuationToken,
+        subscriptions,
+        fetchSubscriptionsContinuationToken,
+        filters,
+        isDrawerOpen,
+        isUploadDialogOpen
+    } = state;
     const debouncedSearchText = useDebounce(searchText, 500);
 
     const handleCloseDrawer = useCallback(() => {
@@ -119,14 +190,6 @@ const HomePage = (props: HomePageProps) => {
 
     const handleOpenDrawer = useCallback(() => {
         dispatch({ type: HomePageActionType.OpenDrawer });
-    }, []);
-
-    const handleReceiveSubscriptions = useCallback((subscriptions: SubscriptionSummary[]) => {
-        dispatch({ type: HomePageActionType.SubscriptionsReceived, payload: subscriptions });
-    }, []);
-
-    const handleReceiveVideos = useCallback((videos: VideoSummary[]) => {
-        dispatch({ type: HomePageActionType.VideosReceived, payload: videos })
     }, []);
 
     const handleSearchTextChanged = useCallback((text: string) => {
@@ -140,33 +203,56 @@ const HomePage = (props: HomePageProps) => {
     const handleClickSearch = useCallback(async (searchText) => {
         try {
             const page = await getVideos('Name', searchText);
-            handleReceiveVideos(page.rows);
+            dispatch({ type: HomePageActionType.FetchFeedSuccess, payload: page });
         } catch (e) {
             console.error(e);
         }
-    }, [handleReceiveVideos]);
+    }, []);
 
     const handleOpenUploadVideoDialog = useCallback(() => {
-        dispatch({ type: HomePageActionType.OpenUploadVideoDialog });
+        dispatch({ type: HomePageActionType.OpenUploadDialog });
     }, []);
 
-    const handleCloseUploadVideoDialog = useCallback((e: any, reason: any) => {
-        if (reason === 'backdropClick') {
-            return;
+    const handleCloseUploadVideoDialog = useCallback((success: boolean) => {
+        dispatch({ type: HomePageActionType.CloseUploadDialog });
+    }, []);
+
+    const fetchFeedItems = useCallback(async () => {
+        if (token && user && fetchFeedContinuationToken !== null) {
+            try {
+                dispatch({ type: HomePageActionType.FetchFeed });
+                const page = await getFeed(token, user.id, fetchFeedContinuationToken, 2);
+                dispatch({ type: HomePageActionType.FetchFeedSuccess, payload: page });
+            } catch (e) {
+                dispatch({ type: HomePageActionType.FetchFeedFailure, payload: e });
+            }
         }
+    }, [token, user, fetchFeedContinuationToken]);
 
-        dispatch({ type: HomePageActionType.CloseUploadVideoDialog });
-    }, []);
+    const fetchSubscriptions = useCallback(async () => {
+        if (token && user && fetchSubscriptionsContinuationToken !== null) {
+            try {
+                dispatch({ type: HomePageActionType.FetchSubscriptions });
+                const page = await getUserSubscriptions(token, user.id, fetchSubscriptionsContinuationToken);
+                dispatch({ type: HomePageActionType.FetchSubscriptionsSuccess, payload: page });
+            } catch (e) {
+                dispatch({ type: HomePageActionType.FetchSubscriptionsFailure });
+            }
+        }
+    }, [token, user, fetchSubscriptionsContinuationToken]);
 
+    const clearFeedItems = useCallback(() => dispatch({ type: HomePageActionType.ClearFeed }), []);
+    const clearSubscriptions = useCallback(() => dispatch({ type: HomePageActionType.ClearSubscriptions }), []);
+    
     useEffect(() => {
         if (token && user) {
-            getUserSubscriptions(token, user.id).then(page => page.rows).then(handleReceiveSubscriptions);
-            getFeed(token, user.id).then(page => page.rows).then(handleReceiveVideos);
+            fetchSubscriptions();
+            fetchFeedItems();
         } else {
-            handleReceiveSubscriptions([]);
-            handleReceiveVideos([]);
+            clearSubscriptions();
+            clearFeedItems();
         }
-    }, [token, user, handleReceiveSubscriptions, handleReceiveVideos]);
+    }, [token, user, clearSubscriptions, clearFeedItems]);
 
     useEffect(() => {
         if (debouncedSearchText.length > 0) {
@@ -177,7 +263,7 @@ const HomePage = (props: HomePageProps) => {
     }, [debouncedSearchText, handleReceiveSuggestions]);
 
     return (
-        <>
+        <Box height="100%">
             <Header
                 left={
                     <>
@@ -199,15 +285,15 @@ const HomePage = (props: HomePageProps) => {
                         :
                         <LoginButton />
                 }/>
-            <Box display="flex">
-                <AppDrawer open={isAppDrawerOpen} subscriptions={subscriptions} onClose={handleCloseDrawer} />
-                <Stack component="main" spacing={2} padding={2} flexGrow={1} overflow="hidden">
+            <Box display="flex" height="100%">
+                <AppDrawer open={isDrawerOpen} subscriptions={subscriptions} onClose={handleCloseDrawer} />
+                <Stack component="main" flexGrow={1} overflow="hidden" height="100%">
                     <FeedFilterChipBar filters={filters} />
-                    <Feed items={videos} />
+                    <Feed items={feed} onScrollToBottom={fetchFeedItems} fetching={fetchFeed}/>
                 </Stack>
             </Box>
-            <UploadVideoDialog token={token!} user={user!} open={isUploadVideoDialogOpen} onClose={handleCloseUploadVideoDialog} />
-        </>
+            <UploadVideoDialog token={token!} user={user!} open={isUploadDialogOpen} onClose={handleCloseUploadVideoDialog} />
+        </Box>
     )
 };
 

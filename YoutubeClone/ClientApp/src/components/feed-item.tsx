@@ -15,11 +15,11 @@ const FeedItem = (props: FeedItemProps) => {
     return (
         <Card>
             <CardActionArea>
-                <CardMedia component="img" height="250" src={thumbnailUrl} />
+                <CardMedia component="img" src={thumbnailUrl} />
             </CardActionArea>
             <CardContent>
                 <Stack direction="row" spacing={2}>
-                    <Avatar src={channelThumbnailUrl}/>
+                    <Avatar src={channelThumbnailUrl} />
                     <Stack>
                         <Typography variant="subtitle1" component="div">{title}</Typography>
                         <Typography variant="caption" component="div">{channelName}</Typography>

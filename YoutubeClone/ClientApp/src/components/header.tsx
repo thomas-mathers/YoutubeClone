@@ -12,7 +12,7 @@ const Header = (props: HeaderProps) => {
     const { left, middle, right } = props;
 
     return (
-        <AppBar color="default" position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+        <AppBar color="default" position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
             <Stack direction="row" spacing={1} padding={1} justifyContent="space-between" alignItems="center">
                 <Stack direction="row" spacing={1}>
                     {left}

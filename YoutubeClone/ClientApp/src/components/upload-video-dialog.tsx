@@ -13,7 +13,7 @@ interface UploadVideoProps {
     token: string;
     user: UserSummary;
     open: boolean;
-    onClose: (e?: any, reason?: any) => void;
+    onClose: (success: boolean) => void;
 }
 
 interface UploadVideoState {
@@ -28,15 +28,10 @@ interface UploadVideoState {
 }
 
 enum UploadVideoActionType {
-    UpdateChannel,
-    UpdateChannels,
-    UpdateTitle,
-    UpdateDescription,
-    UpdateVideo,
-    UpdateThumbnail,
-    PostVideo,
-    PostVideoSuccess,
-    PostVideoFailure
+    UpdateFormField,
+    UploadVideo,
+    UploadVideoSuccess,
+    UploadVideoFailure
 }
 
 interface UploadVideoAction {
@@ -47,48 +42,24 @@ interface UploadVideoAction {
 const reducer = (state: UploadVideoState, action: UploadVideoAction): UploadVideoState => {
     const { type, payload } = action;
     switch (type) {
-        case UploadVideoActionType.UpdateChannels:
+        case UploadVideoActionType.UpdateFormField:
+            const { field, value } = payload;
             return {
                 ...state,
-                channels: payload
+                [field]: value
             }
-        case UploadVideoActionType.UpdateChannel:
-            return {
-                ...state,
-                channelId: payload
-            }
-        case UploadVideoActionType.UpdateTitle:
-            return {
-                ...state,
-                title: payload
-            }
-        case UploadVideoActionType.UpdateDescription:
-            return {
-                ...state,
-                description: payload
-            }
-        case UploadVideoActionType.UpdateVideo:
-            return {
-                ...state,
-                videoFile: payload
-            }
-        case UploadVideoActionType.UpdateThumbnail:
-            return {
-                ...state,
-                thumbnailFile: payload
-            }
-        case UploadVideoActionType.PostVideo:
+        case UploadVideoActionType.UploadVideo:
             return {
                 ...state,
                 loading: true,
                 errorMessage: ''
             }
-        case UploadVideoActionType.PostVideoSuccess:
+        case UploadVideoActionType.UploadVideoSuccess:
             return {
                 ...state,
                 loading: false
             }
-        case UploadVideoActionType.PostVideoFailure:
+        case UploadVideoActionType.UploadVideoFailure:
             return {
                 ...state,
                 loading: false,
@@ -117,28 +88,32 @@ const UploadVideoDialog = (props: UploadVideoProps) => {
 
     const { channels, channelId, title, description, videoFile, thumbnailFile, loading } = state;
 
+    const handleClickClose = useCallback(() => {
+        onClose(false);
+    }, []);
+
     const handleChangeChannels = useCallback((channels: ChannelSummary[]) => {
-        dispatch({ type: UploadVideoActionType.UpdateChannels, payload: channels });
+        dispatch({ type: UploadVideoActionType.UpdateFormField, payload: { field: 'channels', value: channels } });
     }, [])
 
     const handleChangeChannel = useCallback((e: SelectChangeEvent<string>) => {
-        dispatch({ type: UploadVideoActionType.UpdateChannel, payload: e.target.value });
+        dispatch({ type: UploadVideoActionType.UpdateFormField, payload: { field: 'channelId', value: e.target.value } });
     }, []);
 
     const handleChangeTitle = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        dispatch({ type: UploadVideoActionType.UpdateTitle, payload: e.target.value });
+        dispatch({ type: UploadVideoActionType.UpdateFormField, payload: { field: 'title', value: e.target.value } });
     }, []);
 
     const handleChangeDescription = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
-        dispatch({ type: UploadVideoActionType.UpdateDescription, payload: e.target.value });
+        dispatch({ type: UploadVideoActionType.UpdateFormField, payload: { field: 'description', value: e.target.value } });
     }, []);
 
     const handleSelectVideoFile = useCallback((file: File | null) => {
-        dispatch({ type: UploadVideoActionType.UpdateVideo, payload: file });
+        dispatch({ type: UploadVideoActionType.UpdateFormField, payload: { field: 'videoFile', value: file } });
     }, []);
 
     const handleSelectThumbnailFile = useCallback((file: File | null) => {
-        dispatch({ type: UploadVideoActionType.UpdateThumbnail, payload: file });
+        dispatch({ type: UploadVideoActionType.UpdateFormField, payload: { field: 'thumbnailFile', value: file } });
     }, []);
 
     const handleClickUpload = useCallback(async (e: MouseEvent<HTMLButtonElement>) => {
@@ -156,12 +131,12 @@ const UploadVideoDialog = (props: UploadVideoProps) => {
         var body = { title: title, description: description, videoFile: videoFile, thumbnailFile: thumbnailFile };
 
         try {
-            dispatch({ type: UploadVideoActionType.PostVideo });
+            dispatch({ type: UploadVideoActionType.UploadVideo });
             await createChannelVideo(token, channelId, body);
-            dispatch({ type: UploadVideoActionType.PostVideoSuccess });
-            onClose();
+            dispatch({ type: UploadVideoActionType.UploadVideoSuccess });
+            onClose(true);
         } catch (e) {
-            dispatch({ type: UploadVideoActionType.PostVideoFailure });
+            dispatch({ type: UploadVideoActionType.UploadVideoFailure });
         }
     }, [token, channelId, title, description, videoFile, thumbnailFile, onClose]);
 
@@ -170,8 +145,8 @@ const UploadVideoDialog = (props: UploadVideoProps) => {
     }, [token, user, handleChangeChannels]);
 
     return (
-        <Dialog open={open} fullScreen={fullScreen} onClose={onClose} maxWidth="md" fullWidth disableEscapeKeyDown>
-            <BootstrapDialogTitle onClose={onClose}>Upload video</BootstrapDialogTitle>
+        <Dialog open={open} fullScreen={fullScreen} onClose={handleClickClose} maxWidth="md" fullWidth disableEscapeKeyDown>
+            <BootstrapDialogTitle onClose={handleClickClose}>Upload video</BootstrapDialogTitle>
             <DialogContent dividers>
                 {
                     loading ?

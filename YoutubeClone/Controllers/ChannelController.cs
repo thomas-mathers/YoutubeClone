@@ -80,7 +80,7 @@ namespace YoutubeClone.Controllers
             [FromQuery] string? filterBy = nameof(Video.Title), 
             [FromQuery] string? filter = null, 
             [FromQuery] string? orderBy = nameof(Channel.DateCreated), 
-            [FromQuery] string? orderDir = "ASC", 
+            [FromQuery] string? orderDir = "DESC", 
             [FromQuery] DateTime? continuationToken = null, 
             [FromQuery] int take = 100)
         {
@@ -137,7 +137,7 @@ namespace YoutubeClone.Controllers
             [FromQuery] string? filterBy = nameof(Video.Title), 
             [FromQuery] string? filter = null, 
             [FromQuery] string? orderBy = nameof(Video.DateCreated), 
-            [FromQuery] string? orderDir = "ASC", 
+            [FromQuery] string? orderDir = "DESC", 
             [FromQuery] DateTime? continuationToken = null, 
             [FromQuery] int take = 100)
         {

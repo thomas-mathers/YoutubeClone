@@ -59,7 +59,7 @@ namespace YoutubeClone.Controllers
             [FromQuery] string? filterBy = nameof(Domain.User.UserName),
             [FromQuery] string? filter = null,
             [FromQuery] string? orderBy = nameof(Domain.User.DateCreated),
-            [FromQuery] string? orderDir = "ASC",
+            [FromQuery] string? orderDir = "DESC",
             [FromQuery] DateTime? continuationToken = null,
             [FromQuery] int take = 100)
         {
@@ -257,7 +257,7 @@ namespace YoutubeClone.Controllers
 
             if (continuationToken != null)
             {
-                query = query.Where(x => x.DateCreated > continuationToken);
+                query = query.Where(x => x.DateCreated < continuationToken);
             }
 
             query = query.Join(userChannels, video => video.ChannelId, channelId => channelId, (video, channelId) => video).OrderByDescending(x => x.DateCreated);

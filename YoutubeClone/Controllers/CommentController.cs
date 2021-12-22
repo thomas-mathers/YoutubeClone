@@ -54,7 +54,7 @@ namespace YoutubeClone.Controllers
             [FromQuery] string? filterBy = nameof(Comment.Text), 
             [FromQuery] string? filter = null, 
             [FromQuery] string? orderBy = nameof(Comment.DateCreated),
-            [FromQuery] string? orderDir = "ASC",
+            [FromQuery] string? orderDir = "DESC",
             [FromQuery] DateTime? continuationToken = null,
             [FromQuery] int take = 100)
         {

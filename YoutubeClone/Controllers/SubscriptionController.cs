@@ -27,7 +27,7 @@ namespace YoutubeClone.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Page<SubscriptionSummary>>> GetAsync(
             [FromQuery] string? orderBy = nameof(Subscription.DateCreated), 
-            [FromQuery] string? orderDir = "ASC",
+            [FromQuery] string? orderDir = "DESC",
             [FromQuery] DateTime? continuationToken = null,
             [FromQuery] int take = 100)
         {
