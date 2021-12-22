@@ -19,12 +19,11 @@ function AppDrawer(props: AppDrawerProps) {
     const sx = {
         width: drawerWidth,
         flexShrink: 0,
-        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+        [`& .MuiDrawer-paper`]: { position: 'static', width: drawerWidth, boxSizing: 'border-box' },
     };
 
     return (
         <Drawer anchor="left" open={open} onClose={onClose} ModalProps={{ keepMounted: isSmall }} variant={variant} sx={sx}>
-            <AppBarSpacer />
             <List>
                 <ListItem button>
                     <ListItemIcon><Home /></ListItemIcon>

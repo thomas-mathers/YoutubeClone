@@ -1,7 +1,5 @@
-import * as React from 'react';
 import { useCallback } from 'react';
 import { Grid, Box, CircularProgress, Typography, Stack } from '@mui/material';
-import AutoSizer from "react-virtualized-auto-sizer";
 import { VideoSummary } from "../api/models";
 import FeedItem from "./feed-item";
 
@@ -15,8 +13,10 @@ const Feed = (props: FeedProps) => {
     const { fetching, items, onScrollToBottom } = props;
 
     const handleScroll = useCallback((e: any) => {
-        const bottom = e.target.scrollHeight - Math.ceil(e.target.scrollTop) === e.target.clientHeight;
-        if (bottom) {
+        const relativeScrollTop = Math.ceil(e.target.scrollHeight - e.target.scrollTop);
+        const threshold = 10;
+        const isAtBottom = Math.abs(relativeScrollTop - e.target.clientHeight) <= threshold;
+        if (isAtBottom) {
             onScrollToBottom();
         }
     }, [onScrollToBottom]);
@@ -38,7 +38,7 @@ const Feed = (props: FeedProps) => {
                     ))
                 }
                 {
-                    fetching &&
+                    fetching && 
                     <Grid item xs={12}>
                         <Stack direction="row" spacing={2} padding={2} alignItems="center" justifyContent="center">
                             <Typography>Loading...</Typography>

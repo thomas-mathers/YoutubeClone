@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useReducer, useEffect, useCallback } from 'react';
-import { Box, Hidden, Stack } from "@mui/material";
+import { Box, Hidden } from "@mui/material";
 import { VideoSummary, SubscriptionSummary, UserSummary, Page } from '../api/models';
 import { getFeed, getUserSubscriptions } from '../api/services/user-service';
 import { getVideos } from '../api/services/video-service';
@@ -31,7 +31,7 @@ interface HomePageState {
     fetchSubscriptionsError: string;
     filters: string[];
     isDrawerOpen: boolean;
-    isUploadDialogOpen: boolean;    
+    isUploadDialogOpen: boolean;
 }
 
 enum HomePageActionType {
@@ -243,7 +243,7 @@ const HomePage = (props: HomePageProps) => {
 
     const clearFeedItems = useCallback(() => dispatch({ type: HomePageActionType.ClearFeed }), []);
     const clearSubscriptions = useCallback(() => dispatch({ type: HomePageActionType.ClearSubscriptions }), []);
-    
+
     useEffect(() => {
         if (token && user) {
             fetchSubscriptions();
@@ -263,7 +263,7 @@ const HomePage = (props: HomePageProps) => {
     }, [debouncedSearchText, handleReceiveSuggestions]);
 
     return (
-        <Box height="100%">
+        <Box display="flex" flexDirection="column" height="100%">
             <Header
                 left={
                     <>
@@ -279,18 +279,18 @@ const HomePage = (props: HomePageProps) => {
                 right={
                     user ?
                         <>
-                            <CreateButton onClick={handleOpenUploadVideoDialog}/>
+                            <CreateButton onClick={handleOpenUploadVideoDialog} />
                             <AccountMenu onClickLogout={onClickLogout} />
                         </>
                         :
                         <LoginButton />
-                }/>
-            <Box display="flex" height="100%">
+                } />
+            <Box display="flex" flexDirection="row" height="calc(100% - 56px)">
                 <AppDrawer open={isDrawerOpen} subscriptions={subscriptions} onClose={handleCloseDrawer} />
-                <Stack component="main" flexGrow={1} overflow="hidden" height="100%">
+                <Box display="flex">
                     <FeedFilterChipBar filters={filters} />
-                    <Feed items={feed} onScrollToBottom={fetchFeedItems} fetching={fetchFeed}/>
-                </Stack>
+                    <Feed items={feed} onScrollToBottom={fetchFeedItems} fetching={fetchFeed} />
+                </Box>
             </Box>
             <UploadVideoDialog token={token!} user={user!} open={isUploadDialogOpen} onClose={handleCloseUploadVideoDialog} />
         </Box>
