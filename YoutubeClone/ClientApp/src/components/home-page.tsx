@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useReducer, useEffect, useCallback } from 'react';
 import { Box, Hidden } from "@mui/material";
-import { VideoSummary, SubscriptionSummary, UserSummary, Page } from '../api/models';
+import { VideoSummary, SubscriptionSummary, UserSummary } from '../api/models';
 import { getFeed, getUserSubscriptions } from '../api/services/user-service';
 import { getVideos } from '../api/services/video-service';
 import { getVideoSuggestions } from '../api/services/video-suggestions';
@@ -161,12 +161,6 @@ interface HomePageProps {
     onClickLogout?: () => void;
 }
 
-const wait = function (ms: number) {
-    return new Promise((resolve, reject) => {
-        setTimeout(resolve, ms);
-    });
-}
-
 const HomePage = (props: HomePageProps) => {
     const { user, token, onClickLogout } = props;
     const [state, dispatch] = useReducer(reducer, initialState);
@@ -252,7 +246,7 @@ const HomePage = (props: HomePageProps) => {
             clearSubscriptions();
             clearFeedItems();
         }
-    }, [token, user, clearSubscriptions, clearFeedItems]);
+    }, [token, user, fetchSubscriptions, fetchFeedItems, clearSubscriptions, clearFeedItems]);
 
     useEffect(() => {
         if (debouncedSearchText.length > 0) {
@@ -289,7 +283,7 @@ const HomePage = (props: HomePageProps) => {
                 <AppDrawer open={isDrawerOpen} subscriptions={subscriptions} onClose={handleCloseDrawer} />
                 <Box display="flex">
                     <FeedFilterChipBar filters={filters} />
-                    <Feed items={feed} onScrollToBottom={fetchFeedItems} fetching={fetchFeed} />
+                    <Feed items={feed} fetching={fetchFeed} onFetch={fetchFeedItems}  />
                 </Box>
             </Box>
             <UploadVideoDialog token={token!} user={user!} open={isUploadDialogOpen} onClose={handleCloseUploadVideoDialog} />

@@ -90,7 +90,7 @@ const UploadVideoDialog = (props: UploadVideoProps) => {
 
     const handleClickClose = useCallback(() => {
         onClose(false);
-    }, []);
+    }, [onClose]);
 
     const handleChangeChannels = useCallback((channels: ChannelSummary[]) => {
         dispatch({ type: UploadVideoActionType.UpdateFormField, payload: { field: 'channels', value: channels } });
@@ -141,7 +141,9 @@ const UploadVideoDialog = (props: UploadVideoProps) => {
     }, [token, channelId, title, description, videoFile, thumbnailFile, onClose]);
 
     useEffect(() => {
-        getUserChannels(token, user.id).then(page => page.rows).then(handleChangeChannels);
+        if (token && user) {
+            getUserChannels(token, user.id).then(page => page.rows).then(handleChangeChannels);
+        }
     }, [token, user, handleChangeChannels]);
 
     return (
