@@ -6,7 +6,7 @@ interface AccountMenuProps {
     onClickLogout?: () => void;
 }
 
-const AccountMenu = (props: AccountMenuProps) => {
+const AccountMenuButton = (props: AccountMenuProps) => {
     const { onClickLogout } = props;
     const [avatarRef, setAvatarRef] = useState(null);
 
@@ -30,4 +30,4 @@ const AccountMenu = (props: AccountMenuProps) => {
     )
 }
 
-export default AccountMenu;
+export default AccountMenuButton;

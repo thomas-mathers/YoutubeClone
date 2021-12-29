@@ -48,8 +48,23 @@ namespace YoutubeClone.Controllers
             return Ok(commentSummary);
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<VideoSummary>> GetAsync(Guid id)
+        {
+            var video = await databaseContext.Videos.FindAsync(id);
+
+            if (video == null)
+            {
+                return NotFound();
+            }
+
+            var videoSummary = mapper.Map<VideoSummary>(video);
+
+            return Ok(videoSummary);
+        }
+
         [HttpGet]
-        public async Task<ActionResult<Page<VideoSummary>>> GetAsync(
+        public async Task<ActionResult<Page<VideoSummary>>> GetAllAsync(
             [FromQuery] string? filterBy = nameof(Video.Title), 
             [FromQuery] string? filter = null, 
             [FromQuery] string? orderBy = nameof(Video.DateCreated), 

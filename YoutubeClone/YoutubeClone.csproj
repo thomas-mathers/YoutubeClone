@@ -32,10 +32,18 @@
   <ItemGroup>
     <None Remove="ClientApp\src\api\models\page.ts" />
     <None Remove="ClientApp\src\components\bootstrap-dialog-title.tsx" />
+    <None Remove="ClientApp\src\components\collapsible-text.tsx" />
+    <None Remove="ClientApp\src\components\comment-list.tsx" />
+    <None Remove="ClientApp\src\components\comment.tsx" />
+    <None Remove="ClientApp\src\components\dislike-button.tsx" />
     <None Remove="ClientApp\src\components\infinite-scroller.tsx" />
+    <None Remove="ClientApp\src\components\like-button.tsx" />
+    <None Remove="ClientApp\src\components\notification-button.tsx" />
     <None Remove="ClientApp\src\components\outlined-box.tsx" />
+    <None Remove="ClientApp\src\components\subscribe-button.tsx" />
     <None Remove="ClientApp\src\components\upload-file.tsx" />
     <None Remove="ClientApp\src\components\upload-video-dialog.tsx" />
+    <None Remove="ClientApp\src\components\video-page.tsx" />
     <None Remove="ClientApp\src\hooks\use-locally-persisted-reducer.ts" />
   </ItemGroup>
 
@@ -51,10 +59,18 @@
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\api\models\page.ts" />
     <TypeScriptCompile Include="ClientApp\src\components\bootstrap-dialog-title.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\collapsible-text.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\comment-list.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\comment.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\dislike-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\infinite-scroller.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\like-button.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\notification-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\outlined-box.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\subscribe-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\upload-video-dialog.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\upload-file.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\video-page.tsx" />
     <TypeScriptCompile Include="ClientApp\src\hooks\use-locally-persisted-reducer.ts" />
   </ItemGroup>
 

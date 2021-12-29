@@ -6,7 +6,7 @@ interface CreateButtonProps {
     onClick?: () => void;
 }
 
-function CreateButton(props: CreateButtonProps) {
+function UploadVideoButton(props: CreateButtonProps) {
     const { onClick } = props;
     return (
         <IconButton onClick={onClick}>
@@ -15,4 +15,4 @@ function CreateButton(props: CreateButtonProps) {
     )
 }
 
-export default CreateButton;
+export default UploadVideoButton;

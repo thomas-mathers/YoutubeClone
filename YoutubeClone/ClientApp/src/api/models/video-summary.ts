@@ -1,4 +1,6 @@
-﻿export default interface VideoSummary {
+﻿import CommentSummary from "./comment-summary";
+
+export default interface VideoSummary {
     id: string;
     channelId: string;
     channelName: string;

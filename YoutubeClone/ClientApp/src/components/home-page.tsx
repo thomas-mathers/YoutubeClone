@@ -13,8 +13,8 @@ import Header from './header';
 import HamburgerButton from './hamburger-button';
 import Logo from './logo';
 import SearchField from './search-field';
-import CreateButton from './create-button';
-import AccountMenu from './account-menu';
+import UploadVideoButton from './upload-video-button';
+import AccountMenuButton from './account-menu-button';
 import LoginButton from './login-button';
 import UploadVideoDialog from './upload-video-dialog';
 
@@ -273,8 +273,8 @@ const HomePage = (props: HomePageProps) => {
                 right={
                     user ?
                         <>
-                            <CreateButton onClick={handleOpenUploadVideoDialog} />
-                            <AccountMenu onClickLogout={onClickLogout} />
+                            <UploadVideoButton onClick={handleOpenUploadVideoDialog} />
+                            <AccountMenuButton onClickLogout={onClickLogout} />
                         </>
                         :
                         <LoginButton />

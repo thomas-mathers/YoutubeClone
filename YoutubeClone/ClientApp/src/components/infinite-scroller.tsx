@@ -4,11 +4,11 @@ import { Grid, Box, CircularProgress, Typography, Stack } from '@mui/material';
 interface FeedProps {
     children: ReactNode;
     fetching: boolean;
-    onFetch: () => void;
+    onFetchNextPage: () => void;
 }
 
 const InfiniteScroller = (props: FeedProps) => {
-    const { fetching, children, onFetch } = props;
+    const { fetching, children, onFetchNextPage } = props;
 
     const handleScroll = useCallback((e: any) => {
         const y = Math.ceil(e.target.scrollHeight - e.target.scrollTop);
@@ -17,9 +17,9 @@ const InfiniteScroller = (props: FeedProps) => {
         const bottom = Math.abs(y - h) <= thresh;
 
         if (bottom) {
-            onFetch();
+            onFetchNextPage();
         }
-    }, [onFetch]);
+    }, [onFetchNextPage]);
 
     return (
         <Box style={{ width: '100%', height: '100%', overflowY: 'auto' }} onScroll={handleScroll}>

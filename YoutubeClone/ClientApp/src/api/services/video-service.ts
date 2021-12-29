@@ -10,6 +10,14 @@ async function createComment(token: string, videoId: string, body: CreateComment
     return await response.json();
 }
 
+async function getVideo(id: string): Promise<VideoSummary> {
+    const response = await fetch(`/api/video/${id}`, {
+        method: 'GET',
+        headers: getHeaders()
+    });
+    return await response.json();
+}
+
 async function getVideos(
     filterBy?: string,
     filter?: string,
@@ -51,6 +59,14 @@ async function getVideos(
     return await response.json();
 }
 
+async function getVideoComments(id: string): Promise<Page<CommentSummary>> {
+    const response = await fetch(`/api/video/${id}/comments`, {
+        method: 'GET',
+        headers: getHeaders()
+    });
+    return await response.json();
+}
+
 async function deleteVideo(token: string, videoId: string): Promise<void> {
     const response = await fetch(`/api/video/${videoId}`, {
         method: 'DELETE',
@@ -59,4 +75,4 @@ async function deleteVideo(token: string, videoId: string): Promise<void> {
     return await response.json();
 }
 
-export { createComment, getVideos, deleteVideo }
+export { createComment, getVideo, getVideos, getVideoComments, deleteVideo }
