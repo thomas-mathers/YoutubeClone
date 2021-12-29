@@ -1,4 +1,4 @@
-﻿import { CommentSummary, CreateReplyRequest, Page } from "../models";
+﻿import { CommentSummary, CreateReplyRequest, mapJsonToCommentSummary, Page } from "../models";
 import { getHeaders } from "../get-headers";
 
 async function createReply(token: string, commentId: string, body: CreateReplyRequest): Promise<CommentSummary> {
@@ -7,7 +7,10 @@ async function createReply(token: string, commentId: string, body: CreateReplyRe
         headers: getHeaders(token),
         body: JSON.stringify(body)
     });
-    return await response.json();
+
+    const json = await response.json();
+
+    return mapJsonToCommentSummary(json);
 }
 
 async function getComments(
@@ -49,7 +52,12 @@ async function getComments(
         headers: getHeaders(token)
     });
 
-    return await response.json();
+    const json = await response.json();
+
+    return {
+        continuationToken: json.continuationToken,
+        rows: json.rows.map(mapJsonToCommentSummary)
+    }
 }
 
 export { createReply, getComments }

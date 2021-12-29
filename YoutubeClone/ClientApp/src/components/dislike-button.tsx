@@ -1,4 +1,4 @@
-﻿import { ThumbDown } from "@mui/icons-material"
+import { ThumbDown } from "@mui/icons-material"
 import { Box, IconButton, Typography } from "@mui/material"
 
 interface DislikeButtonProps {

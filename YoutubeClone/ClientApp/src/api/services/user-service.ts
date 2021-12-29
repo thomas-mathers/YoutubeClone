@@ -1,4 +1,4 @@
-import { ChannelSummary, CreateChannelRequest, CreateSubscriptionRequest, CreateUserRequest, SubscriptionSummary, UpdateUserRequest, UserSummary, VideoSummary, Page } from "../models";
+import { ChannelSummary, CreateChannelRequest, CreateSubscriptionRequest, CreateUserRequest, SubscriptionSummary, UpdateUserRequest, UserSummary, VideoSummary, Page, mapJsonToUserSummary, mapJsonToChannelSummary, mapJsonToSubscriptionSummary, mapJsonToVideoSummary } from "../models";
 import { getHeaders } from "../get-headers";
 
 async function createUser(token: string, body: CreateUserRequest): Promise<UserSummary> {
@@ -7,7 +7,10 @@ async function createUser(token: string, body: CreateUserRequest): Promise<UserS
         headers: getHeaders(token),
         body: JSON.stringify(body)
     });
-    return await response.json();
+
+    const json = await response.json();
+
+    return mapJsonToUserSummary(json);
 }
 
 async function getUsers(
@@ -48,7 +51,13 @@ async function getUsers(
         method: 'GET',
         headers: getHeaders(token)
     });
-    return await response.json();
+
+    const json = await response.json();
+
+    return {
+        continuationToken: json.continuationToken,
+        rows: json.rows.map(mapJsonToUserSummary)
+    }
 }
 
 async function updateUser(token: string, userId: string, body: UpdateUserRequest): Promise<UserSummary> {
@@ -57,7 +66,10 @@ async function updateUser(token: string, userId: string, body: UpdateUserRequest
         headers: getHeaders(token),
         body: JSON.stringify(body)
     });
-    return await response.json();
+
+    const json = await response.json();
+
+    return mapJsonToUserSummary(json);
 }
 
 async function createChannel(token: string, userId: string, body: CreateChannelRequest): Promise<ChannelSummary> {
@@ -66,7 +78,10 @@ async function createChannel(token: string, userId: string, body: CreateChannelR
         headers: getHeaders(token),
         body: JSON.stringify(body)
     });
-    return await response.json();
+
+    const json = await response.json();
+
+    return mapJsonToChannelSummary(json);
 }
 
 async function createSubscription(token: string, userId: string, body: CreateSubscriptionRequest): Promise<SubscriptionSummary> {
@@ -75,7 +90,10 @@ async function createSubscription(token: string, userId: string, body: CreateSub
         headers: getHeaders(token),
         body: JSON.stringify(body)
     });
-    return await response.json();
+
+    const json = await response.json();
+
+    return mapJsonToSubscriptionSummary(json);
 }
 
 async function getFeed(token: string, userId: string, continuationToken?: string, take: number = 100): Promise<Page<VideoSummary>> {
@@ -93,7 +111,13 @@ async function getFeed(token: string, userId: string, continuationToken?: string
         method: 'GET',
         headers: getHeaders(token)
     });
-    return await response.json();
+
+    const json = await response.json();
+
+    return {
+        continuationToken: json.continuationToken,
+        rows: json.rows.map(mapJsonToVideoSummary)
+    }
 }
 
 async function getUserSubscriptions(token: string, userId: string, continuationToken?: string, take: number = 100): Promise<Page<SubscriptionSummary>> {
@@ -112,7 +136,12 @@ async function getUserSubscriptions(token: string, userId: string, continuationT
         headers: getHeaders(token)
     });
 
-    return await response.json();
+    const json = await response.json();
+
+    return {
+        continuationToken: json.continuationToken,
+        rows: json.rows.map(mapJsonToSubscriptionSummary)
+    }
 }
 
 async function getUserChannels(token: string, userId: string, continuationToken?: string, take: number = 100): Promise<Page<ChannelSummary>> {
@@ -131,7 +160,12 @@ async function getUserChannels(token: string, userId: string, continuationToken?
         headers: getHeaders(token)
     });
 
-    return await response.json();
+    const json = await response.json();
+
+    return {
+        continuationToken: json.continuationToken,
+        rows: json.rows.map(mapJsonToChannelSummary)
+    }
 }
 
 export { createUser, getUsers, updateUser, createChannel, createSubscription, getFeed, getUserSubscriptions, getUserChannels }

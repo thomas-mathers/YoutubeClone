@@ -1,4 +1,4 @@
-﻿import { IconButton } from "@mui/material"
+import { IconButton } from "@mui/material"
 import { Notifications } from "@mui/icons-material"
 
 const NotificationButton = () => {

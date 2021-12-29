@@ -1,4 +1,4 @@
-﻿import { Avatar, Button, Stack, Typography } from "@mui/material";
+import { Avatar, Button, Stack, Typography } from "@mui/material";
 import LikeButton from "./like-button";
 import DislikeButton from "./dislike-button";
 

@@ -17,6 +17,7 @@ const Feed = (props: FeedProps) => {
                 items.map(v => (
                     <FeedItem
                         key={v.id}
+                        id={v.id}
                         thumbnailUrl={v.thumbnailUrl}
                         title={v.title}
                         channelThumbnailUrl={v.channelThumbnailUrl}

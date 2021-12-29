@@ -60,6 +60,11 @@ builder.Services.AddTransient<IMapper>(serviceProvider =>
         cfg.CreateMap<Video, VideoSummary>().ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name));
         cfg.CreateMap<Video, VideoSummary>().ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl));
 
+        cfg.CreateMap<Video, VideoDetail>();
+        cfg.CreateMap<Video, VideoDetail>().ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name));
+        cfg.CreateMap<Video, VideoDetail>().ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl));
+        cfg.CreateMap<Video, VideoDetail>().ForMember(m => m.ChannelSubscriptions, opt => opt.MapFrom(src => src.Channel.Subscriptions.Count()));
+
         cfg.CreateMap<User, UserSummary>();
     });
 

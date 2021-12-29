@@ -1,4 +1,4 @@
-﻿import { CommentSummary } from "../api/models";
+import { CommentSummary } from "../api/models";
 import InfiniteScroller from "./infinite-scroller";
 import Comment from "./comment";
 

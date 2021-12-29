@@ -1,4 +1,4 @@
-import { ChannelSummary, CreateVideoRequest, VideoSummary, Page } from "../models";
+import { ChannelSummary, CreateVideoRequest, VideoSummary, mapJsonToVideoSummary, Page, mapJsonToChannelSummary } from "../models";
 import { getHeaders } from "../get-headers";
 
 async function createChannelVideo(token: string, channelId: string, body: CreateVideoRequest): Promise<VideoSummary> {
@@ -15,7 +15,9 @@ async function createChannelVideo(token: string, channelId: string, body: Create
         body: formData
     });
 
-    return await response.json();
+    const json = await response.json();
+
+    return mapJsonToVideoSummary(json);
 }
 
 async function getChannels(
@@ -57,7 +59,12 @@ async function getChannels(
         headers: getHeaders(token)
     });
 
-    return await response.json();
+    const json = await response.json();
+
+    return {
+        continuationToken: json.continuationToken,
+        rows: json.rows.map(mapJsonToChannelSummary)
+    }
 }
 
 async function getChannelVideos(
@@ -100,7 +107,12 @@ async function getChannelVideos(
         headers: getHeaders(token)
     });
 
-    return await response.json();
+    const json = await response.json();
+
+    return {
+        continuationToken: json.continuationToken,
+        rows: json.rows.map(mapJsonToVideoSummary)
+    }
 }
 
 async function deleteChannel(token: string, channelId: string): Promise<void> {

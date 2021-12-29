@@ -1,8 +1,9 @@
-export interface VideoSummary {
+export interface VideoDetail {
     id: string;
     channelId: string;
     channelName: string;
     channelThumbnailUrl: string;
+    channelSubscriptions: number;
     title: string;
     description: string;
     thumbnailUrl: string;
@@ -13,12 +14,13 @@ export interface VideoSummary {
     dateCreated: Date;
 }
 
-export function mapJsonToVideoSummary(json: any): VideoSummary {
+export function mapJsonToVideoDetail(json: any): VideoDetail {
     return {
         id: json.id,
         channelId: json.channelId,
         channelName: json.channelName,
         channelThumbnailUrl: json.channelThumbnailUrl,
+        channelSubscriptions: json.channelSubscriptions,
         title: json.title,
         description: json.description,
         thumbnailUrl: json.thumbnailUrl,

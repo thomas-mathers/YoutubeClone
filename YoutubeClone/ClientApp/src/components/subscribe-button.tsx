@@ -1,4 +1,4 @@
-﻿import { Button } from "@mui/material";
+import { Button } from "@mui/material";
 
 const SubscribeButton = () => {
     return <Button>Subscribe</Button>

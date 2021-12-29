@@ -49,18 +49,18 @@ namespace YoutubeClone.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<VideoSummary>> GetAsync(Guid id)
+        public async Task<ActionResult<VideoDetail>> GetAsync(Guid id)
         {
-            var video = await databaseContext.Videos.FindAsync(id);
+            var video = await databaseContext.Videos.Include(x => x.Channel).ThenInclude(x => x.Subscriptions).FirstOrDefaultAsync(x => x.Id == id);
 
             if (video == null)
             {
                 return NotFound();
             }
 
-            var videoSummary = mapper.Map<VideoSummary>(video);
+            var videoDetail = mapper.Map<VideoDetail>(video);
 
-            return Ok(videoSummary);
+            return Ok(videoDetail);
         }
 
         [HttpGet]

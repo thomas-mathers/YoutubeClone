@@ -1,4 +1,4 @@
-import { CommentSummary, CreateCommentRequest, VideoSummary, Page } from "../models";
+import { CommentSummary, CreateCommentRequest, VideoSummary, VideoDetail, Page, mapJsonToCommentSummary, mapJsonToVideoDetail, mapJsonToVideoSummary } from "../models";
 import { getHeaders } from "../get-headers";
 
 async function createComment(token: string, videoId: string, body: CreateCommentRequest): Promise<CommentSummary> {
@@ -7,15 +7,21 @@ async function createComment(token: string, videoId: string, body: CreateComment
         headers: getHeaders(token),
         body: JSON.stringify(body)
     });
-    return await response.json();
+
+    const json = await response.json();
+
+    return mapJsonToCommentSummary(json);
 }
 
-async function getVideo(id: string): Promise<VideoSummary> {
+async function getVideo(id: string): Promise<VideoDetail> {
     const response = await fetch(`/api/video/${id}`, {
         method: 'GET',
         headers: getHeaders()
     });
-    return await response.json();
+
+    const json = await response.json();
+
+    return mapJsonToVideoDetail(json);
 }
 
 async function getVideos(
@@ -56,7 +62,12 @@ async function getVideos(
         headers: getHeaders()
     });
 
-    return await response.json();
+    const json = await response.json();
+
+    return {
+        continuationToken: json.continuationToken,
+        rows: json.rows.map(mapJsonToVideoSummary)
+    }
 }
 
 async function getVideoComments(id: string): Promise<Page<CommentSummary>> {
@@ -64,7 +75,13 @@ async function getVideoComments(id: string): Promise<Page<CommentSummary>> {
         method: 'GET',
         headers: getHeaders()
     });
-    return await response.json();
+
+    const json = await response.json();
+
+    return {
+        continuationToken: json.continuationToken,
+        rows: json.rows.map(mapJsonToCommentSummary)
+    }
 }
 
 async function deleteVideo(token: string, videoId: string): Promise<void> {

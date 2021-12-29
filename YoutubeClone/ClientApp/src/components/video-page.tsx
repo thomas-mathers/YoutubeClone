@@ -1,7 +1,8 @@
-﻿import { Avatar, Box, Divider, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Divider, Stack, Typography } from "@mui/material";
+import { useMemo } from "react";
 import { useCallback, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
-import { CommentSummary, VideoSummary } from "../api/models";
+import { CommentSummary, VideoDetail } from "../api/models";
 import { getVideo, getVideoComments } from "../api/services/video-service";
 import CollapsibleText from "./collapsible-text";
 import CommentList from "./comment-list";
@@ -13,7 +14,7 @@ import SubscribeButton from "./subscribe-button";
 interface VideoPageProps { }
 
 interface VideoPageState {
-    video: VideoSummary;
+    video: VideoDetail;
     comments: CommentSummary[];
     fetchingVideo: boolean;
     fetchingVideoError: string;
@@ -27,14 +28,15 @@ var initialState: VideoPageState = {
         channelId: '',
         channelName: '',
         channelThumbnailUrl: '',
+        channelSubscriptions: 0,
         title: '',
-        description: "Let's look at how to add or change our naming styles in Visual Studio. Full Courses: https://iamtimcorey.com Patreon: https://www.patreon.com/IAmTimCorey Mailing List: https://signup.iamtimcorey.com/",
+        description: '',
         thumbnailUrl: '',
         url: '',
         views: 0,
         likes: 0,
         dislikes: 0,
-        dateCreated: ''
+        dateCreated: new Date()
     },
     comments: [],
     fetchingVideo: false,
@@ -119,7 +121,12 @@ const VideoPage = (props: VideoPageProps) => {
             fetchVideo();
             fetchNextCommentsPage();
         }
-    }, [params]);
+    }, [params, fetchVideo, fetchNextCommentsPage]);
+
+    const dateTime = useMemo(() => {
+        const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
+        return new Intl.DateTimeFormat('en', options).format(video.dateCreated);
+    }, [video]);
 
     return (
         <Stack padding={2} spacing={2}>
@@ -129,7 +136,7 @@ const VideoPage = (props: VideoPageProps) => {
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
                     <Stack direction="row" spacing={1}>
                         <Typography component="span">{video.views} views</Typography>
-                        <Typography component="span">{video.dateCreated}</Typography>
+                        <Typography component="span">{dateTime}</Typography>
                     </Stack>
                     <Stack direction="row" spacing={1}>
                         <LikeButton likes={video.likes} />
@@ -138,16 +145,20 @@ const VideoPage = (props: VideoPageProps) => {
                 </Stack>
             </Box>
             <Divider />
-            <Stack direction="row" spacing={1}>
-                <Avatar src={video.channelThumbnailUrl} />
-                <Box flex={1}>
-                    <Typography>Thomas Mathers</Typography>
-                    <Typography>1K subscribers</Typography>
-                </Box>
-                <SubscribeButton />
-                <NotificationButton />
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction="row" spacing={1}>
+                    <Avatar src={video.channelThumbnailUrl} />
+                    <Box>
+                        <Typography>{video.channelName}</Typography>
+                        <Typography>{video.channelSubscriptions} subscribers</Typography>
+                    </Box>
+                </Stack>
+                <Stack direction="row" spacing={1}>
+                    <SubscribeButton />
+                    <NotificationButton />
+                </Stack>
             </Stack>
-            <CollapsibleText text={video.description} maxLines={3}/>
+            <CollapsibleText text={video.description} maxLines={3} />
             <Divider />
             <CommentList comments={comments} fetching={fetchingComments} onFetchNextPage={fetchNextCommentsPage} />
         </Stack>

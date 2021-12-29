@@ -24,7 +24,7 @@ namespace YoutubeClone.Infrastructure
             builder.Entity<Subscription>().Property(p => p.Id).ValueGeneratedNever();
             builder.Entity<Video>().Property(p => p.Id).ValueGeneratedNever();
 
-            builder.Entity<Subscription>().HasOne(p => p.Channel).WithOne().OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Subscription>().HasOne(p => p.Channel).WithMany(p => p.Subscriptions).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

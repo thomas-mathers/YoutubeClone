@@ -1,4 +1,4 @@
-﻿import { SubscriptionSummary, Page } from "../models";
+﻿import { SubscriptionSummary, Page, mapJsonToSubscriptionSummary } from "../models";
 import { getHeaders } from "../get-headers";
 
 async function getSubscriptions(
@@ -29,7 +29,13 @@ async function getSubscriptions(
         method: 'GET',
         headers: getHeaders(token)
     });
-    return await response.json();
+
+    const json = await response.json();
+
+    return {
+        continuationToken: json.continuationToken,
+        rows: json.rows.map(mapJsonToSubscriptionSummary)
+    }
 }
 
 async function deleteSubscription(token: string, subscriptionId: string): Promise<void> {
@@ -37,6 +43,7 @@ async function deleteSubscription(token: string, subscriptionId: string): Promis
         method: 'DELETE',
         headers: getHeaders(token)
     });
+
     return await response.json();
 }
 
