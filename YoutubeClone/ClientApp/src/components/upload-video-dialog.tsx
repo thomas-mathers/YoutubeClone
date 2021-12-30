@@ -161,7 +161,7 @@ const UploadVideoDialog = (props: UploadVideoProps) => {
                                 <InputLabel id="Channel">Channel</InputLabel>
                                 <Select labelId="Channel" label="Channel" value={channelId} onChange={handleChangeChannel}>
                                     {
-                                        channels.map(c => <MenuItem value={c.id}>{c.name}</MenuItem>)
+                                        channels.map(c => <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>)
                                     }
                                 </Select>
                             </FormControl>

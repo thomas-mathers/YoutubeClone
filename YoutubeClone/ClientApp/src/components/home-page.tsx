@@ -22,11 +22,11 @@ interface HomePageState {
     searchText: string;
     searchSuggestions: string[];
     feed: VideoSummary[];
-    fetchFeedContinuationToken?: string | null;
+    fetchFeedContinueToken?: string | null;
     fetchFeed: boolean;
     fetchFeedError: string;
     subscriptions: SubscriptionSummary[];
-    fetchSubscriptionsContinuationToken?: string | null;
+    fetchSubscriptionsContinueToken?: string | null;
     fetchSubscriptions: boolean;
     fetchSubscriptionsError: string;
     filters: string[];
@@ -107,7 +107,7 @@ const reducer = (state: HomePageState, action: HomePageAction): HomePageState =>
             return {
                 ...state,
                 subscriptions: state.subscriptions.concat(action.payload.rows),
-                fetchSubscriptionsContinuationToken: action.payload.continuationToken,
+                fetchSubscriptionsContinueToken: action.payload.continuationToken,
                 fetchSubscriptions: false
             }
         case HomePageActionType.FetchSubscriptionsFailure:
@@ -131,7 +131,7 @@ const reducer = (state: HomePageState, action: HomePageAction): HomePageState =>
             return {
                 ...state,
                 feed: state.feed.concat(action.payload.rows),
-                fetchFeedContinuationToken: action.payload.continuationToken,
+                fetchFeedContinueToken: action.payload.continuationToken,
                 fetchFeed: false
             }
         case HomePageActionType.FetchFeedFailure:
@@ -169,9 +169,8 @@ const HomePage = (props: HomePageProps) => {
         searchSuggestions,
         feed,
         fetchFeed,
-        fetchFeedContinuationToken,
+        fetchFeedContinueToken,
         subscriptions,
-        fetchSubscriptionsContinuationToken,
         filters,
         isDrawerOpen,
         isUploadDialogOpen
@@ -211,29 +210,29 @@ const HomePage = (props: HomePageProps) => {
         dispatch({ type: HomePageActionType.CloseUploadDialog });
     }, []);
 
-    const fetchFeedItems = useCallback(async () => {
-        if (token && user && fetchFeedContinuationToken !== null) {
+    const fetchFeedItems = useCallback(async (continueToken?: string | null) => {
+        if (token && user && continueToken !== null) {
             try {
                 dispatch({ type: HomePageActionType.FetchFeed });
-                const page = await getFeed(token, user.id, fetchFeedContinuationToken, 2);
+                const page = await getFeed(token, user.id, continueToken);
                 dispatch({ type: HomePageActionType.FetchFeedSuccess, payload: page });
             } catch (e) {
                 dispatch({ type: HomePageActionType.FetchFeedFailure, payload: e });
             }
         }
-    }, [token, user, fetchFeedContinuationToken]);
+    }, [token, user]);
 
-    const fetchSubscriptions = useCallback(async () => {
-        if (token && user && fetchSubscriptionsContinuationToken !== null) {
+    const fetchSubscriptions = useCallback(async (continueToken?: string | null) => {
+        if (token && user && continueToken !== null) {
             try {
                 dispatch({ type: HomePageActionType.FetchSubscriptions });
-                const page = await getUserSubscriptions(token, user.id, fetchSubscriptionsContinuationToken);
+                const page = await getUserSubscriptions(token, user.id, continueToken);
                 dispatch({ type: HomePageActionType.FetchSubscriptionsSuccess, payload: page });
             } catch (e) {
                 dispatch({ type: HomePageActionType.FetchSubscriptionsFailure });
             }
         }
-    }, [token, user, fetchSubscriptionsContinuationToken]);
+    }, [token, user]);
 
     const clearFeedItems = useCallback(() => dispatch({ type: HomePageActionType.ClearFeed }), []);
     const clearSubscriptions = useCallback(() => dispatch({ type: HomePageActionType.ClearSubscriptions }), []);
@@ -246,7 +245,7 @@ const HomePage = (props: HomePageProps) => {
             clearSubscriptions();
             clearFeedItems();
         }
-    }, [token, user, fetchSubscriptions, fetchFeedItems, clearSubscriptions, clearFeedItems]);
+    }, [token, user, fetchFeedItems, fetchSubscriptions, clearSubscriptions, clearFeedItems]);
 
     useEffect(() => {
         if (debouncedSearchText.length > 0) {
@@ -283,7 +282,7 @@ const HomePage = (props: HomePageProps) => {
                 <AppDrawer open={isDrawerOpen} subscriptions={subscriptions} onClose={handleCloseDrawer} />
                 <Box display="flex">
                     <FeedFilterChipBar filters={filters} />
-                    <Feed items={feed} fetching={fetchFeed} onFetchNextPage={fetchFeedItems}  />
+                    <Feed items={feed} fetching={fetchFeed} onFetchNextPage={() => fetchFeedItems(fetchFeedContinueToken)}  />
                 </Box>
             </Box>
             <UploadVideoDialog token={token!} user={user!} open={isUploadDialogOpen} onClose={handleCloseUploadVideoDialog} />
