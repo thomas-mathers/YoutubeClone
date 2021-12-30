@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 
 const SubscribeButton = () => {
-    return <Button>Subscribe</Button>
+    return <Button variant="contained">Subscribe</Button>
 }
 
 export default SubscribeButton;

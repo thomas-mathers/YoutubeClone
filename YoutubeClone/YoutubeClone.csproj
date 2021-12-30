@@ -35,6 +35,7 @@
     <None Remove="ClientApp\src\components\bootstrap-dialog-title.tsx" />
     <None Remove="ClientApp\src\components\collapsible-text.tsx" />
     <None Remove="ClientApp\src\components\comment-list.tsx" />
+    <None Remove="ClientApp\src\components\comment-text-field.tsx" />
     <None Remove="ClientApp\src\components\comment.tsx" />
     <None Remove="ClientApp\src\components\dislike-button.tsx" />
     <None Remove="ClientApp\src\components\infinite-scroller.tsx" />
@@ -63,6 +64,7 @@
     <TypeScriptCompile Include="ClientApp\src\api\models\video-detail.ts" />
     <TypeScriptCompile Include="ClientApp\src\components\bootstrap-dialog-title.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\collapsible-text.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\comment-text-field.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\comment-list.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\comment.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\dislike-button.tsx" />

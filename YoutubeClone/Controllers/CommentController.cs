@@ -36,7 +36,7 @@ namespace YoutubeClone.Controllers
                 return NotFound();
             }
 
-            var reply = new Comment(request.Id, request.Text);
+            var reply = new Comment(request.Id, comment.VideoId, request.Text);
 
             comment.AddReply(reply);
 

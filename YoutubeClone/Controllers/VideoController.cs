@@ -21,6 +21,33 @@ namespace YoutubeClone.Controllers
             this.mapper = mapper;
         }
 
+        [HttpGet("{videoId}/comments")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Page<CommentSummary>>> GetCommentsAsync(Guid videoId, [FromQuery] DateTime? continuationToken = null, [FromQuery] int take = 100)
+        {
+            var query = databaseContext.Comments.Where(x => x.VideoId == videoId);
+
+            if (continuationToken != null)
+            {
+                query = query.Where(x => x.DateCreated > continuationToken);
+            }
+
+            query = query.OrderByDescending(x => x.DateCreated);
+
+            var rows = await query.Take(take).ToListAsync();
+
+            var page = new Page<CommentSummary>
+            {
+                ContinuationToken = rows.LastOrDefault()?.DateCreated,
+                Rows = rows.Select(mapper.Map<CommentSummary>).ToList()
+            };
+
+            return Ok(page);
+        }
+
         [Authorize]
         [HttpPost("{videoId}/comments")]
         [Consumes("application/json")]
@@ -37,7 +64,7 @@ namespace YoutubeClone.Controllers
                 return NotFound();
             }
 
-            var comment = new Comment(request.UserId, request.Text);
+            var comment = new Comment(request.UserId, videoId, request.Text);
 
             video.AddComment(comment);
 
@@ -116,7 +143,7 @@ namespace YoutubeClone.Controllers
             var page = new Page<VideoSummary>
             {
                 ContinuationToken = rows.LastOrDefault()?.DateCreated,
-                Rows = rows.Select(v => mapper.Map<VideoSummary>(v)).ToList()
+                Rows = rows.Select(mapper.Map<VideoSummary>).ToList()
             };
 
             return Ok(page);

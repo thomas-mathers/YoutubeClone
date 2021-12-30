@@ -63,7 +63,7 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<HomePage user={state.user} token={state.token} onClickLogout={handleLogout} />} />
-                    <Route path="/videos/:id" element={<VideoPage />} />
+                    <Route path="/videos/:id" element={<VideoPage user={state.user} token={state.token} />} />
                     <Route path="/sign-up" element={<SignUp />} />
                     <Route path="/login" element={<Login onClickLogin={handleLogin} />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />

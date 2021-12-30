@@ -5,14 +5,14 @@ import InfiniteScroller from './infinite-scroller';
 interface FeedProps {
     items: VideoSummary[];
     fetching: boolean;
-    onFetch: () => void;
+    onFetchNextPage: () => void;
 }
 
 const Feed = (props: FeedProps) => {
-    const { items, fetching, onFetch } = props;
+    const { items, fetching, onFetchNextPage } = props;
 
     return (
-        <InfiniteScroller fetching={fetching} onFetchNextPage={onFetch}>
+        <InfiniteScroller fetching={fetching} onFetchNextPage={onFetchNextPage}>
             {
                 items.map(v => (
                     <FeedItem

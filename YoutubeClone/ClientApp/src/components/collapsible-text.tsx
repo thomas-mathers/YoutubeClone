@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
 
 interface CollapsibleTextProps {
@@ -31,7 +31,7 @@ const CollapsibleText = (props: CollapsibleTextProps) => {
                         {text}
                     </Typography>
             }
-            <Button onClick={handleClick}>{expanded ? "Show Less" : "Show More"}</Button>
+            <Link underline="none" variant="button" onClick={handleClick}>{expanded ? "Show less" : "Show more"}</Link>
         </Box>
     )
 }

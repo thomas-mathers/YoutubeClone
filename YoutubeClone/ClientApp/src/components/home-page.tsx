@@ -283,7 +283,7 @@ const HomePage = (props: HomePageProps) => {
                 <AppDrawer open={isDrawerOpen} subscriptions={subscriptions} onClose={handleCloseDrawer} />
                 <Box display="flex">
                     <FeedFilterChipBar filters={filters} />
-                    <Feed items={feed} fetching={fetchFeed} onFetch={fetchFeedItems}  />
+                    <Feed items={feed} fetching={fetchFeed} onFetchNextPage={fetchFeedItems}  />
                 </Box>
             </Box>
             <UploadVideoDialog token={token!} user={user!} open={isUploadDialogOpen} onClose={handleCloseUploadVideoDialog} />

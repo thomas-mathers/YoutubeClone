@@ -14,12 +14,12 @@ const Comment = (props: CommentProps) => {
     const { userName, userProfilePictureUrl, text, likes, dislikes } = props;
 
     return (
-        <Stack>
+        <Stack direction="row" spacing={2}>
             <Avatar src={userProfilePictureUrl} />
             <Stack>
                 <Typography>{userName}</Typography>
                 <Typography>{text}</Typography>
-                <Stack>
+                <Stack direction="row">
                     <LikeButton likes={likes} />
                     <DislikeButton dislikes={dislikes}/>
                     <Button>Reply</Button>
