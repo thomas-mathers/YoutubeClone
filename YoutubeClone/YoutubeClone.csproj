@@ -46,6 +46,9 @@
     <None Remove="ClientApp\src\components\upload-file.tsx" />
     <None Remove="ClientApp\src\components\upload-video-dialog.tsx" />
     <None Remove="ClientApp\src\components\video-page.tsx" />
+    <None Remove="ClientApp\src\components\video-player.tsx" />
+    <None Remove="ClientApp\src\components\video-primary-info.tsx" />
+    <None Remove="ClientApp\src\components\video-secondary-info.tsx" />
     <None Remove="ClientApp\src\elapsed-time-to-string.ts" />
     <None Remove="ClientApp\src\hooks\use-locally-persisted-reducer.ts" />
   </ItemGroup>
@@ -76,6 +79,9 @@
     <TypeScriptCompile Include="ClientApp\src\components\upload-video-dialog.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\upload-file.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\video-page.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\video-player.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\video-primary-info.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\video-secondary-info.tsx" />
     <TypeScriptCompile Include="ClientApp\src\elapsed-time-to-string.ts" />
     <TypeScriptCompile Include="ClientApp\src\hooks\use-locally-persisted-reducer.ts" />
   </ItemGroup>

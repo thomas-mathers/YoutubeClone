@@ -1,14 +1,19 @@
 import { Children, cloneElement, ReactNode, useCallback } from 'react';
-import { Grid, Box, CircularProgress, Typography, Stack } from '@mui/material';
+import { Grid, Box, CircularProgress, Typography, Stack, GridSize } from '@mui/material';
 
 interface FeedProps {
+    xs?: boolean | GridSize;
+    sm?: boolean | GridSize;
+    md?: boolean | GridSize;
+    lg?: boolean | GridSize;
+    xl?: boolean | GridSize;
     children: ReactNode;
     fetching: boolean;
     onFetchNextPage: () => void;
 }
 
 const InfiniteScroller = (props: FeedProps) => {
-    const { fetching, children, onFetchNextPage } = props;
+    const { fetching, children, onFetchNextPage, xs = 12, sm = undefined, md = undefined, lg = undefined, xl = undefined } = props;
 
     const handleScroll = useCallback((e: any) => {
         const y = Math.ceil(e.target.scrollHeight - e.target.scrollTop);
@@ -25,7 +30,7 @@ const InfiniteScroller = (props: FeedProps) => {
         <Box style={{ width: '100%', height: '100%', overflowY: 'auto' }} onScroll={handleScroll}>
             <Grid container spacing={2}>
                 {
-                    Children.map(children, (child: any) => <Grid item xs={12} sm={6} md={4} xl={3}>{cloneElement(child)}</Grid>)
+                    Children.map(children, (child: any) => <Grid item xs={xs} sm={sm} md={md} lg={lg} xl={xl}>{cloneElement(child)}</Grid>)
                 }
                 {
                     fetching &&

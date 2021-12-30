@@ -1,5 +1,4 @@
-import { Avatar, Box, Divider, Stack, Typography } from "@mui/material";
-import { useMemo } from "react";
+import { Divider, Stack, Typography } from "@mui/material";
 import { useCallback, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import { CommentSummary, UserSummary, VideoDetail } from "../api/models";
@@ -7,10 +6,9 @@ import { createComment, getVideo, getVideoComments } from "../api/services/video
 import CollapsibleText from "./collapsible-text";
 import CommentTextField from "./comment-text-field";
 import CommentList from "./comment-list";
-import DislikeButton from "./dislike-button";
-import LikeButton from "./like-button";
-import NotificationButton from "./notification-button";
-import SubscribeButton from "./subscribe-button";
+import VideoPrimaryInfo from "./video-primary-info";
+import VideoSecondaryInfo from "./video-secondary-info";
+import VideoPlayer from "./video-player";
 
 interface VideoPageProps {
     token?: string;
@@ -98,7 +96,6 @@ const reducer = (s: VideoPageState, a: VideoPageAction): VideoPageState => {
                 fetchingCommentsError: ''
             }
         case VideoPageActionType.FetchCommentsPageSuccess:
-            console.log('comments', a.payload)
             return {
                 ...s,
                 fetchingComments: false,
@@ -174,11 +171,6 @@ const VideoPage = (props: VideoPageProps) => {
         }
     }, [token, user, params, commentText]);
 
-    const dateTime = useMemo(() => {
-        const options: Intl.DateTimeFormatOptions = {day: 'numeric', month: 'short', year: 'numeric'};
-        return new Intl.DateTimeFormat('en', options).format(video.dateCreated);
-    }, [video]);
-
     useEffect(() => {
         if (params.id) {
             fetchVideo();
@@ -188,34 +180,10 @@ const VideoPage = (props: VideoPageProps) => {
 
     return (
         <Stack padding={2} spacing={2}>
-            <video src={video.url} controls autoPlay />
-            <Box>
-                <Typography variant="h5">{video.title}</Typography>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Stack direction="row" spacing={1}>
-                        <Typography component="span">{video.views} views</Typography>
-                        <Typography component="span">{dateTime}</Typography>
-                    </Stack>
-                    <Stack direction="row" spacing={1}>
-                        <LikeButton likes={video.likes} />
-                        <DislikeButton dislikes={video.dislikes} />
-                    </Stack>
-                </Stack>
-            </Box>
+            <VideoPlayer src={video.url}/>
+            <VideoPrimaryInfo title={video.title} views={video.views} dateCreated={video.dateCreated} likes={video.likes} dislikes={video.dislikes} />
             <Divider />
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Stack direction="row" spacing={2}>
-                    <Avatar src={video.channelThumbnailUrl} />
-                    <Box>
-                        <Typography>{video.channelName}</Typography>
-                        <Typography>{video.channelSubscriptions} subscribers</Typography>
-                    </Box>
-                </Stack>
-                <Stack direction="row" spacing={1}>
-                    <SubscribeButton />
-                    <NotificationButton />
-                </Stack>
-            </Stack>
+            <VideoSecondaryInfo channelThumbnailUrl={video.channelThumbnailUrl} channelName={video.channelName} channelSubscriptions={video.channelSubscriptions} />
             <CollapsibleText text={video.description} maxLines={3} />
             <Divider />
             <Stack direction="row">

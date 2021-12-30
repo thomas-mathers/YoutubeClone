@@ -12,7 +12,7 @@ const Feed = (props: FeedProps) => {
     const { items, fetching, onFetchNextPage } = props;
 
     return (
-        <InfiniteScroller fetching={fetching} onFetchNextPage={onFetchNextPage}>
+        <InfiniteScroller fetching={fetching} onFetchNextPage={onFetchNextPage} xs={12} sm={6} md={4} xl={3}>
             {
                 items.map(v => (
                     <FeedItem
