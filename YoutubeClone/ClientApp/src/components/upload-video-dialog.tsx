@@ -2,16 +2,15 @@ import { Dialog, DialogContent, useMediaQuery, useTheme, Stack, Button, TextFiel
 import { MouseEvent } from "react";
 import { useEffect } from "react";
 import { ChangeEvent, useCallback, useReducer } from "react";
-import { ChannelSummary, UserSummary } from "../api/models";
+import { ChannelSummary } from "../api/models";
 import { createChannelVideo } from "../api/services/channel-service";
 import { getUserChannels } from "../api/services/user-service";
+import { useAuthService } from "../hooks/use-auth-service";
 import BootstrapDialogTitle from "./bootstrap-dialog-title";
 import OutlinedBox from "./outlined-box";
 import UploadFile from "./upload-file";
 
 interface UploadVideoProps {
-    token: string;
-    user: UserSummary;
     open: boolean;
     onClose: (success: boolean) => void;
 }
@@ -81,10 +80,11 @@ const initialState: UploadVideoState = {
 };
 
 const UploadVideoDialog = (props: UploadVideoProps) => {
-    const { token, user, open, onClose } = props;
+    const { open, onClose } = props;
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const [state, dispatch] = useReducer(reducer, initialState);
+    const { token, user } = useAuthService();
 
     const { channels, channelId, title, description, videoFile, thumbnailFile, loading } = state;
 
@@ -119,15 +119,22 @@ const UploadVideoDialog = (props: UploadVideoProps) => {
     const handleClickUpload = useCallback(async (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        if (videoFile === null) {
+        if (token === null) {
             return;
         }
-        if (thumbnailFile === null) {
-            return;
-        }
+
         if (channelId === undefined) {
             return;
         }
+
+        if (videoFile === null) {
+            return;
+        }
+
+        if (thumbnailFile === null) {
+            return;
+        }
+
         var body = { title: title, description: description, videoFile: videoFile, thumbnailFile: thumbnailFile };
 
         try {

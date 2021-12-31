@@ -2,17 +2,15 @@ import * as React from 'react';
 import { useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Container, Divider, Stack, Typography } from "@mui/material";
-import { UserSummary } from '../api/models';
-import { login } from '../api/services/auth-service';
+import { login as loginRequest } from '../api/services/auth-service';
+import { useAuthService } from '../hooks/use-auth-service';
 import UsernameField from './username-field';
 import PasswordField from './password-field';
 
-interface LoginProps {
-    onClickLogin: (user: UserSummary, token: string) => void;
-}
+interface LoginProps {}
 
 const Login = (props: LoginProps) => {
-    const { onClickLogin } = props;
+    const { login } = useAuthService();
 
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -20,13 +18,13 @@ const Login = (props: LoginProps) => {
 
     const handleLoginClick = useCallback(async () => {
         try {
-            const response = await login({ username: username, password: password });
-            onClickLogin(response.user, response.token);
+            const response = await loginRequest({ username: username, password: password });
+            login(response.user, response.token);
             navigate('/');
         } catch (e) {
             console.error(e);
         }
-    }, [username, password, navigate, onClickLogin]);
+    }, [username, password, login, navigate]);
 
     return (
         <Container maxWidth="xs">

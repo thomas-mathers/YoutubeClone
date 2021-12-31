@@ -32,6 +32,9 @@
   <ItemGroup>
     <None Remove="ClientApp\src\api\models\page.ts" />
     <None Remove="ClientApp\src\api\models\video-detail.ts" />
+    <None Remove="ClientApp\src\auth-service-context.ts" />
+    <None Remove="ClientApp\src\auth-service.ts" />
+    <None Remove="ClientApp\src\components\auth-service-provider.tsx" />
     <None Remove="ClientApp\src\components\bootstrap-dialog-title.tsx" />
     <None Remove="ClientApp\src\components\collapsible-text.tsx" />
     <None Remove="ClientApp\src\components\comment-list.tsx" />
@@ -42,6 +45,7 @@
     <None Remove="ClientApp\src\components\like-button.tsx" />
     <None Remove="ClientApp\src\components\notification-button.tsx" />
     <None Remove="ClientApp\src\components\outlined-box.tsx" />
+    <None Remove="ClientApp\src\components\results-page.tsx" />
     <None Remove="ClientApp\src\components\subscribe-button.tsx" />
     <None Remove="ClientApp\src\components\upload-file.tsx" />
     <None Remove="ClientApp\src\components\upload-video-dialog.tsx" />
@@ -50,6 +54,8 @@
     <None Remove="ClientApp\src\components\video-primary-info.tsx" />
     <None Remove="ClientApp\src\components\video-secondary-info.tsx" />
     <None Remove="ClientApp\src\elapsed-time-to-string.ts" />
+    <None Remove="ClientApp\src\hooks\use-auth-service.ts" />
+    <None Remove="ClientApp\src\hooks\use-local-storage.ts" />
     <None Remove="ClientApp\src\hooks\use-locally-persisted-reducer.ts" />
   </ItemGroup>
 
@@ -75,15 +81,21 @@
     <TypeScriptCompile Include="ClientApp\src\components\like-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\notification-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\outlined-box.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\results-page.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\subscribe-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\upload-video-dialog.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\upload-file.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\auth-service-provider.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\video-page.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\video-player.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\video-primary-info.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\video-secondary-info.tsx" />
     <TypeScriptCompile Include="ClientApp\src\elapsed-time-to-string.ts" />
+    <TypeScriptCompile Include="ClientApp\src\hooks\use-local-storage.ts" />
     <TypeScriptCompile Include="ClientApp\src\hooks\use-locally-persisted-reducer.ts" />
+    <TypeScriptCompile Include="ClientApp\src\hooks\use-auth-service.ts" />
+    <TypeScriptCompile Include="ClientApp\src\auth-service.ts" />
+    <TypeScriptCompile Include="ClientApp\src\auth-service-context.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
