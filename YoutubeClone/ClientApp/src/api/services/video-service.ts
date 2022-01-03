@@ -24,13 +24,20 @@ async function getVideo(id: string): Promise<VideoDetail> {
     return mapJsonToVideoDetail(json);
 }
 
-async function getVideos(
-    filterBy?: string,
+type VideoFilterColumn = 'Description' | 'Title';
+
+interface GetVideoRequestOptions {
+    filterBy?: VideoFilterColumn,
     filter?: string,
     orderBy?: string,
     orderDir?: string,
     continuationToken?: string,
-    take: number = 100): Promise<Page<VideoSummary>> {
+    take?: number
+}
+
+async function getVideos(options: GetVideoRequestOptions): Promise<Page<VideoSummary>> {
+    const { filterBy, filter, orderBy, orderDir, continuationToken, take } = options;
+
     const url = `/api/video?`;
 
     const searchParams = new URLSearchParams();
@@ -55,7 +62,9 @@ async function getVideos(
         searchParams.append('continuationToken', continuationToken);
     }
 
-    searchParams.append('take', take.toString());
+    if (take) {
+        searchParams.append('take', take.toString());
+    }
 
     const response = await fetch(url + searchParams, {
         method: 'GET',

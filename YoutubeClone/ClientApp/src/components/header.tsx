@@ -56,7 +56,7 @@ const Header = (props: HeaderProps) => {
                         </Hidden>
                     </Stack>
                     <Box flexGrow={0} flexShrink={1} flexBasis={720}>
-                        <SearchField value={searchText} onChange={setSearchText} options={searchSuggestions} onSearch={handleClickSearch} />
+                        <SearchField value={searchText} onChange={setSearchText} suggestions={searchSuggestions} onSearch={handleClickSearch} />
                     </Box>
                     <Stack direction="row" spacing={1}>
                         {

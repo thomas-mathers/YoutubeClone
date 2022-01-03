@@ -45,6 +45,8 @@
     <None Remove="ClientApp\src\components\like-button.tsx" />
     <None Remove="ClientApp\src\components\notification-button.tsx" />
     <None Remove="ClientApp\src\components\outlined-box.tsx" />
+    <None Remove="ClientApp\src\components\result.tsx" />
+    <None Remove="ClientApp\src\components\results-list.tsx" />
     <None Remove="ClientApp\src\components\results-page.tsx" />
     <None Remove="ClientApp\src\components\subscribe-button.tsx" />
     <None Remove="ClientApp\src\components\upload-file.tsx" />
@@ -81,6 +83,8 @@
     <TypeScriptCompile Include="ClientApp\src\components\like-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\notification-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\outlined-box.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\result.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\results-list.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\results-page.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\subscribe-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\upload-video-dialog.tsx" />
