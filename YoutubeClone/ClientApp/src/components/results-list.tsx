@@ -11,7 +11,7 @@ interface FeedProps {
 const ResultsList = (props: FeedProps) => {
     const { results, fetching, onFetchNextPage } = props;
     return (
-        <InfiniteScroller fetching={fetching} onFetchNextPage={onFetchNextPage} xs={12} sm={6} md={4} xl={3}>
+        <InfiniteScroller fetching={fetching} onFetchNextPage={onFetchNextPage} xs={12}>
             {
                 results.map(v => (
                     <Result
