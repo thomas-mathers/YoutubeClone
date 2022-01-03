@@ -93,7 +93,7 @@ const Feed = (props: FeedProps) => {
     }, [token, user, fetchFeedItems, clearFeedItems]);
 
     return (
-        <InfiniteScroller fetching={fetching} onFetchNextPage={() => fetchFeedItems(continueToken)} xs={12} sm={6} md={4} xl={3}>
+        <InfiniteScroller fetching={fetching} onFetchNextPage={() => fetchFeedItems(continueToken)} xs={12} sm={6} md={4} lg={3} xl={2}>
             {
                 feed.map(v => (
                     <FeedItem
