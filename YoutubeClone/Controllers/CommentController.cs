@@ -62,7 +62,7 @@ namespace YoutubeClone.Controllers
 
             if (continuationToken != null)
             {
-                query = query.Where(x => x.DateCreated > continuationToken);
+                query = query.Where(x => x.DateCreated < continuationToken);
             }
 
             if (string.IsNullOrEmpty(filter) == false)

@@ -62,7 +62,7 @@ const HomePage = (props: HomePageProps) => {
             <Header onOpenDrawer={handleOpenDrawer} />
             <Box display="flex" flexDirection="row" height="calc(100% - 56px)">
                 <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
-                <Box flex={1}>
+                <Box flex={1} padding={2}>
                     <FeedFilterChipBar filters={filters} />
                     <Feed />
                 </Box>

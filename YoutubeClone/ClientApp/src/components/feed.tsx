@@ -61,20 +61,20 @@ const reducer = (state: FeedState, action: FeedAction): FeedState => {
     }
 }
 
-interface FeedProps {}
+interface FeedProps { }
 
 const Feed = (props: FeedProps) => {
     const { user, token } = useAuthService();
 
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    const {feed, fetching, continueToken} = state;
+    const { feed, fetching, continueToken } = state;
 
     const fetchFeedItems = useCallback(async (continueToken?: string | null) => {
         if (token && user && continueToken !== null) {
             try {
                 dispatch({ type: FeedActionType.FetchFeed });
-                const page = await getFeed(token, user.id, continueToken);
+                const page = await getFeed(token, user.id, continueToken, 3);
                 dispatch({ type: FeedActionType.FetchFeedSuccess, payload: page });
             } catch (e) {
                 dispatch({ type: FeedActionType.FetchFeedFailure, payload: e });

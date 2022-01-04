@@ -1,4 +1,4 @@
-import { Divider, Stack, Typography } from "@mui/material";
+import { Box, Divider, Stack, Typography } from "@mui/material";
 import { useCallback, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import { CommentSummary, UserSummary, VideoDetail } from "../api/models";
@@ -151,7 +151,7 @@ const VideoPage = (props: VideoPageProps) => {
     }, [params]);
 
     const handleChangeCommentText = useCallback((text: string) => {
-        dispatch({ type: VideoPageActionType.CommentTextChanged, payload: text});
+        dispatch({ type: VideoPageActionType.CommentTextChanged, payload: text });
     }, []);
 
     const handleCancelComment = useCallback(() => {
@@ -179,8 +179,8 @@ const VideoPage = (props: VideoPageProps) => {
     }, [params, fetchVideo, handleFetchNextPage]);
 
     return (
-        <Stack padding={2} spacing={2}>
-            <VideoPlayer src={video.url}/>
+        <Stack padding={2} spacing={2} height="100%">
+            <VideoPlayer src={video.url} />
             <VideoPrimaryInfo title={video.title} views={video.views} dateCreated={video.dateCreated} likes={video.likes} dislikes={video.dislikes} />
             <Divider />
             <VideoSecondaryInfo channelThumbnailUrl={video.channelThumbnailUrl} channelName={video.channelName} channelSubscriptions={video.channelSubscriptions} />
@@ -189,8 +189,10 @@ const VideoPage = (props: VideoPageProps) => {
             <Stack direction="row">
                 <Typography>{commentCount} comments</Typography>
             </Stack>
-            <CommentTextField text={commentText} onChangeText={handleChangeCommentText} onCancelComment={handleCancelComment} onSubmitComment={handleSubmitComment}/>
-            <CommentList comments={comments} fetching={fetchingComments} onFetchNextPage={handleFetchNextPage} />
+            <CommentTextField text={commentText} onChangeText={handleChangeCommentText} onCancelComment={handleCancelComment} onSubmitComment={handleSubmitComment} />
+            <Box flex={1} overflow="hidden">
+                <CommentList comments={comments} fetching={fetchingComments} onFetchNextPage={handleFetchNextPage} />
+            </Box>
         </Stack>
     );
 }

@@ -121,7 +121,7 @@ const ResultsPage = (props: ResultsPageProps) => {
             <Header onOpenDrawer={handleOpenDrawer} />
             <Box display="flex" flexDirection="row" height="calc(100% - 56px)">
                 <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
-                <Box flex={1}>
+                <Box flex={1} padding={2}>
                     <ResultsList results={results} fetching={fetching} onFetchNextPage={() => fetchNextPage(continueToken)} />
                 </Box>
             </Box>
