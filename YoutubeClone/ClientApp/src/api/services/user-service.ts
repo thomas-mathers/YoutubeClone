@@ -19,7 +19,7 @@ async function getUsers(
     filter?: string,
     orderBy?: string,
     orderDir?: string,
-    continuationToken?: string,
+    continueToken?: string,
     take: number = 100): Promise<Page<UserSummary>> {
     const url = '/api/user?';
 
@@ -41,8 +41,8 @@ async function getUsers(
         searchParams.append('orderDir', orderDir);
     }
 
-    if (continuationToken) {
-        searchParams.append('continuationToken', continuationToken);
+    if (continueToken) {
+        searchParams.append('continueToken', continueToken);
     }
 
     searchParams.append('take', take.toString());
@@ -55,7 +55,8 @@ async function getUsers(
     const json = await response.json();
 
     return {
-        continuationToken: json.continuationToken,
+        continueToken: json.continueToken,
+        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToUserSummary)
     }
 }
@@ -96,13 +97,13 @@ async function createSubscription(token: string, userId: string, body: CreateSub
     return mapJsonToSubscriptionSummary(json);
 }
 
-async function getFeed(token: string, userId: string, continuationToken?: string, take: number = 100): Promise<Page<VideoSummary>> {
+async function getFeed(token: string, userId: string, continueToken?: string, take: number = 100): Promise<Page<VideoSummary>> {
     const url = `/api/user/${userId}/feed?`;
 
     const searchParams = new URLSearchParams();
 
-    if (continuationToken) {
-        searchParams.append('continuationToken', continuationToken);
+    if (continueToken) {
+        searchParams.append('continueToken', continueToken);
     }
 
     searchParams.append('take', take.toString());
@@ -115,18 +116,19 @@ async function getFeed(token: string, userId: string, continuationToken?: string
     const json = await response.json();
 
     return {
-        continuationToken: json.continuationToken,
+        continueToken: json.continueToken,
+        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToVideoSummary)
     }
 }
 
-async function getUserSubscriptions(token: string, userId: string, continuationToken?: string, take: number = 100): Promise<Page<SubscriptionSummary>> {
+async function getUserSubscriptions(token: string, userId: string, continueToken?: string, take: number = 100): Promise<Page<SubscriptionSummary>> {
     const url = `api/user/${userId}/subscriptions?`;
 
     const searchParams = new URLSearchParams();
 
-    if (continuationToken) {
-        searchParams.append('continuationToken', continuationToken);
+    if (continueToken) {
+        searchParams.append('continueToken', continueToken);
     }
 
     searchParams.append('take', take.toString());
@@ -139,18 +141,19 @@ async function getUserSubscriptions(token: string, userId: string, continuationT
     const json = await response.json();
 
     return {
-        continuationToken: json.continuationToken,
+        continueToken: json.continueToken,
+        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToSubscriptionSummary)
     }
 }
 
-async function getUserChannels(token: string, userId: string, continuationToken?: string, take: number = 100): Promise<Page<ChannelSummary>> {
+async function getUserChannels(token: string, userId: string, continueToken?: string, take: number = 100): Promise<Page<ChannelSummary>> {
     const url = `api/user/${userId}/channels?`;
 
     const searchParams = new URLSearchParams();
 
-    if (continuationToken) {
-        searchParams.append('continuationToken', continuationToken);
+    if (continueToken) {
+        searchParams.append('continueToken', continueToken);
     }
 
     searchParams.append('take', take.toString());
@@ -163,7 +166,8 @@ async function getUserChannels(token: string, userId: string, continuationToken?
     const json = await response.json();
 
     return {
-        continuationToken: json.continuationToken,
+        continueToken: json.continueToken,
+        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToChannelSummary)
     }
 }

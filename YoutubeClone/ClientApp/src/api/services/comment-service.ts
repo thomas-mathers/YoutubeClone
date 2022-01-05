@@ -19,7 +19,7 @@ async function getComments(
     filter?: string,
     orderBy?: string,
     orderDir?: string,
-    continuationToken?: string,
+    continueToken?: string,
     take: number = 100): Promise<Page<CommentSummary>> {
     const url = `/api/comment?`;
 
@@ -41,8 +41,8 @@ async function getComments(
         searchParams.append('orderDir', orderDir);
     }
 
-    if (continuationToken) {
-        searchParams.append('continuationToken', continuationToken);
+    if (continueToken) {
+        searchParams.append('continueToken', continueToken);
     }
 
     searchParams.append('take', take.toString());
@@ -55,7 +55,8 @@ async function getComments(
     const json = await response.json();
 
     return {
-        continuationToken: json.continuationToken,
+        continueToken: json.continueToken,
+        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToCommentSummary)
     }
 }

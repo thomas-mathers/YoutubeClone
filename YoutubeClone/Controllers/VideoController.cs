@@ -26,13 +26,15 @@ namespace YoutubeClone.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Page<CommentSummary>>> GetCommentsAsync(Guid videoId, [FromQuery] DateTime? continuationToken = null, [FromQuery] int take = 100)
+        public async Task<ActionResult<Page<CommentSummary>>> GetCommentsAsync(Guid videoId, [FromQuery] DateTime? continueToken = null, [FromQuery] int take = 100)
         {
             var query = databaseContext.Comments.Where(x => x.VideoId == videoId);
 
-            if (continuationToken != null)
+            var totalRows = await query.LongCountAsync();
+
+            if (continueToken != null)
             {
-                query = query.Where(x => x.DateCreated < continuationToken);
+                query = query.Where(x => x.DateCreated < continueToken);
             }
 
             query = query.OrderByDescending(x => x.DateCreated);
@@ -41,7 +43,8 @@ namespace YoutubeClone.Controllers
 
             var page = new Page<CommentSummary>
             {
-                ContinuationToken = rows.LastOrDefault()?.DateCreated,
+                ContinueToken = rows.LastOrDefault()?.DateCreated,
+                TotalRows = totalRows,
                 Rows = rows.Select(mapper.Map<CommentSummary>).ToList()
             };
 
@@ -96,27 +99,29 @@ namespace YoutubeClone.Controllers
             [FromQuery] string? filter = null, 
             [FromQuery] string? orderBy = nameof(Video.DateCreated), 
             [FromQuery] string? orderDir = "DESC", 
-            [FromQuery] DateTime? continuationToken = null, 
+            [FromQuery] DateTime? continueToken = null, 
             [FromQuery] int take = 100)
         {
             var query = databaseContext.Videos.AsQueryable();
-
-            if (continuationToken != null)
-            {
-                query = query.Where(x => x.DateCreated < continuationToken);
-            }
 
             if (string.IsNullOrEmpty(filter) == false)
             {
                 switch (filterBy)
                 {
                     case nameof(Video.Description):
-                        query = query.Where(x => x.Description.ToLower().Contains(filter.ToLower()));
+                        query = query.Where(x => x.Description.Contains(filter));
                         break;
                     default:
-                        query = query.Where(x => x.Title.ToLower().Contains(filter.ToLower()));
+                        query = query.Where(x => x.Title.Contains(filter));
                         break;
                 }
+            }
+
+            var totalRows = await query.LongCountAsync();
+
+            if (continueToken != null)
+            {
+                query = query.Where(x => x.DateCreated < continueToken);
             }
 
             switch (orderBy)
@@ -142,7 +147,8 @@ namespace YoutubeClone.Controllers
 
             var page = new Page<VideoSummary>
             {
-                ContinuationToken = rows.LastOrDefault()?.DateCreated,
+                ContinueToken = rows.LastOrDefault()?.DateCreated,
+                TotalRows = totalRows,
                 Rows = rows.Select(mapper.Map<VideoSummary>).ToList()
             };
 

@@ -55,24 +55,26 @@ namespace YoutubeClone.Controllers
             [FromQuery] string? filter = null, 
             [FromQuery] string? orderBy = nameof(Comment.DateCreated),
             [FromQuery] string? orderDir = "DESC",
-            [FromQuery] DateTime? continuationToken = null,
+            [FromQuery] DateTime? continueToken = null,
             [FromQuery] int take = 100)
         {
             var query = databaseContext.Comments.AsQueryable();
-
-            if (continuationToken != null)
-            {
-                query = query.Where(x => x.DateCreated < continuationToken);
-            }
 
             if (string.IsNullOrEmpty(filter) == false)
             {
                 switch (filterBy)
                 {
                     default:
-                        query = query.Where(x => x.Text.ToLower().Contains(filter.ToLower()));
+                        query = query.Where(x => x.Text.Contains(filter));
                         break;
                 }
+            }
+
+            var totalRows = await query.LongCountAsync();
+
+            if (continueToken != null)
+            {
+                query = query.Where(x => x.DateCreated < continueToken);
             }
 
             switch (orderBy)
@@ -88,7 +90,8 @@ namespace YoutubeClone.Controllers
 
             var page = new Page<CommentSummary>
             {
-                ContinuationToken = rows.LastOrDefault()?.DateCreated,
+                ContinueToken = rows.LastOrDefault()?.DateCreated,
+                TotalRows = totalRows,
                 Rows = rows.Select(x => mapper.Map<CommentSummary>(x)).ToList()
             };
 

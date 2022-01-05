@@ -23,7 +23,7 @@ namespace YoutubeClone.Controllers
             var suggestions = await databaseContext.Videos
                 .Select(v => v.Title)
                 .Distinct()
-                .Where(s => s.ToLower().StartsWith(prefix.ToLower()))
+                .Where(s => s.StartsWith(prefix))
                 .OrderBy(s => s)
                 .Take(take)
                 .ToListAsync();

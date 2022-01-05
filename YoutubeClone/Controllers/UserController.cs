@@ -60,33 +60,35 @@ namespace YoutubeClone.Controllers
             [FromQuery] string? filter = null,
             [FromQuery] string? orderBy = nameof(Domain.User.DateCreated),
             [FromQuery] string? orderDir = "DESC",
-            [FromQuery] DateTime? continuationToken = null,
+            [FromQuery] DateTime? continueToken = null,
             [FromQuery] int take = 100)
         {
             var query = databaseContext.Users.AsQueryable();
-
-            if (continuationToken != null)
-            {
-                query = query.Where(x => x.DateCreated > continuationToken);
-            }
 
             if (string.IsNullOrEmpty(filter) == false)
             {
                 switch (filterBy)
                 {
                     case nameof(Domain.User.UserName):
-                        query = query.Where(x => x.UserName.ToLower().Contains(filter.ToLower()));
+                        query = query.Where(x => x.UserName.Contains(filter));
                         break;
                     case nameof(Domain.User.GivenName):
-                        query = query.Where(x => x.GivenName.ToLower().Contains(filter.ToLower()));
+                        query = query.Where(x => x.GivenName.Contains(filter));
                         break;
                     case nameof(Domain.User.Surname):
-                        query = query.Where(x => x.Surname.ToLower().Contains(filter.ToLower()));
+                        query = query.Where(x => x.Surname.Contains(filter));
                         break;
                     default:
-                        query = query.Where(x => x.Email.ToLower().Contains(filter.ToLower()));
+                        query = query.Where(x => x.Email.Contains(filter));
                         break;
                 }
+            }
+
+            var totalRows = await query.LongCountAsync();
+
+            if (continueToken != null)
+            {
+                query = query.Where(x => x.DateCreated < continueToken);
             }
 
             switch (orderBy)
@@ -122,7 +124,8 @@ namespace YoutubeClone.Controllers
 
             var page = new Page<UserSummary>
             {
-                ContinuationToken = rows.LastOrDefault()?.DateCreated,
+                ContinueToken = rows.LastOrDefault()?.DateCreated,
+                TotalRows = totalRows,
                 Rows = rows.Select(x => mapper.Map<UserSummary>(x)).ToList()
             };
 
@@ -243,7 +246,7 @@ namespace YoutubeClone.Controllers
             Guid claimsUserId,
             Guid claimsRoleId,
             Guid userId,
-            [FromQuery] DateTime? continuationToken = null,
+            [FromQuery] DateTime? continueToken = null,
             [FromQuery] int take = 100)
         {
             if (userId != claimsUserId)
@@ -255,18 +258,21 @@ namespace YoutubeClone.Controllers
 
             var query = databaseContext.Videos.AsQueryable();
 
-            if (continuationToken != null)
-            {
-                query = query.Where(x => x.DateCreated < continuationToken);
-            }
-
             query = query.Join(userChannels, video => video.ChannelId, channelId => channelId, (video, channelId) => video).OrderByDescending(x => x.DateCreated);
+
+            var totalRows = await query.LongCountAsync();
+
+            if (continueToken != null)
+            {
+                query = query.Where(x => x.DateCreated < continueToken);
+            }
 
             var rows = await query.Take(take).ToListAsync();
 
             var page = new Page<VideoSummary>
             {
-                ContinuationToken = rows.LastOrDefault()?.DateCreated,
+                ContinueToken = rows.LastOrDefault()?.DateCreated,
+                TotalRows = totalRows,
                 Rows = rows.Select(x => mapper.Map<VideoSummary>(x)).ToList()
             };
 
@@ -282,7 +288,7 @@ namespace YoutubeClone.Controllers
             Guid claimsUserId,
             Guid claimsRoleId,
             Guid userId,
-            [FromQuery] DateTime? continuationToken = null,
+            [FromQuery] DateTime? continueToken = null,
             [FromQuery] int take = 100)
         {
             if (userId != claimsUserId)
@@ -292,16 +298,19 @@ namespace YoutubeClone.Controllers
 
             var query = databaseContext.Subscriptions.Include(s => s.Channel).Where(s => s.UserId == userId);
 
-            if (continuationToken != null)
+            var totalRows = await query.LongCountAsync();
+
+            if (continueToken != null)
             {
-                query = query.Where(x => x.DateCreated > continuationToken);
+                query = query.Where(x => x.DateCreated > continueToken);
             }
 
             var rows = await query.Take(take).ToListAsync();
 
             var page = new Page<SubscriptionSummary>
             {
-                ContinuationToken = rows.LastOrDefault()?.DateCreated,
+                ContinueToken = rows.LastOrDefault()?.DateCreated,
+                TotalRows = totalRows,
                 Rows = rows.Select(x => mapper.Map<SubscriptionSummary>(x)).ToList()
             };
 
@@ -317,7 +326,7 @@ namespace YoutubeClone.Controllers
             Guid claimsUserId,
             Guid claimsRoleId,
             Guid userId,
-            [FromQuery] DateTime? continuationToken = null,
+            [FromQuery] DateTime? continueToken = null,
             [FromQuery] int take = 100)
         {
             if (userId != claimsUserId)
@@ -327,16 +336,19 @@ namespace YoutubeClone.Controllers
 
             var query = databaseContext.Channels.Where(s => s.UserId == userId);
 
-            if (continuationToken != null)
+            var totalRows = await query.LongCountAsync();
+
+            if (continueToken != null)
             {
-                query = query.Where(x => x.DateCreated > continuationToken);
+                query = query.Where(x => x.DateCreated > continueToken);
             }
 
             var rows = await query.Take(take).ToListAsync();
 
             var page = new Page<ChannelSummary>
             {
-                ContinuationToken = rows.LastOrDefault()?.DateCreated,
+                ContinueToken = rows.LastOrDefault()?.DateCreated,
+                TotalRows = totalRows,
                 Rows = rows.Select(x => mapper.Map<ChannelSummary>(x)).ToList()
             };
 

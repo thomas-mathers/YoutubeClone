@@ -19,7 +19,7 @@ interface VideoPageState {
     video: VideoDetail;
     comments: CommentSummary[];
     commentContinueToken: string;
-    commentCount: number;
+    totalComments: number;
     commentText: string;
     fetchingVideo: boolean;
     fetchingVideoError: string;
@@ -45,7 +45,7 @@ var initialState: VideoPageState = {
     },
     comments: [],
     commentContinueToken: '',
-    commentCount: 0,
+    totalComments: 0,
     commentText: '',
     fetchingVideo: false,
     fetchingVideoError: '',
@@ -101,8 +101,9 @@ const reducer = (s: VideoPageState, a: VideoPageAction): VideoPageState => {
             return {
                 ...s,
                 fetchingComments: false,
+                commentContinueToken: a.payload.continueToken,
+                totalComments: a.payload.totalRows,
                 comments: s.comments.concat(a.payload.rows),
-                commentContinueToken: a.payload.continuationToken
             }
         case VideoPageActionType.FetchCommentsPageFailure:
             return {
@@ -125,7 +126,7 @@ const VideoPage = (props: VideoPageProps) => {
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const { token, user } = props;
-    const { video, comments, commentContinueToken, commentCount, commentText, fetchingComments } = state;
+    const { video, comments, commentContinueToken, totalComments, commentText, fetchingComments } = state;
 
     const fetchVideo = useCallback(async () => {
         const id = params.id;
@@ -145,8 +146,8 @@ const VideoPage = (props: VideoPageProps) => {
         if (id && continueToken !== null) {
             try {
                 dispatch({ type: VideoPageActionType.FetchCommentsPage });
-                const comments = await getVideoComments(id, continueToken);
-                dispatch({ type: VideoPageActionType.FetchCommentsPageSuccess, payload: comments });
+                const commentPage = await getVideoComments(id, continueToken);
+                dispatch({ type: VideoPageActionType.FetchCommentsPageSuccess, payload: commentPage });
             } catch (e) {
                 dispatch({ type: VideoPageActionType.FetchCommentsPageFailure, payload: e });
             }
@@ -193,7 +194,7 @@ const VideoPage = (props: VideoPageProps) => {
                 <CollapsibleText text={video.description} maxLines={3} />
                 <Divider />
                 <Stack direction="row">
-                    <Typography>{commentCount} comments</Typography>
+                    <Typography>{totalComments} comments</Typography>
                 </Stack>
                 <CommentTextField text={commentText} onChangeText={handleChangeCommentText} onCancelComment={handleCancelComment} onSubmitComment={handleSubmitComment} />
                 <CommentList comments={comments} fetching={fetchingComments} onFetchNextPage={handleFetchNextCommentsPage} />

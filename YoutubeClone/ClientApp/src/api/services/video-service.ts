@@ -31,12 +31,12 @@ interface GetVideoRequestOptions {
     filter?: string,
     orderBy?: string,
     orderDir?: string,
-    continuationToken?: string,
+    continueToken?: string,
     take?: number
 }
 
 async function getVideos(options: GetVideoRequestOptions): Promise<Page<VideoSummary>> {
-    const { filterBy, filter, orderBy, orderDir, continuationToken, take } = options;
+    const { filterBy, filter, orderBy, orderDir, continueToken, take } = options;
 
     const url = `/api/video?`;
 
@@ -58,8 +58,8 @@ async function getVideos(options: GetVideoRequestOptions): Promise<Page<VideoSum
         searchParams.append('orderDir', orderDir);
     }
 
-    if (continuationToken) {
-        searchParams.append('continuationToken', continuationToken);
+    if (continueToken) {
+        searchParams.append('continueToken', continueToken);
     }
 
     if (take) {
@@ -74,7 +74,8 @@ async function getVideos(options: GetVideoRequestOptions): Promise<Page<VideoSum
     const json = await response.json();
 
     return {
-        continuationToken: json.continuationToken,
+        continueToken: json.continueToken,
+        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToVideoSummary)
     }
 }
@@ -85,7 +86,7 @@ async function getVideoComments(id: string, continueToken?: string): Promise<Pag
     const searchParams = new URLSearchParams();
 
     if (continueToken) {
-        searchParams.append('continuationToken', continueToken);
+        searchParams.append('continueToken', continueToken);
     }
 
     const response = await fetch(url + searchParams, {
@@ -96,7 +97,8 @@ async function getVideoComments(id: string, continueToken?: string): Promise<Pag
     const json = await response.json();
 
     return {
-        continuationToken: json.continuationToken,
+        continueToken: json.continueToken,
+        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToCommentSummary)
     }
 }

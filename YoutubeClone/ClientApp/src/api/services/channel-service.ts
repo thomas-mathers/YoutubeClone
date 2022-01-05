@@ -26,7 +26,7 @@ async function getChannels(
     filter?: string,
     orderBy?: string,
     orderDir?: string,
-    continuationToken?: string,
+    continueToken?: string,
     take: number = 100): Promise<Page<ChannelSummary>> {
     const url = '/api/channel?';
 
@@ -48,8 +48,8 @@ async function getChannels(
         searchParams.append('orderDir', orderDir);
     }
 
-    if (continuationToken) {
-        searchParams.append('continuationToken', continuationToken);
+    if (continueToken) {
+        searchParams.append('continueToken', continueToken);
     }
 
     searchParams.append('take', take.toString());
@@ -62,7 +62,8 @@ async function getChannels(
     const json = await response.json();
 
     return {
-        continuationToken: json.continuationToken,
+        continueToken: json.continueToken,
+        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToChannelSummary)
     }
 }
@@ -74,7 +75,7 @@ async function getChannelVideos(
     filter?: string,
     orderBy?: string,
     orderDir?: string,
-    continuationToken?: string,
+    continueToken?: string,
     take: number = 100): Promise<Page<VideoSummary>> {
     const url = `/api/channel/${channelId}/videos?`;
 
@@ -96,8 +97,8 @@ async function getChannelVideos(
         searchParams.append('orderDir', orderDir);
     }
 
-    if (continuationToken) {
-        searchParams.append('continuationToken', continuationToken);
+    if (continueToken) {
+        searchParams.append('continueToken', continueToken);
     }
 
     searchParams.append('take', take.toString());
@@ -110,7 +111,8 @@ async function getChannelVideos(
     const json = await response.json();
 
     return {
-        continuationToken: json.continuationToken,
+        continueToken: json.continueToken,
+        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToVideoSummary)
     }
 }

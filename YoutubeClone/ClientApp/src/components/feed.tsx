@@ -47,7 +47,7 @@ const reducer = (state: FeedState, action: FeedAction): FeedState => {
             return {
                 ...state,
                 feed: state.feed.concat(action.payload.rows),
-                continueToken: action.payload.continuationToken,
+                continueToken: action.payload.continueToken,
                 fetching: false
             }
         case FeedActionType.FetchFeedFailure:

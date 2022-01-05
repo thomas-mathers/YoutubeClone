@@ -48,7 +48,7 @@ const reducer = (state: AppDrawerState, action: AppDrawerAction): AppDrawerState
             return {
                 ...state,
                 subscriptions: state.subscriptions.concat(action.payload.rows),
-                fetchSubscriptionsContinueToken: action.payload.continuationToken,
+                fetchSubscriptionsContinueToken: action.payload.continueToken,
                 fetchSubscriptions: false
             }
         case AppDrawerActionType.FetchSubscriptionsFailure:

@@ -59,7 +59,7 @@ const reducer = (state: ResultsPageState, action: ResultsPageAction): ResultsPag
             return {
                 ...state,
                 results: action.payload.append ? state.results.concat(action.payload.page.rows) : action.payload.page.rows,
-                continueToken: action.payload.page.continuationToken,
+                continueToken: action.payload.page.continueToken,
                 fetching: false
             }
         case ResultsPageActionType.FetchResultsFailure:
@@ -96,7 +96,7 @@ const ResultsPage = (props: ResultsPageProps) => {
         if (filter !== null && continueToken !== null) {
             try {
                 dispatch({ type: ResultsPageActionType.FetchResults });
-                const page = await getVideos({ filter: filter, continuationToken: continueToken });
+                const page = await getVideos({ filter: filter, continueToken: continueToken });
                 dispatch({ type: ResultsPageActionType.FetchResultsSuccess, payload: { page, append } });
             } catch (e) {
                 dispatch({ type: ResultsPageActionType.FetchResultsFailure, payload: e });

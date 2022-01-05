@@ -2,7 +2,8 @@
 {
     public class Page<T>
     {
-        public DateTime? ContinuationToken { get; set; }
-        public IEnumerable<T> Rows { get; set; }
+        public DateTime? ContinueToken { get; set; }
+        public long TotalRows { get; set; }
+        public IEnumerable<T> Rows { get; set; } = Enumerable.Empty<T>();
     }
 }

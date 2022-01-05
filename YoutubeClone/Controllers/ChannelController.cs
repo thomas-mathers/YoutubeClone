@@ -81,27 +81,29 @@ namespace YoutubeClone.Controllers
             [FromQuery] string? filter = null, 
             [FromQuery] string? orderBy = nameof(Channel.DateCreated), 
             [FromQuery] string? orderDir = "DESC", 
-            [FromQuery] DateTime? continuationToken = null, 
+            [FromQuery] DateTime? continueToken = null, 
             [FromQuery] int take = 100)
         {
             var query = databaseContext.Channels.AsQueryable();
-            
-            if (continuationToken != null)
-            {
-                query = query.Where(x => x.DateCreated > continuationToken);
-            }
 
             if (string.IsNullOrEmpty(filter) == false)
             {
                 switch (filterBy)
                 {
                     case nameof(Channel.Description):
-                        query = query.Where(x => x.Description.ToLower().Contains(filter.ToLower()));
+                        query = query.Where(x => x.Description.Contains(filter));
                         break;
                     default:
-                        query = query.Where(x => x.Name.ToLower().Contains(filter.ToLower()));
+                        query = query.Where(x => x.Name.Contains(filter));
                         break;
-                }                
+                }
+            }
+
+            var totalRows = await query.LongCountAsync();
+
+            if (continueToken != null)
+            {
+                query = query.Where(x => x.DateCreated < continueToken);
             }
 
             switch (orderBy)
@@ -122,7 +124,8 @@ namespace YoutubeClone.Controllers
            
             var page = new Page<ChannelSummary> 
             {
-                ContinuationToken = rows.LastOrDefault()?.DateCreated, 
+                ContinueToken = rows.LastOrDefault()?.DateCreated, 
+                TotalRows = totalRows,
                 Rows = rows.Select(x => mapper.Map<ChannelSummary>(x)).ToList() 
             };
 
@@ -138,27 +141,29 @@ namespace YoutubeClone.Controllers
             [FromQuery] string? filter = null, 
             [FromQuery] string? orderBy = nameof(Video.DateCreated), 
             [FromQuery] string? orderDir = "DESC", 
-            [FromQuery] DateTime? continuationToken = null, 
+            [FromQuery] DateTime? continueToken = null, 
             [FromQuery] int take = 100)
         {
             var query = databaseContext.Videos.Where(x => x.ChannelId == channelId);
-
-            if (continuationToken != null)
-            {
-                query = query.Where(x => x.DateCreated > continuationToken);
-            }
 
             if (string.IsNullOrEmpty(filter) == false)
             {
                 switch (filterBy)
                 {
                     case nameof(Video.Description):
-                        query = query.Where(x => x.Description.ToLower().Contains(filter.ToLower()));
+                        query = query.Where(x => x.Description.Contains(filter));
                         break;
                     default:
-                        query = query.Where(x => x.Title.ToLower().Contains(filter.ToLower()));
+                        query = query.Where(x => x.Title.Contains(filter));
                         break;
                 }
+            }
+
+            var totalRows = await query.LongCountAsync();
+
+            if (continueToken != null)
+            {
+                query = query.Where(x => x.DateCreated < continueToken);
             }
 
             switch (orderBy)
@@ -189,7 +194,8 @@ namespace YoutubeClone.Controllers
 
             var page = new Page<VideoSummary>
             {
-                ContinuationToken = rows.LastOrDefault()?.DateCreated,
+                ContinueToken = rows.LastOrDefault()?.DateCreated,
+                TotalRows = totalRows,
                 Rows = rows.Select(v => mapper.Map<VideoSummary>(v)).ToList()
             };
 
