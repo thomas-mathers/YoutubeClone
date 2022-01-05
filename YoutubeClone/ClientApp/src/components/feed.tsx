@@ -85,9 +85,7 @@ const Feed = (props: FeedProps) => {
     const clearFeedItems = useCallback(() => dispatch({ type: FeedActionType.ClearFeed }), []);
 
     useEffect(() => {
-        if (token && user) {
-            fetchFeedItems();
-        } else {
+        if (!token || !user) {
             clearFeedItems();
         }
     }, [token, user, fetchFeedItems, clearFeedItems]);
