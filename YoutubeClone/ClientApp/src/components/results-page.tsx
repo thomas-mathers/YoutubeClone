@@ -4,7 +4,6 @@ import { useSearchParams } from 'react-router-dom';
 import { Box } from "@mui/material";
 import { VideoSummary } from '../api/models';
 import { getVideos } from '../api/services/video-service';
-import AppDrawer from "./app-drawer";
 import Header from './header';
 import ResultsList from './results-list';
 
@@ -13,12 +12,9 @@ interface ResultsPageState {
     fetching: boolean;
     fetchResultsError: string;
     continueToken?: string | null;
-    isDrawerOpen: boolean;
 }
 
 enum ResultsPageActionType {
-    OpenDrawer,
-    CloseDrawer,
     FetchResults,
     FetchResultsSuccess,
     FetchResultsFailure,
@@ -33,22 +29,11 @@ interface ResultsPageAction {
 const initialState: ResultsPageState = {
     results: [],
     fetching: false,
-    fetchResultsError: '',
-    isDrawerOpen: false
+    fetchResultsError: ''
 }
 
 const reducer = (state: ResultsPageState, action: ResultsPageAction): ResultsPageState => {
     switch (action.type) {
-        case ResultsPageActionType.OpenDrawer:
-            return {
-                ...state,
-                isDrawerOpen: true
-            }
-        case ResultsPageActionType.CloseDrawer:
-            return {
-                ...state,
-                isDrawerOpen: false
-            }
         case ResultsPageActionType.FetchResults:
             return {
                 ...state,
@@ -78,17 +63,9 @@ interface ResultsPageProps { }
 const ResultsPage = (props: ResultsPageProps) => {
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    const { results, fetching, continueToken, isDrawerOpen } = state;
+    const { results, fetching, continueToken } = state;
 
     const [searchParams, ] = useSearchParams();
-
-    const handleCloseDrawer = useCallback(() => {
-        dispatch({ type: ResultsPageActionType.CloseDrawer });
-    }, []);
-
-    const handleOpenDrawer = useCallback(() => {
-        dispatch({ type: ResultsPageActionType.OpenDrawer });
-    }, []);
 
     const fetchPage = useCallback(async (continueToken?: string | null, append: boolean = true) => {
         const filter = searchParams.get('search_query');
@@ -119,13 +96,10 @@ const ResultsPage = (props: ResultsPageProps) => {
     const handleFetchNextPage = useCallback(() => fetchNextPage(continueToken), [fetchNextPage, continueToken]);
 
     return (
-        <Box display="flex" flexDirection="column" height="100%">
-            <Header onOpenDrawer={handleOpenDrawer} />
-            <Box display="flex" flexDirection="row" height="calc(100% - 56px)">
-                <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
-                <Box flex={1} padding={2}>
-                    <ResultsList results={results} fetching={fetching} onFetchNextPage={handleFetchNextPage} />
-                </Box>
+        <Box>
+            <Header/>
+            <Box padding={2}>
+                <ResultsList results={results} fetching={fetching} onFetchNextPage={handleFetchNextPage} />
             </Box>
         </Box>
     )

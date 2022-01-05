@@ -1,4 +1,4 @@
-import { Container, Divider, Stack, Typography } from "@mui/material";
+import { Box, Container, Divider, Stack, Typography } from "@mui/material";
 import { useCallback, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import { CommentSummary, UserSummary, VideoDetail } from "../api/models";
@@ -9,6 +9,7 @@ import CommentList from "./comment-list";
 import VideoPrimaryInfo from "./video-primary-info";
 import VideoSecondaryInfo from "./video-secondary-info";
 import VideoPlayer from "./video-player";
+import Header from "./header";
 
 interface VideoPageProps {
     token?: string;
@@ -185,21 +186,26 @@ const VideoPage = (props: VideoPageProps) => {
     const handleFetchNextCommentsPage = useCallback(() => fetchNextCommentsPage(commentContinueToken), [fetchNextCommentsPage, commentContinueToken]);
 
     return (
-        <Container maxWidth="lg">
-            <Stack padding={2} spacing={2} height="100%">
-                <VideoPlayer src={video.url} />
-                <VideoPrimaryInfo title={video.title} views={video.views} dateCreated={video.dateCreated} likes={video.likes} dislikes={video.dislikes} />
-                <Divider />
-                <VideoSecondaryInfo channelThumbnailUrl={video.channelThumbnailUrl} channelName={video.channelName} channelSubscriptions={video.channelSubscriptions} />
-                <CollapsibleText text={video.description} maxLines={3} />
-                <Divider />
-                <Stack direction="row">
-                    <Typography>{totalComments} comments</Typography>
-                </Stack>
-                <CommentTextField text={commentText} onChangeText={handleChangeCommentText} onCancelComment={handleCancelComment} onSubmitComment={handleSubmitComment} />
-                <CommentList comments={comments} fetching={fetchingComments} onFetchNextPage={handleFetchNextCommentsPage} />
-            </Stack>
-        </Container>
+        <Box>
+            <Header />
+            <Box padding={2}>
+                <Container maxWidth="lg">
+                    <Stack spacing={2}>
+                        <VideoPlayer src={video.url} />
+                        <VideoPrimaryInfo title={video.title} views={video.views} dateCreated={video.dateCreated} likes={video.likes} dislikes={video.dislikes} />
+                        <Divider />
+                        <VideoSecondaryInfo channelThumbnailUrl={video.channelThumbnailUrl} channelName={video.channelName} channelSubscriptions={video.channelSubscriptions} />
+                        <CollapsibleText text={video.description} maxLines={3} />
+                        <Divider />
+                        <Stack direction="row">
+                            <Typography>{totalComments} comments</Typography>
+                        </Stack>
+                        <CommentTextField text={commentText} onChangeText={handleChangeCommentText} onCancelComment={handleCancelComment} onSubmitComment={handleSubmitComment} />
+                        <CommentList comments={comments} fetching={fetchingComments} onFetchNextPage={handleFetchNextCommentsPage} />
+                    </Stack>
+                </Container>
+            </Box>
+        </Box>
     );
 }
 

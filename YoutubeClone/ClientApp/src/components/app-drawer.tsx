@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useCallback, useEffect, useReducer } from 'react';
-import { Avatar, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, useMediaQuery, useTheme } from '@mui/material';
+import { Avatar, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { Circle, Explore, History, Home, PlaylistPlay, Subscriptions, ThumbUp, VideoLibrary, WatchLater } from '@mui/icons-material';
 import { SubscriptionSummary } from '../api/models';
 import { getUserSubscriptions } from '../api/services/user-service';
@@ -67,22 +67,10 @@ interface AppDrawerProps {
     onClose?: () => void;
 }
 
-const drawerWidth = 240;
-
-const sx = {
-    width: drawerWidth,
-    flexShrink: 0,
-    [`& .MuiDrawer-paper`]: { position: 'static', width: drawerWidth, boxSizing: 'border-box' },
-};
-
 function AppDrawer(props: AppDrawerProps) {
     const { open, onClose } = props;
     const [state, dispatch] = useReducer(reducer, initialState);
     const { subscriptions } = state;
-
-    const theme = useTheme();
-    const isSmall = useMediaQuery(theme.breakpoints.down('md'));
-    const variant = isSmall ? 'temporary' : 'permanent';
 
     const { token, user } = useAuthService();
 
@@ -109,7 +97,7 @@ function AppDrawer(props: AppDrawerProps) {
     }, [token, user, fetchSubscriptions, clearSubscriptions]);
 
     return (
-        <Drawer anchor="left" open={open} onClose={onClose} ModalProps={{ keepMounted: isSmall }} variant={variant} sx={sx}>
+        <Drawer anchor="left" open={open} onClose={onClose} PaperProps={{ sx: { width: 240 } }}>
             <List>
                 <ListItem button>
                     <ListItemIcon><Home /></ListItemIcon>
