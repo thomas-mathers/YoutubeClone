@@ -59,13 +59,10 @@ const InfiniteScroller = (props: FeedProps) => {
                 }
             </Grid>
             <Box ref={lastElement}></Box>
-            {
-                fetching &&
-                <Stack direction="row" spacing={2} padding={2} alignItems="center" justifyContent="center">
-                    <Typography>Loading...</Typography>
-                    <CircularProgress />
-                </Stack>
-            }
+            <Stack style={{visibility: (fetching ? 'visible' : 'hidden')}} direction="row" spacing={2} padding={2} alignItems="center" justifyContent="center">
+                <Typography>Loading...</Typography>
+                <CircularProgress />
+            </Stack>
         </Box>
     );
 }
