@@ -74,7 +74,7 @@ const Feed = (props: FeedProps) => {
         if (token && user && continueToken !== null) {
             try {
                 dispatch({ type: FeedActionType.FetchFeed });
-                const page = await getFeed(token, user.id, continueToken, 3);
+                const page = await getFeed(token, user.id, continueToken, 6);
                 dispatch({ type: FeedActionType.FetchFeedSuccess, payload: page });
             } catch (e) {
                 dispatch({ type: FeedActionType.FetchFeedFailure, payload: e });
@@ -92,8 +92,10 @@ const Feed = (props: FeedProps) => {
         }
     }, [token, user, fetchFeedItems, clearFeedItems]);
 
+    const handleFetchNextPage = useCallback(() => fetchFeedItems(continueToken), [fetchFeedItems, continueToken]);
+
     return (
-        <InfiniteScroller fetching={fetching} onFetchNextPage={() => fetchFeedItems(continueToken)} xs={12} sm={6} md={4} lg={3} xl={2}>
+        <InfiniteScroller fetching={fetching} onFetchNextPage={handleFetchNextPage} xs={12} sm={6} md={4} lg={3} xl={2}>
             {
                 feed.map(v => (
                     <FeedItem

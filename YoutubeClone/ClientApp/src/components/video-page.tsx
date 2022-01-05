@@ -1,4 +1,4 @@
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import { Divider, Stack, Typography } from "@mui/material";
 import { useCallback, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import { CommentSummary, UserSummary, VideoDetail } from "../api/models";
@@ -18,6 +18,7 @@ interface VideoPageProps {
 interface VideoPageState {
     video: VideoDetail;
     comments: CommentSummary[];
+    commentContinueToken: string;
     commentCount: number;
     commentText: string;
     fetchingVideo: boolean;
@@ -43,6 +44,7 @@ var initialState: VideoPageState = {
         dateCreated: new Date()
     },
     comments: [],
+    commentContinueToken: '',
     commentCount: 0,
     commentText: '',
     fetchingVideo: false,
@@ -99,7 +101,8 @@ const reducer = (s: VideoPageState, a: VideoPageAction): VideoPageState => {
             return {
                 ...s,
                 fetchingComments: false,
-                comments: s.comments.concat(a.payload.rows)
+                comments: s.comments.concat(a.payload.rows),
+                commentContinueToken: a.payload.continuationToken
             }
         case VideoPageActionType.FetchCommentsPageFailure:
             return {
@@ -122,7 +125,7 @@ const VideoPage = (props: VideoPageProps) => {
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const { token, user } = props;
-    const { video, comments, commentCount, commentText, fetchingComments } = state;
+    const { video, comments, commentContinueToken, commentCount, commentText, fetchingComments } = state;
 
     const fetchVideo = useCallback(async () => {
         const id = params.id;
@@ -137,12 +140,12 @@ const VideoPage = (props: VideoPageProps) => {
         }
     }, [params]);
 
-    const handleFetchNextPage = useCallback(async () => {
+    const fetchNextCommentsPage = useCallback(async (continueToken?: string | null) => {
         const id = params.id;
-        if (id) {
+        if (id && continueToken !== null) {
             try {
                 dispatch({ type: VideoPageActionType.FetchCommentsPage });
-                const comments = await getVideoComments(id);
+                const comments = await getVideoComments(id, continueToken);
                 dispatch({ type: VideoPageActionType.FetchCommentsPageSuccess, payload: comments });
             } catch (e) {
                 dispatch({ type: VideoPageActionType.FetchCommentsPageFailure, payload: e });
@@ -174,9 +177,9 @@ const VideoPage = (props: VideoPageProps) => {
     useEffect(() => {
         if (params.id) {
             fetchVideo();
-            handleFetchNextPage();
+            fetchNextCommentsPage();
         }
-    }, [params, fetchVideo, handleFetchNextPage]);
+    }, [params, fetchVideo, fetchNextCommentsPage]);
 
     return (
         <Stack padding={2} spacing={2} height="100%">
@@ -190,9 +193,7 @@ const VideoPage = (props: VideoPageProps) => {
                 <Typography>{commentCount} comments</Typography>
             </Stack>
             <CommentTextField text={commentText} onChangeText={handleChangeCommentText} onCancelComment={handleCancelComment} onSubmitComment={handleSubmitComment} />
-            <Box flex={1} overflow="hidden">
-                <CommentList comments={comments} fetching={fetchingComments} onFetchNextPage={handleFetchNextPage} />
-            </Box>
+            <CommentList comments={comments} fetching={fetchingComments} onFetchNextPage={() => fetchNextCommentsPage(commentContinueToken)} />
         </Stack>
     );
 }

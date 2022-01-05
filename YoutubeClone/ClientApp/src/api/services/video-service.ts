@@ -79,8 +79,16 @@ async function getVideos(options: GetVideoRequestOptions): Promise<Page<VideoSum
     }
 }
 
-async function getVideoComments(id: string): Promise<Page<CommentSummary>> {
-    const response = await fetch(`/api/video/${id}/comments`, {
+async function getVideoComments(id: string, continueToken?: string): Promise<Page<CommentSummary>> {
+    const url = `/api/video/${id}/comments?`;
+
+    const searchParams = new URLSearchParams();
+
+    if (continueToken) {
+        searchParams.append('continuationToken', continueToken);
+    }
+
+    const response = await fetch(url + searchParams, {
         method: 'GET',
         headers: getHeaders()
     });
