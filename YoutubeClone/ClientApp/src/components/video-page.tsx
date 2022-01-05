@@ -181,6 +181,8 @@ const VideoPage = (props: VideoPageProps) => {
         }
     }, [params, fetchVideo, fetchNextCommentsPage]);
 
+    const handleFetchNextCommentsPage = useCallback(() => fetchNextCommentsPage(commentContinueToken), [fetchNextCommentsPage, commentContinueToken]);
+
     return (
         <Stack padding={2} spacing={2} height="100%">
             <VideoPlayer src={video.url} />
@@ -193,7 +195,7 @@ const VideoPage = (props: VideoPageProps) => {
                 <Typography>{commentCount} comments</Typography>
             </Stack>
             <CommentTextField text={commentText} onChangeText={handleChangeCommentText} onCancelComment={handleCancelComment} onSubmitComment={handleSubmitComment} />
-            <CommentList comments={comments} fetching={fetchingComments} onFetchNextPage={() => fetchNextCommentsPage(commentContinueToken)} />
+            <CommentList comments={comments} fetching={fetchingComments} onFetchNextPage={handleFetchNextCommentsPage} />
         </Stack>
     );
 }
