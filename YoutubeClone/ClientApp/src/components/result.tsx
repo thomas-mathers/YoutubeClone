@@ -15,7 +15,7 @@ interface ResultProps {
 }
 
 const Result = (props: ResultProps) => {
-    const { index, thumbnailUrl, channelThumbnailUrl, title, channelName, views, dateCreated } = props;
+    const { thumbnailUrl, channelThumbnailUrl, title, channelName, views, dateCreated } = props;
 
     const dateTime = useMemo(() => elapsedTimeToString(dateCreated.getTime() - new Date().getTime()), [dateCreated]);
 

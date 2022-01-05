@@ -15,7 +15,7 @@ interface FeedItemProps {
 }
 
 const FeedItem = (props: FeedItemProps) => {
-    const { index, thumbnailUrl, channelThumbnailUrl, title, channelName, views, dateCreated } = props;
+    const { thumbnailUrl, channelThumbnailUrl, title, channelName, views, dateCreated } = props;
 
     const dateTime = React.useMemo(() => elapsedTimeToString(dateCreated.getTime() - new Date().getTime()), [dateCreated]);
 
