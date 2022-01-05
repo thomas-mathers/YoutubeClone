@@ -95,10 +95,11 @@ const Feed = (props: FeedProps) => {
     return (
         <InfiniteScroller fetching={fetching} onFetchNextPage={handleFetchNextPage} xs={12} sm={6} md={4} lg={3} xl={2}>
             {
-                feed.map(v => (
+                feed.map((v, i) => (
                     <FeedItem
                         key={v.id}
                         id={v.id}
+                        index={i}
                         thumbnailUrl={v.thumbnailUrl}
                         title={v.title}
                         channelThumbnailUrl={v.channelThumbnailUrl}

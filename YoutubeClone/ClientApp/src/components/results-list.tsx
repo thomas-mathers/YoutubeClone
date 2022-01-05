@@ -13,10 +13,11 @@ const ResultsList = (props: FeedProps) => {
     return (
         <InfiniteScroller fetching={fetching} onFetchNextPage={onFetchNextPage} xs={12} sm={6} md={4} lg={3} xl={2}>
             {
-                results.map(v => (
+                results.map((v, i) => (
                     <Result
                         key={v.id}
                         id={v.id}
+                        index={i}
                         thumbnailUrl={v.thumbnailUrl}
                         title={v.title}
                         channelThumbnailUrl={v.channelThumbnailUrl}
