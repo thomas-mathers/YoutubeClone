@@ -21,6 +21,7 @@ const CommentList = (props: CommentListProps) => {
                         text={c.text}
                         likes={c.likes}
                         dislikes={c.dislikes}
+                        dateCreated={c.dateCreated}
                     />)
             }
         </InfiniteScroller>

@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Avatar, Card, CardActionArea, CardContent, CardMedia, Stack, Typography } from "@mui/material";
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { Avatar, Card, CardActionArea, CardContent, CardMedia, Stack, Typography } from "@mui/material";
 import elapsedTimeToString from '../elapsed-time-to-string';
 
 interface FeedItemProps {
@@ -17,7 +18,7 @@ interface FeedItemProps {
 const FeedItem = (props: FeedItemProps) => {
     const { thumbnailUrl, channelThumbnailUrl, title, channelName, views, dateCreated } = props;
 
-    const dateTime = React.useMemo(() => elapsedTimeToString(dateCreated.getTime() - new Date().getTime()), [dateCreated]);
+    const dateTime = useMemo(() => elapsedTimeToString(dateCreated.getTime() - new Date().getTime()), [dateCreated]);
 
     return (
         <Card>

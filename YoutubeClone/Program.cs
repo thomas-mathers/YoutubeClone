@@ -17,7 +17,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews(options =>
 {
     options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+})
+.AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
 });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -42,28 +47,28 @@ builder.Services.AddTransient<IMapper>(serviceProvider =>
 {
     var config = new MapperConfiguration(cfg =>
     {
-        cfg.CreateMap<Channel, ChannelSummary>();
-        cfg.CreateMap<Channel, ChannelSummary>().ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.UserName));
-        cfg.CreateMap<Channel, ChannelSummary>().ForMember(m => m.UserProfilePictureUrl, opt => opt.MapFrom(src => src.User.ProfilePictureUrl));
+        cfg.CreateMap<Channel, ChannelSummary>()
+            .ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.UserName))
+            .ForMember(m => m.UserProfilePictureUrl, opt => opt.MapFrom(src => src.User.ProfilePictureUrl));
 
-        cfg.CreateMap<Comment, CommentSummary>();
-        cfg.CreateMap<Comment, CommentSummary>().ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.UserName));
-        cfg.CreateMap<Comment, CommentSummary>().ForMember(m => m.UserProfilePictureUrl, opt => opt.MapFrom(src => src.User.ProfilePictureUrl));
+        cfg.CreateMap<Comment, CommentSummary>()
+            .ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.UserName))
+            .ForMember(m => m.UserProfilePictureUrl, opt => opt.MapFrom(src => src.User.ProfilePictureUrl));
 
-        cfg.CreateMap<Subscription, SubscriptionSummary>();
-        cfg.CreateMap<Subscription, SubscriptionSummary>().ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.UserName));
-        cfg.CreateMap<Subscription, SubscriptionSummary>().ForMember(m => m.UserProfilePictureUrl, opt => opt.MapFrom(src => src.User.ProfilePictureUrl));
-        cfg.CreateMap<Subscription, SubscriptionSummary>().ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name));
-        cfg.CreateMap<Subscription, SubscriptionSummary>().ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl));
+        cfg.CreateMap<Subscription, SubscriptionSummary>()
+            .ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.UserName))
+            .ForMember(m => m.UserProfilePictureUrl, opt => opt.MapFrom(src => src.User.ProfilePictureUrl))
+            .ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name))
+            .ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl));
 
-        cfg.CreateMap<Video, VideoSummary>();
-        cfg.CreateMap<Video, VideoSummary>().ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name));
-        cfg.CreateMap<Video, VideoSummary>().ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl));
+        cfg.CreateMap<Video, VideoSummary>()
+            .ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name))
+            .ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl));
 
-        cfg.CreateMap<Video, VideoDetail>();
-        cfg.CreateMap<Video, VideoDetail>().ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name));
-        cfg.CreateMap<Video, VideoDetail>().ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl));
-        cfg.CreateMap<Video, VideoDetail>().ForMember(m => m.ChannelSubscriptions, opt => opt.MapFrom(src => src.Channel.Subscriptions.Count()));
+        cfg.CreateMap<Video, VideoDetail>()
+            .ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name))
+            .ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl))
+            .ForMember(m => m.ChannelSubscriptions, opt => opt.MapFrom(src => src.Channel.Subscriptions.Count()));
 
         cfg.CreateMap<User, UserSummary>();
     });

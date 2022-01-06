@@ -123,7 +123,7 @@ async function getFeed(token: string, userId: string, continueToken?: string, ta
 }
 
 async function getUserSubscriptions(token: string, userId: string, continueToken?: string, take: number = 100): Promise<Page<SubscriptionSummary>> {
-    const url = `api/user/${userId}/subscriptions?`;
+    const url = `/api/user/${userId}/subscriptions?`;
 
     const searchParams = new URLSearchParams();
 
@@ -148,7 +148,7 @@ async function getUserSubscriptions(token: string, userId: string, continueToken
 }
 
 async function getUserChannels(token: string, userId: string, continueToken?: string, take: number = 100): Promise<Page<ChannelSummary>> {
-    const url = `api/user/${userId}/channels?`;
+    const url = `/api/user/${userId}/channels?`;
 
     const searchParams = new URLSearchParams();
 
