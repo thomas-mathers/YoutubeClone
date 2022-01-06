@@ -177,11 +177,8 @@ const VideoPage = (props: VideoPageProps) => {
     }, [token, user, params, commentText]);
 
     useEffect(() => {
-        if (params.id) {
-            fetchVideo();
-            fetchNextCommentsPage();
-        }
-    }, [params, fetchVideo, fetchNextCommentsPage]);
+        fetchVideo();
+    }, [params, fetchVideo]);
 
     const handleFetchNextCommentsPage = useCallback(() => fetchNextCommentsPage(commentContinueToken), [fetchNextCommentsPage, commentContinueToken]);
 
@@ -189,7 +186,7 @@ const VideoPage = (props: VideoPageProps) => {
         <Box>
             <Header />
             <Box padding={2}>
-                <Container maxWidth="lg">
+                <Container maxWidth="lg" disableGutters>
                     <Stack spacing={2}>
                         <VideoPlayer src={video.url} />
                         <VideoPrimaryInfo title={video.title} views={video.views} dateCreated={video.dateCreated} likes={video.likes} dislikes={video.dislikes} />
