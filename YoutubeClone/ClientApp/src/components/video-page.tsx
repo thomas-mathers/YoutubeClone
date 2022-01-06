@@ -1,8 +1,9 @@
-import { Box, Container, Divider, Stack, Typography } from "@mui/material";
 import { useCallback, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
-import { CommentSummary, UserSummary, VideoDetail } from "../api/models";
+import { Box, Container, Divider, Stack, Typography } from "@mui/material";
+import { CommentSummary, VideoDetail } from "../api/models";
 import { createComment, getVideo, getVideoComments } from "../api/services/video-service";
+import { useAuthService } from "../hooks/use-auth-service";
 import CollapsibleText from "./collapsible-text";
 import CommentTextField from "./comment-text-field";
 import CommentList from "./comment-list";
@@ -10,7 +11,6 @@ import VideoPrimaryInfo from "./video-primary-info";
 import VideoSecondaryInfo from "./video-secondary-info";
 import VideoPlayer from "./video-player";
 import Header from "./header";
-import { useAuthService } from "../hooks/use-auth-service";
 
 interface VideoPageState {
     video: VideoDetail;
@@ -176,7 +176,7 @@ const VideoPage = () => {
 
     useEffect(() => {
         fetchVideo();
-    }, [params, fetchVideo]);
+    }, [fetchVideo]);
 
     const handleFetchNextCommentsPage = useCallback(() => fetchCommentsPage(commentContinueToken, true), [fetchCommentsPage, commentContinueToken]);
 
