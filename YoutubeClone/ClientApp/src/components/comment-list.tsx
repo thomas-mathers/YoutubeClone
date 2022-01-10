@@ -5,13 +5,14 @@ import Comment from "./comment";
 interface CommentListProps {
     comments: CommentSummary[];
     fetching: boolean;
+    hasNextPage: boolean;
     onFetchNextPage: () => void;
 }
 
 const CommentList = (props: CommentListProps) => {
-    const { fetching, comments, onFetchNextPage } = props;
+    const { fetching, comments, hasNextPage, onFetchNextPage } = props;
     return (
-        <InfiniteScroller fetching={fetching} onFetchNextPage={onFetchNextPage}>
+        <InfiniteScroller fetching={fetching} hasNextPage={hasNextPage} onFetchNextPage={onFetchNextPage}>
             {
                 comments.map(c =>
                     <Comment

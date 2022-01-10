@@ -1,5 +1,5 @@
 ﻿export default interface Page<T> {
-    continueToken?: string;
+    continueToken: string | null;
     totalRows: number;
     rows: T[];
 }

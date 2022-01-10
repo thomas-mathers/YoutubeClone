@@ -5,13 +5,14 @@ import Result from "./result";
 interface FeedProps {
     results: VideoSummary[];
     fetching: boolean;
+    hasNextPage: boolean;
     onFetchNextPage: () => void;
 }
 
 const ResultsList = (props: FeedProps) => {
-    const { results, fetching, onFetchNextPage } = props;
+    const { results, fetching, hasNextPage, onFetchNextPage } = props;
     return (
-        <InfiniteScroller fetching={fetching} onFetchNextPage={onFetchNextPage} xs={12} sm={6} md={4} lg={3} xl={2}>
+        <InfiniteScroller fetching={fetching} hasNextPage={hasNextPage} onFetchNextPage={onFetchNextPage} xs={12} sm={6} md={4} lg={3} xl={2}>
             {
                 results.map((v, i) => (
                     <Result

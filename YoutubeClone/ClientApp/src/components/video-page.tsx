@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useReducer } from "react";
+import { useCallback, useMemo, useReducer } from "react";
 import { useParams } from "react-router-dom";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "react-query";
 import { Box, Container, Divider, Stack, Typography } from "@mui/material";
-import { CommentSummary, VideoDetail } from "../api/models";
 import { createComment, getVideo, getVideoComments } from "../api/services/video-service";
 import { useAuthService } from "../hooks/use-auth-service";
 import CollapsibleText from "./collapsible-text";
@@ -13,54 +13,15 @@ import VideoPlayer from "./video-player";
 import Header from "./header";
 
 interface VideoPageState {
-    video: VideoDetail;
-    comments: CommentSummary[];
-    commentContinueToken: string;
-    totalComments: number;
     commentText: string;
-    fetchingVideo: boolean;
-    fetchingVideoError: string;
-    fetchingComments: boolean;
-    fetchingCommentsError: string;
 }
 
 var initialState: VideoPageState = {
-    video: {
-        id: '',
-        channelId: '',
-        channelName: '',
-        channelThumbnailUrl: '',
-        channelSubscriptions: 0,
-        title: '',
-        description: '',
-        thumbnailUrl: '',
-        url: '',
-        views: 0,
-        likes: 0,
-        dislikes: 0,
-        dateCreated: new Date()
-    },
-    comments: [],
-    commentContinueToken: '',
-    totalComments: 0,
     commentText: '',
-    fetchingVideo: false,
-    fetchingVideoError: '',
-    fetchingComments: false,
-    fetchingCommentsError: ''
 }
 
 enum VideoPageActionType {
-    FetchVideo,
-    FetchVideoSuccess,
-    FetchVideoFailure,
-    FetchCommentsPage,
-    FetchCommentsPageSuccess,
-    FetchCommentsPageFailure,
-    CommentTextChanged,
-    PostComment,
-    PostCommentSuccess,
-    PostCommentFailure
+    CommentTextChanged
 }
 
 interface VideoPageAction {
@@ -70,45 +31,6 @@ interface VideoPageAction {
 
 const reducer = (s: VideoPageState, a: VideoPageAction): VideoPageState => {
     switch (a.type) {
-        case VideoPageActionType.FetchVideo:
-            return {
-                ...s,
-                fetchingVideo: true,
-                fetchingVideoError: ''
-            }
-        case VideoPageActionType.FetchVideoSuccess:
-            return {
-                ...s,
-                fetchingVideo: false,
-                video: a.payload
-            }
-        case VideoPageActionType.FetchVideoFailure:
-            return {
-                ...s,
-                fetchingVideo: false,
-                fetchingVideoError: a.payload
-            }
-        case VideoPageActionType.FetchCommentsPage:
-            return {
-                ...s,
-                fetchingComments: true,
-                fetchingCommentsError: ''
-            }
-        case VideoPageActionType.FetchCommentsPageSuccess:
-            const { page, append } = a.payload;
-            return {
-                ...s,
-                fetchingComments: false,
-                commentContinueToken: page.continueToken,
-                totalComments: page.totalRows,
-                comments: append ? s.comments.concat(page.rows) : page.rows,
-            }
-        case VideoPageActionType.FetchCommentsPageFailure:
-            return {
-                ...s,
-                fetchingComments: false,
-                fetchingCommentsError: a.payload
-            }
         case VideoPageActionType.CommentTextChanged:
             return {
                 ...s,
@@ -120,37 +42,61 @@ const reducer = (s: VideoPageState, a: VideoPageAction): VideoPageState => {
 };
 
 const VideoPage = () => {
+    const { token, user } = useAuthService();
+
+    const queryClient = useQueryClient();
+
     const params = useParams();
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    const { token, user } = useAuthService();
-    const { video, comments, commentContinueToken, totalComments, commentText, fetchingComments } = state;
+    const { commentText } = state;
 
-    const fetchVideo = useCallback(async () => {
-        const id = params.id;
-        if (id) {
-            try {
-                dispatch({ type: VideoPageActionType.FetchVideo });
-                const video = await getVideo(id);
-                dispatch({ type: VideoPageActionType.FetchVideoSuccess, payload: video });
-            } catch (e) {
-                dispatch({ type: VideoPageActionType.FetchVideoFailure, payload: e });
-            }
+    const { data: video } = useQuery('video', () => getVideo(params!.id!), {
+        initialData: {
+            id: '',
+            channelId: '',
+            channelName: '',
+            channelThumbnailUrl: '',
+            channelSubscriptions: 0,
+            title: '',
+            description: '',
+            thumbnailUrl: '',
+            url: '',
+            views: 0,
+            likes: 0,
+            dislikes: 0,
+            dateCreated: new Date()
         }
-    }, [params]);
+    });
 
-    const fetchCommentsPage = useCallback(async (continueToken?: string | null, append: boolean = true) => {
-        const id = params.id;
-        if (id && continueToken !== null) {
-            try {
-                dispatch({ type: VideoPageActionType.FetchCommentsPage });
-                const page = await getVideoComments(id, continueToken);
-                dispatch({ type: VideoPageActionType.FetchCommentsPageSuccess, payload: { page, append } });
-            } catch (e) {
-                dispatch({ type: VideoPageActionType.FetchCommentsPageFailure, payload: e });
+    const createCommentMutation = useMutation('createComment',
+        (x) => createComment(token!, params!.id!, { text: commentText, userId: user!.id }),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries('comments');
             }
+        });
+
+    const { data: commentPages, isFetching: fetchingComments, hasNextPage: hasMoreComments, fetchNextPage: fetchMoreComments } = useInfiniteQuery(
+        'comments',
+        ({ pageParam = undefined }) => getVideoComments(params!.id!, pageParam),
+        {
+            getNextPageParam: (lastPage,) => lastPage.continueToken ?? undefined
+        });
+
+    const totalComments = useMemo(() => {
+        if (!commentPages || commentPages.pages.length === 0) {
+            return 0;
         }
-    }, [params]);
+        return commentPages.pages[0].totalRows;
+    }, [commentPages]);
+
+    const comments = useMemo(() => {
+        if (!commentPages) {
+            return [];
+        }
+        return commentPages.pages.flatMap(x => x.rows);
+    }, [commentPages])
 
     const handleChangeCommentText = useCallback((text: string) => {
         dispatch({ type: VideoPageActionType.CommentTextChanged, payload: text });
@@ -160,43 +106,23 @@ const VideoPage = () => {
         dispatch({ type: VideoPageActionType.CommentTextChanged, payload: '' });
     }, []);
 
-    const handleSubmitComment = useCallback(async () => {
-        const id = params.id;
-        if (token && user && id) {
-            try {                
-                dispatch({ type: VideoPageActionType.PostComment });
-                const comment = await createComment(token, id, { text: commentText, userId: user.id });
-                dispatch({ type: VideoPageActionType.PostCommentSuccess, payload: comment });
-                await fetchCommentsPage(undefined, false);
-            } catch (e) {
-                dispatch({ type: VideoPageActionType.PostCommentFailure, payload: e });
-            }
-        }
-    }, [token, user, params, commentText, fetchCommentsPage]);
-
-    useEffect(() => {
-        fetchVideo();
-    }, [fetchVideo]);
-
-    const handleFetchNextCommentsPage = useCallback(() => fetchCommentsPage(commentContinueToken, true), [fetchCommentsPage, commentContinueToken]);
-
     return (
         <Box>
             <Header />
             <Box padding={2}>
                 <Container maxWidth="lg" disableGutters>
                     <Stack spacing={2}>
-                        <VideoPlayer src={video.url} />
-                        <VideoPrimaryInfo title={video.title} views={video.views} dateCreated={video.dateCreated} likes={video.likes} dislikes={video.dislikes} />
+                        <VideoPlayer src={video!.url} />
+                        <VideoPrimaryInfo title={video!.title} views={video!.views} dateCreated={video!.dateCreated} likes={video!.likes} dislikes={video!.dislikes} />
                         <Divider />
-                        <VideoSecondaryInfo channelThumbnailUrl={video.channelThumbnailUrl} channelName={video.channelName} channelSubscriptions={video.channelSubscriptions} />
-                        <CollapsibleText text={video.description} maxLines={3} />
+                        <VideoSecondaryInfo channelThumbnailUrl={video!.channelThumbnailUrl} channelName={video!.channelName} channelSubscriptions={video!.channelSubscriptions} />
+                        <CollapsibleText text={video!.description} maxLines={3} />
                         <Divider />
                         <Stack direction="row">
                             <Typography>{totalComments} comments</Typography>
                         </Stack>
-                        <CommentTextField text={commentText} onChangeText={handleChangeCommentText} onCancelComment={handleCancelComment} onSubmitComment={handleSubmitComment} />
-                        <CommentList comments={comments} fetching={fetchingComments} onFetchNextPage={handleFetchNextCommentsPage} />
+                        <CommentTextField text={commentText} onChangeText={handleChangeCommentText} onCancelComment={handleCancelComment} onSubmitComment={createCommentMutation.mutate} />
+                        <CommentList comments={comments} fetching={fetchingComments} hasNextPage={hasMoreComments ?? false} onFetchNextPage={fetchMoreComments} />
                     </Stack>
                 </Container>
             </Box>

@@ -11,24 +11,29 @@ import SignUp from './sign-up';
 import VideoPage from './video-page';
 import AuthServiceProvider from './auth-service-provider';
 import ResultsPage from './results-page';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 function App() {
     return (
         <ThemeProvider theme={theme}>
             <AuthServiceProvider>
-                <CssBaseline />
-                <BrowserRouter>
-                    <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/results" element={<ResultsPage />} />
-                        <Route path="/videos/:id" element={<VideoPage />} />
-                        <Route path="/sign-up" element={<SignUp />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/forgot-password" element={<ForgotPassword />} />
-                        <Route path="/reset-password" element={<ResetPassword />} />
-                        <Route path="/change-password" element={<ChangePassword />} />
-                    </Routes>
-                </BrowserRouter>
+                <QueryClientProvider client={queryClient}>
+                    <CssBaseline />
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path="/" element={<HomePage />} />
+                            <Route path="/results" element={<ResultsPage />} />
+                            <Route path="/videos/:id" element={<VideoPage />} />
+                            <Route path="/sign-up" element={<SignUp />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/forgot-password" element={<ForgotPassword />} />
+                            <Route path="/reset-password" element={<ResetPassword />} />
+                            <Route path="/change-password" element={<ChangePassword />} />
+                        </Routes>
+                    </BrowserRouter>
+                </QueryClientProvider>
             </AuthServiceProvider>
         </ThemeProvider>
     );
