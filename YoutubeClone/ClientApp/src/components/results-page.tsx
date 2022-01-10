@@ -10,14 +10,16 @@ import ResultsList from './results-list';
 const ResultsPage = () => {
     const [searchParams,] = useSearchParams();
 
+    const filter = useMemo(() => searchParams.get('search_query') ?? undefined, [searchParams]);
+
     const {
         data: resultsPages,
         isFetching: fetching,
         hasNextPage,
         fetchNextPage
     } = useInfiniteQuery(
-        ['results', searchParams],
-        ({ pageParam = undefined }) => getVideos({ filter: searchParams.get('search_query') ?? '', continueToken: pageParam }),
+        ['results', filter],
+        ({ pageParam = undefined }) => getVideos({ filter: filter, continueToken: pageParam }),
         {
             getNextPageParam: (lastPage,) => lastPage.continueToken ?? undefined
         });
@@ -27,7 +29,7 @@ const ResultsPage = () => {
             return [];
         }
         return resultsPages.pages.flatMap(x => x.rows);
-    }, [resultsPages])
+    }, [resultsPages]);
 
     return (
         <Box>
