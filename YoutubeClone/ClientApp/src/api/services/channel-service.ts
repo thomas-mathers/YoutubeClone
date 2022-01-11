@@ -1,7 +1,15 @@
 import { ChannelSummary, CreateVideoRequest, VideoSummary, mapJsonToVideoSummary, Page, mapJsonToChannelSummary } from "../models";
 import { getHeaders } from "../get-headers";
 
-async function createChannelVideo(token: string, channelId: string, body: CreateVideoRequest): Promise<VideoSummary> {
+interface CreateChannelVideoQuery {
+    token: string;
+    channelId: string;
+    body: CreateVideoRequest
+}
+
+async function createChannelVideo(query: CreateChannelVideoQuery): Promise<VideoSummary> {
+    const { token, channelId, body } = query;
+
     const formData = new FormData();
 
     formData.set('title', body.title);
@@ -20,14 +28,28 @@ async function createChannelVideo(token: string, channelId: string, body: Create
     return mapJsonToVideoSummary(json);
 }
 
-async function getChannels(
-    token: string,
-    filterBy?: string,
-    filter?: string,
-    orderBy?: string,
-    orderDir?: string,
-    continueToken?: string,
-    take: number = 100): Promise<Page<ChannelSummary>> {
+interface GetChannelsQuery {
+    token: string;
+    filterBy?: string;
+    filter?: string;
+    orderBy?: string;
+    orderDir?: string;
+    continueToken?: string;
+    take?: number;
+}
+
+
+async function getChannels(query: GetChannelsQuery): Promise<Page<ChannelSummary>> {
+    const {
+        token,
+        filterBy,
+        filter,
+        orderBy,
+        orderDir,
+        continueToken,
+        take
+    } = query;
+
     const url = '/api/channel?';
 
     const searchParams = new URLSearchParams();
@@ -52,7 +74,9 @@ async function getChannels(
         searchParams.append('continueToken', continueToken);
     }
 
-    searchParams.append('take', take.toString());
+    if (take) {
+        searchParams.append('take', take.toString());
+    }
 
     const response = await fetch(url + searchParams, {
         method: 'GET',
@@ -68,15 +92,29 @@ async function getChannels(
     }
 }
 
-async function getChannelVideos(
-    token: string,
-    channelId: string,
-    filterBy?: string,
-    filter?: string,
-    orderBy?: string,
-    orderDir?: string,
-    continueToken?: string,
-    take: number = 100): Promise<Page<VideoSummary>> {
+interface GetChannelVideosQuery {
+    token: string;
+    channelId: string;
+    filterBy?: string;
+    filter?: string;
+    orderBy?: string;
+    orderDir?: string;
+    continueToken?: string;
+    take?: number;
+}
+
+async function getChannelVideos(query: GetChannelVideosQuery): Promise<Page<VideoSummary>> {
+    const {
+        token,
+        channelId,
+        filterBy,
+        filter,
+        orderBy,
+        orderDir,
+        continueToken,
+        take
+    } = query;
+
     const url = `/api/channel/${channelId}/videos?`;
 
     const searchParams = new URLSearchParams();
@@ -101,7 +139,9 @@ async function getChannelVideos(
         searchParams.append('continueToken', continueToken);
     }
 
-    searchParams.append('take', take.toString());
+    if (take) {
+        searchParams.append('take', take.toString());
+    }
 
     const response = await fetch(url + searchParams, {
         method: 'GET',
@@ -117,7 +157,13 @@ async function getChannelVideos(
     }
 }
 
-async function deleteChannel(token: string, channelId: string): Promise<void> {
+interface DeleteChannelQuery {
+    token: string;
+    channelId: string;
+}
+
+async function deleteChannel(query: DeleteChannelQuery): Promise<void> {
+    const { token, channelId } = query;
     await fetch(`/api/channel/${channelId}`, {
         method: 'DELETE',
         headers: getHeaders(token)

@@ -139,7 +139,7 @@ const UploadVideoDialog = (props: UploadVideoProps) => {
 
         try {
             dispatch({ type: UploadVideoActionType.UploadVideo });
-            await createChannelVideo(token, channelId, body);
+            await createChannelVideo({ token: token, channelId: channelId, body: body });
             dispatch({ type: UploadVideoActionType.UploadVideoSuccess });
             onClose(true);
         } catch (e) {
@@ -149,7 +149,7 @@ const UploadVideoDialog = (props: UploadVideoProps) => {
 
     useEffect(() => {
         if (token && user) {
-            getUserChannels(token, user.id).then(page => page.rows).then(handleChangeChannels);
+            getUserChannels({ token: token, userId: user.id }).then(page => page.rows).then(handleChangeChannels);
         }
     }, [token, user, handleChangeChannels]);
 

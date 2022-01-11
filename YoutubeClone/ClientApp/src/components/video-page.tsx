@@ -70,7 +70,7 @@ const VideoPage = () => {
     });
 
     const createCommentMutation = useMutation('createComment',
-        (x) => createComment(token!, params!.id!, { text: commentText, userId: user!.id }),
+        (x) => createComment({ token: token!, videoId: params!.id!, body: { text: commentText, userId: user!.id } }),
         {
             onSuccess: () => {
                 queryClient.invalidateQueries('comments');
@@ -79,7 +79,7 @@ const VideoPage = () => {
 
     const { data: commentPages, isFetching: fetchingComments, hasNextPage: hasMoreComments, fetchNextPage: fetchMoreComments } = useInfiniteQuery(
         'comments',
-        ({ pageParam = undefined }) => getVideoComments(params!.id!, pageParam),
+        ({ pageParam = undefined }) => getVideoComments({ videoId: params!.id!, continueToken: pageParam }),
         {
             getNextPageParam: (lastPage,) => lastPage.continueToken ?? undefined
         });

@@ -123,7 +123,7 @@ const Header = () => {
 
     useEffect(() => {
         if (debouncedSearchText.length > 0) {
-            getVideoSuggestions(debouncedSearchText, 10).then(handleSearchSuggestionsChanged);
+            getVideoSuggestions({ prefix: debouncedSearchText, take: 10}).then(handleSearchSuggestionsChanged);
         } else {
             handleSearchSuggestionsChanged([]);
         }

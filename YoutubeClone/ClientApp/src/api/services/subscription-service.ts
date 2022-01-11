@@ -1,12 +1,23 @@
 ﻿import { SubscriptionSummary, Page, mapJsonToSubscriptionSummary } from "../models";
 import { getHeaders } from "../get-headers";
 
-async function getSubscriptions(
-    token: string,
-    orderBy?: string,
-    orderDir?: string,
-    continueToken?: string,
-    take: number = 100): Promise<Page<SubscriptionSummary>> {
+interface GetSubscriptionsQuery {
+    token: string;
+    orderBy?: string;
+    orderDir?: string;
+    continueToken?: string;
+    take?: number;
+}
+
+async function getSubscriptions(query: GetSubscriptionsQuery): Promise<Page<SubscriptionSummary>> {
+    const {
+        token,
+        orderBy,
+        orderDir,
+        continueToken,
+        take
+    } = query;
+
     const url = '/api/subscription?';
 
     const searchParams = new URLSearchParams();
@@ -23,7 +34,9 @@ async function getSubscriptions(
         searchParams.append('continueToken', continueToken);
     }
 
-    searchParams.append('take', take.toString());
+    if (take) {
+        searchParams.append('take', take.toString());
+    }
 
     const response = await fetch(url + searchParams, {
         method: 'GET',
@@ -39,7 +52,14 @@ async function getSubscriptions(
     }
 }
 
-async function deleteSubscription(token: string, subscriptionId: string): Promise<void> {
+interface DeleteSubscriptionQuery {
+    token: string;
+    subscriptionId: string;
+}
+
+async function deleteSubscription(query: DeleteSubscriptionQuery): Promise<void> {
+    const { token, subscriptionId } = query;
+
     const response = await fetch(`/api/subscription/${subscriptionId}`, {
         method: 'DELETE',
         headers: getHeaders(token)

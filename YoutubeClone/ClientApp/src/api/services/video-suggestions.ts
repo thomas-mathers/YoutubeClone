@@ -1,10 +1,30 @@
 import { getHeaders } from "../get-headers";
 
-async function getVideoSuggestions(prefix: string, take: number): Promise<string[]> {
-    const response = await fetch(`/api/video-suggestions?prefix=${prefix}&take=${take}`, {
+interface GetVideoSuggestionsQuery {
+    prefix?: string;
+    take?: number;
+}
+
+async function getVideoSuggestions(query: GetVideoSuggestionsQuery): Promise<string[]> {
+    const { prefix, take } = query;
+
+    const url = `/api/video-suggestions?`;
+
+    const searchParams = new URLSearchParams();
+
+    if (prefix) {
+        searchParams.append('prefix', prefix);
+    }
+
+    if (take) {
+        searchParams.append('take', take.toString());
+    }
+
+    const response = await fetch(url + searchParams, {
         method: 'GET',
         headers: getHeaders()
     });
+
     return await response.json();
 }
 

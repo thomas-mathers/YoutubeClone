@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from "react-query";
-import { getFeed } from "../api/services/user-service";
+import { getFeed } from "../api/services/feed-service";
+import { getUserFeed } from "../api/services/user-service";
 import { useAuthService } from "../hooks/use-auth-service";
 import FeedItem from "./feed-item";
 import InfiniteScroller from './infinite-scroller';
@@ -13,8 +14,14 @@ const Feed = () => {
         hasNextPage,
         fetchNextPage
     } = useInfiniteQuery(
-        'feed-items',
-        ({ pageParam = undefined }) => getFeed(token!, user!.id, pageParam, 6),
+        ['feed-items', token, user?.id],
+        ({ pageParam = undefined }) => {
+            if (token && user) {
+                return getUserFeed({ token: token, userId: user.id, continueToken: pageParam, take: 6 });
+            } else {
+                return getFeed({ continueToken: pageParam });
+            }
+        },
         {
             getNextPageParam: (lastPage,) => lastPage.continueToken ?? undefined
         })

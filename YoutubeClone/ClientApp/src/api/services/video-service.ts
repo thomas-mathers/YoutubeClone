@@ -1,7 +1,15 @@
 import { CommentSummary, CreateCommentRequest, VideoSummary, VideoDetail, Page, mapJsonToCommentSummary, mapJsonToVideoDetail, mapJsonToVideoSummary } from "../models";
 import { getHeaders } from "../get-headers";
 
-async function createComment(token: string, videoId: string, body: CreateCommentRequest): Promise<CommentSummary> {
+interface CreateCommentQuery {
+    token: string;
+    videoId: string;
+    body: CreateCommentRequest;
+}
+
+async function createComment(query: CreateCommentQuery): Promise<CommentSummary> {
+    const { token, videoId, body } = query;
+
     const response = await fetch(`/api/video/${videoId}/comments`, {
         method: 'POST',
         headers: getHeaders(token),
@@ -80,13 +88,25 @@ async function getVideos(options: GetVideoRequestOptions): Promise<Page<VideoSum
     }
 }
 
-async function getVideoComments(id: string, continueToken?: string): Promise<Page<CommentSummary>> {
-    const url = `/api/video/${id}/comments?`;
+interface GetVideoCommentsQuery {
+    videoId: string;
+    continueToken?: string,
+    take?: number
+}
+
+async function getVideoComments(query: GetVideoCommentsQuery): Promise<Page<CommentSummary>> {
+    const { videoId, continueToken, take } = query;
+
+    const url = `/api/video/${videoId}/comments?`;
 
     const searchParams = new URLSearchParams();
 
     if (continueToken) {
         searchParams.append('continueToken', continueToken);
+    }
+
+    if (take) {
+        searchParams.append('take', take.toString());
     }
 
     const response = await fetch(url + searchParams, {
@@ -103,7 +123,14 @@ async function getVideoComments(id: string, continueToken?: string): Promise<Pag
     }
 }
 
-async function deleteVideo(token: string, videoId: string): Promise<void> {
+interface DeleteVideoQuery {
+    token: string;
+    videoId: string;
+}
+
+async function deleteVideo(query: DeleteVideoQuery): Promise<void> {
+    const { token, videoId } = query;
+
     const response = await fetch(`/api/video/${videoId}`, {
         method: 'DELETE',
         headers: getHeaders(token)

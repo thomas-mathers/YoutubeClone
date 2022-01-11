@@ -1,7 +1,14 @@
 import { ChannelSummary, CreateChannelRequest, CreateSubscriptionRequest, CreateUserRequest, SubscriptionSummary, UpdateUserRequest, UserSummary, VideoSummary, Page, mapJsonToUserSummary, mapJsonToChannelSummary, mapJsonToSubscriptionSummary, mapJsonToVideoSummary } from "../models";
 import { getHeaders } from "../get-headers";
 
-async function createUser(token: string, body: CreateUserRequest): Promise<UserSummary> {
+interface CreateUserQuery {
+    token: string,
+    body: CreateUserRequest;
+}
+
+async function createUser(query: CreateUserQuery): Promise<UserSummary> {
+    const { token, body } = query;
+
     const response = await fetch('/api/user', {
         method: 'POST',
         headers: getHeaders(token),
@@ -13,14 +20,27 @@ async function createUser(token: string, body: CreateUserRequest): Promise<UserS
     return mapJsonToUserSummary(json);
 }
 
-async function getUsers(
-    token: string,
-    filterBy?: string,
-    filter?: string,
-    orderBy?: string,
-    orderDir?: string,
-    continueToken?: string,
-    take: number = 100): Promise<Page<UserSummary>> {
+interface GetUsersQuery {
+    token: string;
+    filterBy?: string;
+    filter?: string;
+    orderBy?: string;
+    orderDir?: string;
+    continueToken?: string;
+    take?: number;
+}
+
+async function getUsers(query: GetUsersQuery): Promise<Page<UserSummary>> {
+    const {
+        token,
+        filterBy,
+        filter,
+        orderBy,
+        orderDir,
+        continueToken,
+        take
+    } = query;
+
     const url = '/api/user?';
 
     const searchParams = new URLSearchParams();
@@ -45,7 +65,9 @@ async function getUsers(
         searchParams.append('continueToken', continueToken);
     }
 
-    searchParams.append('take', take.toString());
+    if (take) {
+        searchParams.append('take', take.toString());
+    }
 
     const response = await fetch(url + searchParams, {
         method: 'GET',
@@ -61,7 +83,15 @@ async function getUsers(
     }
 }
 
-async function updateUser(token: string, userId: string, body: UpdateUserRequest): Promise<UserSummary> {
+interface UpdateUserQuery {
+    token: string;
+    userId: string;
+    body: UpdateUserRequest
+}
+
+async function updateUser(query: UpdateUserQuery): Promise<UserSummary> {
+    const { token, userId, body } = query;
+
     const response = await fetch(`/api/user/${userId}`, {
         method: 'PUT',
         headers: getHeaders(token),
@@ -73,7 +103,15 @@ async function updateUser(token: string, userId: string, body: UpdateUserRequest
     return mapJsonToUserSummary(json);
 }
 
-async function createChannel(token: string, userId: string, body: CreateChannelRequest): Promise<ChannelSummary> {
+interface CreateChannelQuery {
+    token: string;
+    userId: string;
+    body: CreateChannelRequest;
+}
+
+async function createChannel(query: CreateChannelQuery): Promise<ChannelSummary> {
+    const { token, userId, body } = query;
+
     const response = await fetch(`/api/user/${userId}/channels`, {
         method: 'POST',
         headers: getHeaders(token),
@@ -85,7 +123,15 @@ async function createChannel(token: string, userId: string, body: CreateChannelR
     return mapJsonToChannelSummary(json);
 }
 
-async function createSubscription(token: string, userId: string, body: CreateSubscriptionRequest): Promise<SubscriptionSummary> {
+interface CreateSubscriptionQuery {
+    token: string;
+    userId: string;
+    body: CreateSubscriptionRequest;
+}
+
+async function createSubscription(query: CreateSubscriptionQuery): Promise<SubscriptionSummary> {
+    const { token, userId, body } = query;
+
     const response = await fetch(`/api/user/${userId}/subscriptions`, {
         method: 'POST',
         headers: getHeaders(token),
@@ -97,7 +143,16 @@ async function createSubscription(token: string, userId: string, body: CreateSub
     return mapJsonToSubscriptionSummary(json);
 }
 
-async function getFeed(token: string, userId: string, continueToken?: string, take: number = 100): Promise<Page<VideoSummary>> {
+interface GetUserFeedQuery {
+    token: string;
+    userId: string;
+    continueToken?: string;
+    take?: number;
+}
+
+async function getUserFeed(query: GetUserFeedQuery): Promise<Page<VideoSummary>> {
+    const { token, userId, continueToken, take } = query;
+
     const url = `/api/user/${userId}/feed?`;
 
     const searchParams = new URLSearchParams();
@@ -106,7 +161,9 @@ async function getFeed(token: string, userId: string, continueToken?: string, ta
         searchParams.append('continueToken', continueToken);
     }
 
-    searchParams.append('take', take.toString());
+    if (take) {
+        searchParams.append('take', take.toString());
+    }
 
     const response = await fetch(url + searchParams, {
         method: 'GET',
@@ -122,7 +179,16 @@ async function getFeed(token: string, userId: string, continueToken?: string, ta
     }
 }
 
-async function getUserSubscriptions(token: string, userId: string, continueToken?: string, take: number = 100): Promise<Page<SubscriptionSummary>> {
+interface GetUserSubscriptionsQuery {
+    token: string;
+    userId: string;
+    continueToken?: string;
+    take?: number;
+}
+
+async function getUserSubscriptions(query: GetUserSubscriptionsQuery): Promise<Page<SubscriptionSummary>> {
+    const { token, userId, continueToken, take } = query;
+
     const url = `/api/user/${userId}/subscriptions?`;
 
     const searchParams = new URLSearchParams();
@@ -131,7 +197,9 @@ async function getUserSubscriptions(token: string, userId: string, continueToken
         searchParams.append('continueToken', continueToken);
     }
 
-    searchParams.append('take', take.toString());
+    if (take) {
+        searchParams.append('take', take.toString());
+    }
 
     const response = await fetch(url + searchParams, {
         method: 'GET',
@@ -147,7 +215,16 @@ async function getUserSubscriptions(token: string, userId: string, continueToken
     }
 }
 
-async function getUserChannels(token: string, userId: string, continueToken?: string, take: number = 100): Promise<Page<ChannelSummary>> {
+interface GetUserChannelsQuery {
+    token: string;
+    userId: string;
+    continueToken?: string;
+    take?: number;
+}
+
+async function getUserChannels(query: GetUserChannelsQuery): Promise<Page<ChannelSummary>> {
+    const { token, userId, continueToken, take } = query;
+
     const url = `/api/user/${userId}/channels?`;
 
     const searchParams = new URLSearchParams();
@@ -156,7 +233,9 @@ async function getUserChannels(token: string, userId: string, continueToken?: st
         searchParams.append('continueToken', continueToken);
     }
 
-    searchParams.append('take', take.toString());
+    if (take) {
+        searchParams.append('take', take.toString());
+    }
 
     const response = await fetch(url + searchParams, {
         method: 'GET',
@@ -172,4 +251,4 @@ async function getUserChannels(token: string, userId: string, continueToken?: st
     }
 }
 
-export { createUser, getUsers, updateUser, createChannel, createSubscription, getFeed, getUserSubscriptions, getUserChannels }
+export { createUser, getUsers, updateUser, createChannel, createSubscription, getUserFeed, getUserSubscriptions, getUserChannels }

@@ -1,7 +1,15 @@
-﻿import { CommentSummary, CreateReplyRequest, mapJsonToCommentSummary, Page } from "../models";
+import { CommentSummary, CreateReplyRequest, mapJsonToCommentSummary, Page } from "../models";
 import { getHeaders } from "../get-headers";
 
-async function createReply(token: string, commentId: string, body: CreateReplyRequest): Promise<CommentSummary> {
+interface CreateReplyQuery {
+    token: string;
+    commentId: string;
+    body: CreateReplyRequest;
+}
+
+async function createReply(query: CreateReplyQuery): Promise<CommentSummary> {
+    const { token, commentId, body } = query;
+
     const response = await fetch(`/api/comment/${commentId}/replies`, {
         method: 'POST',
         headers: getHeaders(token),
@@ -13,14 +21,27 @@ async function createReply(token: string, commentId: string, body: CreateReplyRe
     return mapJsonToCommentSummary(json);
 }
 
-async function getComments(
-    token: string,
-    filterBy?: string,
-    filter?: string,
-    orderBy?: string,
-    orderDir?: string,
-    continueToken?: string,
-    take: number = 100): Promise<Page<CommentSummary>> {
+interface GetCommentsQuery {
+    token: string;
+    filterBy?: string;
+    filter?: string;
+    orderBy?: string;
+    orderDir?: string;
+    continueToken?: string;
+    take?: number;
+}
+
+async function getComments(query: GetCommentsQuery): Promise<Page<CommentSummary>> {
+    const {
+        token,
+        filterBy,
+        filter,
+        orderBy,
+        orderDir,
+        continueToken,
+        take
+    } = query;
+
     const url = `/api/comment?`;
 
     const searchParams = new URLSearchParams();
@@ -45,7 +66,9 @@ async function getComments(
         searchParams.append('continueToken', continueToken);
     }
 
-    searchParams.append('take', take.toString());
+    if (take) {
+        searchParams.append('take', take.toString());
+    }
 
     const response = await fetch(url + searchParams, {
         method: 'GET',
