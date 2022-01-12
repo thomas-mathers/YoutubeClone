@@ -20,13 +20,15 @@ const ReplyList = (props: ReplyListProps) => {
     const handleClickHideReplies = useCallback(() => setOpen(false), []);
 
     return (
-        <Stack>
+        <Stack spacing={2}>
             {
-                open ?
-                    <Link onClick={handleClickHideReplies}>Hide {totalReplies} replies</Link>
-                    :
-                    <Link onClick={handleClickShowReplies}>View {totalReplies} replies</Link>
-            }            
+                totalReplies > 0 && (
+                    open ?
+                        <Link onClick={handleClickHideReplies}>Hide {totalReplies} replies</Link>
+                        :
+                        <Link onClick={handleClickShowReplies}>View {totalReplies} replies</Link>
+                )
+            }
             {
                 open &&
                 <LoadMoreScroller fetching={fetching} hasNextPage={hasNextPage} onFetchNextPage={onFetchNextPage}>

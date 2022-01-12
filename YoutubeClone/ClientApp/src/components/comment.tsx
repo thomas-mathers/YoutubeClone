@@ -73,11 +73,11 @@ const Comment = (props: CommentProps) => {
         <Stack direction="row" spacing={2}>
             <Avatar src={userProfilePictureUrl} />
             <Stack flex={1}>
-                <Stack direction="row" spacing={1}>
-                    <Typography variant="body1">{userName}</Typography>
-                    <Typography>{dateTime}</Typography>
+                <Stack direction="row" spacing={1} alignItems="center">
+                    <Typography variant="subtitle2">{userName}</Typography>
+                    <Typography variant="caption">{dateTime}</Typography>
                 </Stack>
-                <Typography>{text}</Typography>
+                <Typography variant="body1">{text}</Typography>
                 <Stack direction="row">
                     <LikeButton likes={likes} />
                     <DislikeButton dislikes={dislikes} />
