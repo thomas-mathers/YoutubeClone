@@ -21,6 +21,34 @@ namespace YoutubeClone.Controllers
             this.mapper = mapper;
         }
 
+        [HttpGet("{commentId}/replies")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Page<CommentSummary>>> GetRepliesAsync(Guid commentId, [FromQuery] DateTime? continueToken, [FromQuery] int take = 100)
+        {
+            var query = databaseContext.Comments.Where(x => x.ParentCommentId == commentId);
+
+            var totalRows = await query.LongCountAsync();
+
+            if (continueToken != null)
+            {
+                query = query.Where(x => x.DateCreated < continueToken);
+            }
+
+            var rows = await query.Take(take).ToListAsync();
+
+            var page = new Page<CommentSummary>
+            {
+                ContinueToken = rows.LastOrDefault()?.DateCreated,
+                TotalRows = totalRows,
+                Rows = rows.Select(x => mapper.Map<CommentSummary>(x)).ToList()
+            };
+
+            return Ok(page);
+        }
+
         [Authorize]
         [HttpPost("{commentId}/replies")]
         [Consumes("application/json")]
@@ -36,7 +64,7 @@ namespace YoutubeClone.Controllers
                 return NotFound();
             }
 
-            var reply = new Comment(request.Id, comment.VideoId, request.Text);
+            var reply = new Comment(request.UserId, comment.VideoId, request.Text);
 
             comment.AddReply(reply);
 

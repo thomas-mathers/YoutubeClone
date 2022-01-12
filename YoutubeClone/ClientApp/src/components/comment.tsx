@@ -4,8 +4,13 @@ import elapsedTimeToString from "../elapsed-time-to-string";
 import LikeButton from "./like-button";
 import DislikeButton from "./dislike-button";
 import CommentTextField from "./comment-text-field";
+import { ReplyList } from "./reply-list";
+import { useInfiniteQuery, useMutation, useQueryClient } from "react-query";
+import { createReply, getReplies } from "../api/services/comment-service";
+import { useAuthService } from "../hooks/use-auth-service";
 
 interface CommentProps {
+    id: string;
     userName: string;
     userProfilePictureUrl: string;
     text: string;
@@ -15,7 +20,40 @@ interface CommentProps {
 }
 
 const Comment = (props: CommentProps) => {
-    const { userName, userProfilePictureUrl, text, likes, dislikes, dateCreated } = props;
+    const { token, user } = useAuthService();
+
+    const queryClient = useQueryClient();
+
+    const { id, userName, userProfilePictureUrl, text, likes, dislikes, dateCreated } = props;
+
+    const { data: replyPages, isFetching: fetchingReplies, hasNextPage: hasMoreReplies, fetchNextPage: fetchNextReplies } = useInfiniteQuery(
+        ['replies', id],
+        ({ pageParam = undefined }) => getReplies({ commentId: id, continueToken: pageParam }),
+        {
+            getNextPageParam: (lastPage,) => lastPage.continueToken ?? undefined
+        });
+
+    const replies = useMemo(() => {
+        if (!replyPages) {
+            return [];
+        }
+        return replyPages.pages.flatMap(x => x.rows);
+    }, [replyPages]);
+
+    const totalReplies = useMemo(() => {
+        if (!replyPages || replyPages.pages.length === 0) {
+            return 0;
+        }
+        return replyPages.pages[0].totalRows;
+    }, [replyPages]);
+
+    const createReplyMutation = useMutation('createReply',
+        (x) => createReply({ token: token!, commentId: id, body: { text: replyText, userId: user!.id } }),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries('replies');
+            }
+        });
 
     const [replyVisible, setReplyVisible] = useState<boolean>(false);
     const [replyText, setReplyText] = useState<string>('');
@@ -25,10 +63,6 @@ const Comment = (props: CommentProps) => {
     const handleCancelComment = useCallback(() => {
         setReplyVisible(false);
         setReplyText('');
-    }, []);
-
-    const handleSubmitComment = useCallback(() => {
-        console.log('submit reply');
     }, []);
 
     const handleClickReply = useCallback(() => {
@@ -51,8 +85,9 @@ const Comment = (props: CommentProps) => {
                 </Stack>
                 {
                     replyVisible &&
-                    <CommentTextField text={replyText} onChangeText={setReplyText} onCancelComment={handleCancelComment} onSubmitComment={handleSubmitComment} />
+                    <CommentTextField text={replyText} onChangeText={setReplyText} onCancelComment={handleCancelComment} onSubmitComment={createReplyMutation.mutate} />
                 }
+                <ReplyList totalReplies={totalReplies} replies={replies} fetching={fetchingReplies} hasNextPage={hasMoreReplies ?? false} onFetchNextPage={fetchNextReplies} />
             </Stack>
         </Stack>
     );

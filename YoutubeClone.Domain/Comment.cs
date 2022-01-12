@@ -9,6 +9,8 @@
         public User User { get; private set; } = null!;
         public Guid VideoId { get; private set; }
         public Video Video { get; private set; } = null!;
+        public Guid? ParentCommentId { get; private set; }
+        public Comment? ParentComment { get; private set; }
         public string Text { get; private set; }
         public long Likes { get; private set; }
         public long Dislikes { get; private set; }

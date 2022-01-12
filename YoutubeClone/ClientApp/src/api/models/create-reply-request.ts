@@ -1,4 +1,4 @@
 ﻿export default interface CreateReplyRequest {
-    id: string;
+    userId: string;
     text: string;
 }

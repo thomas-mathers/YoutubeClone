@@ -16,6 +16,7 @@ const CommentList = (props: CommentListProps) => {
             {
                 comments.map(c =>
                     <Comment
+                        id={c.id}
                         key={c.id}
                         userName={c.userName}
                         userProfilePictureUrl={c.userProfilePictureUrl}

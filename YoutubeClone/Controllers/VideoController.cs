@@ -28,7 +28,7 @@ namespace YoutubeClone.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Page<CommentSummary>>> GetCommentsAsync(Guid videoId, [FromQuery] DateTime? continueToken = null, [FromQuery] int take = 100)
         {
-            var query = databaseContext.Comments.Include(x => x.User).Where(x => x.VideoId == videoId);
+            var query = databaseContext.Comments.Include(x => x.User).Where(x => x.VideoId == videoId && x.ParentCommentId == null);
 
             var totalRows = await query.LongCountAsync();
 

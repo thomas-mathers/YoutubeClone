@@ -84,4 +84,39 @@ async function getComments(query: GetCommentsQuery): Promise<Page<CommentSummary
     }
 }
 
-export { createReply, getComments }
+interface GetRepliesQuery {
+    commentId: string;
+    continueToken?: string;
+    take?: number;
+}
+
+async function getReplies(query: GetRepliesQuery): Promise<Page<CommentSummary>> {
+    const { commentId, continueToken, take } = query;
+
+    const url = `/api/comment/${commentId}/replies?`;
+
+    const searchParams = new URLSearchParams();
+
+    if (continueToken) {
+        searchParams.append('continueToken', continueToken);
+    }
+
+    if (take) {
+        searchParams.append('take', take.toString());
+    }
+
+    const response = await fetch(url + searchParams, {
+        method: 'GET',
+        headers: getHeaders()
+    });
+
+    const json = await response.json();
+
+    return {
+        continueToken: json.continueToken,
+        totalRows: json.totalRows,
+        rows: json.rows.map(mapJsonToCommentSummary)
+    }
+}
+
+export { createReply, getComments, getReplies }

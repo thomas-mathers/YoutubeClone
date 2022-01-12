@@ -44,8 +44,10 @@
     <None Remove="ClientApp\src\components\dislike-button.tsx" />
     <None Remove="ClientApp\src\components\infinite-scroller.tsx" />
     <None Remove="ClientApp\src\components\like-button.tsx" />
+    <None Remove="ClientApp\src\components\load-more-scroller.tsx" />
     <None Remove="ClientApp\src\components\notification-button.tsx" />
     <None Remove="ClientApp\src\components\outlined-box.tsx" />
+    <None Remove="ClientApp\src\components\reply-list.tsx" />
     <None Remove="ClientApp\src\components\result.tsx" />
     <None Remove="ClientApp\src\components\results-list.tsx" />
     <None Remove="ClientApp\src\components\results-page.tsx" />
@@ -83,8 +85,10 @@
     <TypeScriptCompile Include="ClientApp\src\components\dislike-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\infinite-scroller.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\like-button.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\load-more-scroller.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\notification-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\outlined-box.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\reply-list.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\result.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\results-list.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\results-page.tsx" />
