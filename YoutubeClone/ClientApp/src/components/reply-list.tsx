@@ -14,7 +14,7 @@ const ReplyList = (props: ReplyListProps) => {
     const [open, setOpen] = useState(false);
 
     const { data: replyPages, isFetching: fetchingReplies, hasNextPage: hasMoreReplies, fetchNextPage: fetchNextReplies, status } = useInfiniteQuery(
-        ['replies', commentId],
+        ['comments', commentId],
         ({ pageParam = undefined }) => getReplies({ commentId: commentId, continueToken: pageParam }),
         {
             enabled: false,

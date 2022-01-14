@@ -1,5 +1,5 @@
 import { Avatar, Button, Stack, TextField } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { createComment } from "../api/services/comment-service";
 import { useAuthService } from "../hooks/use-auth-service";
@@ -19,10 +19,10 @@ const CommentTextField = (props: CommentTextFieldProps) => {
     const [commentText, setCommentText] = useState<string>('');
 
     const createCommentMutation = useMutation('createComment',
-        (x) => createComment({ token: token!, videoId: videoId, body: { userId: user!.id, parentCommentId: parentCommentId, text: commentText } }),
+        (x) => createComment({ token: token!, body: { userId: user!.id, videoId: videoId, parentCommentId: parentCommentId, text: commentText } }),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries('comments');
+                queryClient.invalidateQueries(['comments']);
             }
         });
 
@@ -38,6 +38,10 @@ const CommentTextField = (props: CommentTextFieldProps) => {
         setCommentText('');
         createCommentMutation.mutate();
     }, [createCommentMutation])
+
+    useEffect(() => {
+        console.log(queryClient.getQueryCache());
+    })
 
     return (
         <Stack direction="row" spacing={2}>

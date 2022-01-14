@@ -28,18 +28,11 @@ namespace YoutubeClone.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<CommentSummary>> CreateComment(Guid videoId, CreateCommentRequest request)
+        public async Task<ActionResult<CommentSummary>> CreateComment(CreateCommentRequest request)
         {
-            var video = await databaseContext.Videos.FindAsync(videoId);
+            var comment = new Comment(request.UserId, request.VideoId, request.Text) { ParentCommentId = request.ParentCommentId };
 
-            if (video == null)
-            {
-                return NotFound();
-            }
-
-            var comment = new Comment(request.UserId, videoId, request.Text) { ParentCommentId = request.ParentCommentId };
-
-            video.AddComment(comment);
+            databaseContext.Comments.Add(comment);
 
             await databaseContext.SaveChangesAsync();
 

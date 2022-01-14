@@ -3,14 +3,13 @@ import { getHeaders } from "../get-headers";
 
 interface CreateCommentQuery {
     token: string;
-    videoId: string;
     body: CreateCommentRequest;
 }
 
 async function createComment(query: CreateCommentQuery): Promise<CommentSummary> {
-    const { token, videoId, body } = query;
+    const { token, body } = query;
 
-    const response = await fetch(`/api/video/${videoId}/comments`, {
+    const response = await fetch(`/api/comment`, {
         method: 'POST',
         headers: getHeaders(token),
         body: JSON.stringify(body)
