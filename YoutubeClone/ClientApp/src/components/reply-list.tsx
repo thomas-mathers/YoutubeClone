@@ -48,17 +48,7 @@ const ReplyList = (props: ReplyListProps) => {
                 open &&
                 <LoadMoreScroller fetching={fetchingReplies} hasNextPage={hasMoreReplies ?? false} onFetchNextPage={fetchNextReplies}>
                     {
-                        replies.map(c =>
-                            <Comment
-                                id={c.id}
-                                key={c.id}
-                                userName={c.userName}
-                                userProfilePictureUrl={c.userProfilePictureUrl}
-                                text={c.text}
-                                likes={c.likes}
-                                dislikes={c.dislikes}
-                                dateCreated={c.dateCreated}
-                            />)
+                        replies.map(c => <Comment {...c}/>)
                     }
                 </LoadMoreScroller>
             }

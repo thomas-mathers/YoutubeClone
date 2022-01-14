@@ -28,17 +28,7 @@ const CommentList = (props: CommentListProps) => {
     return (
         <InfiniteScroller fetching={fetchingComments} hasNextPage={hasMoreComments ?? false} onFetchNextPage={fetchMoreComments}>
             {
-                comments.map(c =>
-                    <Comment
-                        id={c.id}
-                        key={c.id}
-                        userName={c.userName}
-                        userProfilePictureUrl={c.userProfilePictureUrl}
-                        text={c.text}
-                        likes={c.likes}
-                        dislikes={c.dislikes}
-                        dateCreated={c.dateCreated}
-                    />)
+                comments.map(c => <Comment {...c}/>)
             }
         </InfiniteScroller>
     )

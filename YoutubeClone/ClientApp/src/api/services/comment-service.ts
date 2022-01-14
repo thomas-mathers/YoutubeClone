@@ -1,16 +1,16 @@
-import { CommentSummary, CreateReplyRequest, mapJsonToCommentSummary, Page } from "../models";
+import { CommentSummary, CreateCommentRequest, mapJsonToCommentSummary, Page } from "../models";
 import { getHeaders } from "../get-headers";
 
-interface CreateReplyQuery {
+interface CreateCommentQuery {
     token: string;
-    commentId: string;
-    body: CreateReplyRequest;
+    videoId: string;
+    body: CreateCommentRequest;
 }
 
-async function createReply(query: CreateReplyQuery): Promise<CommentSummary> {
-    const { token, commentId, body } = query;
+async function createComment(query: CreateCommentQuery): Promise<CommentSummary> {
+    const { token, videoId, body } = query;
 
-    const response = await fetch(`/api/comment/${commentId}/replies`, {
+    const response = await fetch(`/api/video/${videoId}/comments`, {
         method: 'POST',
         headers: getHeaders(token),
         body: JSON.stringify(body)
@@ -119,4 +119,4 @@ async function getReplies(query: GetRepliesQuery): Promise<Page<CommentSummary>>
     }
 }
 
-export { createReply, getComments, getReplies }
+export { createComment, getComments, getReplies }

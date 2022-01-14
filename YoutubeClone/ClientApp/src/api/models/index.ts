@@ -2,7 +2,6 @@ import { ChannelSummary, mapJsonToChannelSummary } from './channel-summary';
 import { CommentSummary, mapJsonToCommentSummary } from './comment-summary';
 import CreateChannelRequest from './create-channel-request';
 import CreateCommentRequest from './create-comment-request';
-import CreateReplyRequest from './create-reply-request';
 import CreateSubscriptionRequest from './create-subscription-request';
 import CreateUserRequest from './create-user-request';
 import CreateVideoRequest from './create-video-request';
@@ -26,12 +25,10 @@ export {
 }
 
 export type {
-    ChannelSummary,
-    
+    ChannelSummary,    
     CommentSummary,
     CreateChannelRequest,
     CreateCommentRequest,
-    CreateReplyRequest,
     CreateSubscriptionRequest,
     CreateUserRequest,
     CreateVideoRequest,

@@ -21,6 +21,34 @@ namespace YoutubeClone.Controllers
             this.mapper = mapper;
         }
 
+        [Authorize]
+        [HttpPost]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<CommentSummary>> CreateComment(Guid videoId, CreateCommentRequest request)
+        {
+            var video = await databaseContext.Videos.FindAsync(videoId);
+
+            if (video == null)
+            {
+                return NotFound();
+            }
+
+            var comment = new Comment(request.UserId, videoId, request.Text) { ParentCommentId = request.ParentCommentId };
+
+            video.AddComment(comment);
+
+            await databaseContext.SaveChangesAsync();
+
+            var commentSummary = mapper.Map<CommentSummary>(comment);
+
+            return Ok(commentSummary);
+        }
+
+
         [HttpGet("{commentId}/replies")]
         [Consumes("application/json")]
         [Produces("application/json")]
@@ -47,32 +75,6 @@ namespace YoutubeClone.Controllers
             };
 
             return Ok(page);
-        }
-
-        [Authorize]
-        [HttpPost("{commentId}/replies")]
-        [Consumes("application/json")]
-        [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<CommentSummary>> CreateReplyAsync(Guid commentId, CreateReplyRequest request)
-        {
-            var comment = await databaseContext.Comments.FindAsync(commentId);
-
-            if (comment == null)
-            {
-                return NotFound();
-            }
-
-            var reply = new Comment(request.UserId, comment.VideoId, request.Text);
-
-            comment.AddReply(reply);
-
-            await databaseContext.SaveChangesAsync();
-
-            var replySummary = mapper.Map<CommentSummary>(reply);
-
-            return Ok(replySummary);
         }
 
         [HttpGet]

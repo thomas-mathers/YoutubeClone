@@ -1,29 +1,52 @@
 import { Avatar, Button, Stack, TextField } from "@mui/material";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { createComment } from "../api/services/comment-service";
+import { useAuthService } from "../hooks/use-auth-service";
 
 interface CommentTextFieldProps {
-    accountProfilePictureUrl?: string;
-    text: string;
-    onChangeText: (text: string) => void;
-    onCancelComment: () => void;
-    onSubmitComment: () => void;
+    videoId: string;
+    parentCommentId?: string;
 }
 
 const CommentTextField = (props: CommentTextFieldProps) => {
-    const { accountProfilePictureUrl, text, onChangeText, onCancelComment, onSubmitComment } = props;
+    const { videoId, parentCommentId } = props;
+
+    const { token, user } = useAuthService();
+
+    const queryClient = useQueryClient();
+
+    const [commentText, setCommentText] = useState<string>('');
+
+    const createCommentMutation = useMutation('createComment',
+        (x) => createComment({ token: token!, videoId: videoId, body: { userId: user!.id, parentCommentId: parentCommentId, text: commentText } }),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries('comments');
+            }
+        });
 
     const handleChange = useCallback((e) => {
-        onChangeText(e.target.value);
-    }, [onChangeText]);
+        setCommentText(e.target.value);
+    }, []);
+
+    const handleCancelComment = useCallback((e) => {
+        setCommentText('');
+    }, []);
+
+    const handleSubmitComment = useCallback((e) => {
+        setCommentText('');
+        createCommentMutation.mutate();
+    }, [createCommentMutation])
 
     return (
         <Stack direction="row" spacing={2}>
-            <Avatar src={accountProfilePictureUrl} />
+            <Avatar src={user?.profilePictureUrl} />
             <Stack spacing={1} flex={1} alignItems="flex-end">
-                <TextField variant="standard" placeholder="Add a public comment..." value={text} onChange={handleChange} fullWidth />
+                <TextField variant="standard" placeholder="Add a public comment..." value={commentText} onChange={handleChange} fullWidth />
                 <Stack direction="row">
-                    <Button onClick={onCancelComment}>Cancel</Button>
-                    <Button onClick={onSubmitComment}>Comment</Button>
+                    <Button onClick={handleCancelComment}>Cancel</Button>
+                    <Button onClick={handleSubmitComment}>Comment</Button>
                 </Stack>
             </Stack>
         </Stack>
