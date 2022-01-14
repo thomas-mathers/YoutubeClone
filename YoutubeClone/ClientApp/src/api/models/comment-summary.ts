@@ -6,6 +6,7 @@ export interface CommentSummary {
     text: string;
     likes: number;
     dislikes: number;
+    replies: number;
     dateCreated: Date;
 }
 
@@ -18,6 +19,7 @@ export function mapJsonToCommentSummary(json: any): CommentSummary {
         text: json.text,
         likes: json.likes,
         dislikes: json.dislikes,
+        replies: json.replies,
         dateCreated: new Date(json.dateCreated)
     }
 }

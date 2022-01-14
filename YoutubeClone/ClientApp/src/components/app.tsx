@@ -18,8 +18,8 @@ const queryClient = new QueryClient();
 function App() {
     return (
         <ThemeProvider theme={theme}>
-            <AuthServiceProvider>
-                <QueryClientProvider client={queryClient}>
+            <QueryClientProvider client={queryClient}>
+                <AuthServiceProvider>
                     <CssBaseline />
                     <BrowserRouter>
                         <Routes>
@@ -33,8 +33,8 @@ function App() {
                             <Route path="/change-password" element={<ChangePassword />} />
                         </Routes>
                     </BrowserRouter>
-                </QueryClientProvider>
-            </AuthServiceProvider>
+                </AuthServiceProvider>
+            </QueryClientProvider>
         </ThemeProvider>
     );
 }

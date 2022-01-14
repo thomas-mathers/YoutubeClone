@@ -1,8 +1,8 @@
-import { useCallback, useMemo, useReducer } from "react";
+import { useCallback, useReducer } from "react";
 import { useParams } from "react-router-dom";
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Box, Container, Divider, Stack, Typography } from "@mui/material";
-import { createComment, getVideo, getVideoComments } from "../api/services/video-service";
+import { createComment, getVideo } from "../api/services/video-service";
 import { useAuthService } from "../hooks/use-auth-service";
 import CollapsibleText from "./collapsible-text";
 import CommentTextField from "./comment-text-field";
@@ -46,12 +46,13 @@ const VideoPage = () => {
 
     const queryClient = useQueryClient();
 
-    const params = useParams();
+    const { id } = useParams();
+
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const { commentText } = state;
 
-    const { data: video } = useQuery('video', () => getVideo(params!.id!), {
+    const { data: video } = useQuery(['video', id], () => getVideo(id!), {
         initialData: {
             id: '',
             channelId: '',
@@ -70,33 +71,12 @@ const VideoPage = () => {
     });
 
     const createCommentMutation = useMutation('createComment',
-        (x) => createComment({ token: token!, videoId: params!.id!, body: { text: commentText, userId: user!.id } }),
+        (x) => createComment({ token: token!, videoId: id!, body: { text: commentText, userId: user!.id } }),
         {
             onSuccess: () => {
                 queryClient.invalidateQueries('comments');
             }
         });
-
-    const { data: commentPages, isFetching: fetchingComments, hasNextPage: hasMoreComments, fetchNextPage: fetchMoreComments } = useInfiniteQuery(
-        'comments',
-        ({ pageParam = undefined }) => getVideoComments({ videoId: params!.id!, continueToken: pageParam }),
-        {
-            getNextPageParam: (lastPage,) => lastPage.continueToken ?? undefined
-        });
-
-    const totalComments = useMemo(() => {
-        if (!commentPages || commentPages.pages.length === 0) {
-            return 0;
-        }
-        return commentPages.pages[0].totalRows;
-    }, [commentPages]);
-
-    const comments = useMemo(() => {
-        if (!commentPages) {
-            return [];
-        }
-        return commentPages.pages.flatMap(x => x.rows);
-    }, [commentPages])
 
     const handleChangeCommentText = useCallback((text: string) => {
         dispatch({ type: VideoPageActionType.CommentTextChanged, payload: text });
@@ -119,10 +99,10 @@ const VideoPage = () => {
                         <CollapsibleText text={video!.description} maxLines={3} />
                         <Divider />
                         <Stack direction="row">
-                            <Typography>{totalComments} comments</Typography>
+                            <Typography>{0} comments</Typography>
                         </Stack>
                         <CommentTextField text={commentText} onChangeText={handleChangeCommentText} onCancelComment={handleCancelComment} onSubmitComment={createCommentMutation.mutate} />
-                        <CommentList comments={comments} fetching={fetchingComments} hasNextPage={hasMoreComments ?? false} onFetchNextPage={fetchMoreComments} />
+                        <CommentList videoId={id!} />
                     </Stack>
                 </Container>
             </Box>

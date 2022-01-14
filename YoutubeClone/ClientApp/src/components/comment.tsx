@@ -5,8 +5,8 @@ import LikeButton from "./like-button";
 import DislikeButton from "./dislike-button";
 import CommentTextField from "./comment-text-field";
 import { ReplyList } from "./reply-list";
-import { useInfiniteQuery, useMutation, useQueryClient } from "react-query";
-import { createReply, getReplies } from "../api/services/comment-service";
+import { useMutation, useQueryClient } from "react-query";
+import { createReply } from "../api/services/comment-service";
 import { useAuthService } from "../hooks/use-auth-service";
 
 interface CommentProps {
@@ -25,27 +25,6 @@ const Comment = (props: CommentProps) => {
     const queryClient = useQueryClient();
 
     const { id, userName, userProfilePictureUrl, text, likes, dislikes, dateCreated } = props;
-
-    const { data: replyPages, isFetching: fetchingReplies, hasNextPage: hasMoreReplies, fetchNextPage: fetchNextReplies } = useInfiniteQuery(
-        ['replies', id],
-        ({ pageParam = undefined }) => getReplies({ commentId: id, continueToken: pageParam }),
-        {
-            getNextPageParam: (lastPage,) => lastPage.continueToken ?? undefined
-        });
-
-    const replies = useMemo(() => {
-        if (!replyPages) {
-            return [];
-        }
-        return replyPages.pages.flatMap(x => x.rows);
-    }, [replyPages]);
-
-    const totalReplies = useMemo(() => {
-        if (!replyPages || replyPages.pages.length === 0) {
-            return 0;
-        }
-        return replyPages.pages[0].totalRows;
-    }, [replyPages]);
 
     const createReplyMutation = useMutation('createReply',
         (x) => createReply({ token: token!, commentId: id, body: { text: replyText, userId: user!.id } }),
@@ -87,7 +66,7 @@ const Comment = (props: CommentProps) => {
                     replyVisible &&
                     <CommentTextField text={replyText} onChangeText={setReplyText} onCancelComment={handleCancelComment} onSubmitComment={createReplyMutation.mutate} />
                 }
-                <ReplyList totalReplies={totalReplies} replies={replies} fetching={fetchingReplies} hasNextPage={hasMoreReplies ?? false} onFetchNextPage={fetchNextReplies} />
+                <ReplyList commentId={id}/>
             </Stack>
         </Stack>
     );

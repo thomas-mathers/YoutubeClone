@@ -1,37 +1,52 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Link, Stack } from "@mui/material";
-import { CommentSummary } from "../api/models"
+import { useInfiniteQuery } from "react-query";
+import { getReplies } from "../api/services/comment-service";
 import LoadMoreScroller from "./load-more-scroller"
 import Comment from "./comment";
 
 interface ReplyListProps {
-    totalReplies: number;
-    replies: CommentSummary[];
-    fetching: boolean;
-    hasNextPage: boolean;
-    onFetchNextPage: () => void;
+    commentId: string;
 }
 
 const ReplyList = (props: ReplyListProps) => {
-    const { totalReplies, replies, fetching, hasNextPage, onFetchNextPage } = props;
+    const { commentId } = props;
     const [open, setOpen] = useState(false);
 
-    const handleClickShowReplies = useCallback(() => setOpen(true), []);
+    const { data: replyPages, isFetching: fetchingReplies, hasNextPage: hasMoreReplies, fetchNextPage: fetchNextReplies, status } = useInfiniteQuery(
+        ['replies', commentId],
+        ({ pageParam = undefined }) => getReplies({ commentId: commentId, continueToken: pageParam }),
+        {
+            enabled: false,
+            getNextPageParam: (lastPage,) => lastPage.continueToken ?? undefined
+        });
+
+    const replies = useMemo(() => {
+        if (!replyPages) {
+            return [];
+        }
+        return replyPages.pages.flatMap(x => x.rows);
+    }, [replyPages]);
+
+    const handleClickShowReplies = useCallback(() => {
+        setOpen(true)
+        if (status === 'idle') {
+            fetchNextReplies();
+        }
+    }, [fetchNextReplies, status]);
     const handleClickHideReplies = useCallback(() => setOpen(false), []);
 
     return (
         <Stack spacing={2}>
             {
-                totalReplies > 0 && (
-                    open ?
-                        <Link onClick={handleClickHideReplies}>Hide {totalReplies} replies</Link>
-                        :
-                        <Link onClick={handleClickShowReplies}>View {totalReplies} replies</Link>
-                )
+                open ?
+                    <Link onClick={handleClickHideReplies}>Hide replies</Link>
+                    :
+                    <Link onClick={handleClickShowReplies}>View replies</Link>
             }
             {
                 open &&
-                <LoadMoreScroller fetching={fetching} hasNextPage={hasNextPage} onFetchNextPage={onFetchNextPage}>
+                <LoadMoreScroller fetching={fetchingReplies} hasNextPage={hasMoreReplies ?? false} onFetchNextPage={fetchNextReplies}>
                     {
                         replies.map(c =>
                             <Comment

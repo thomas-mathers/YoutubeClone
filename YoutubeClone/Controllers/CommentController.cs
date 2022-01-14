@@ -37,7 +37,7 @@ namespace YoutubeClone.Controllers
                 query = query.Where(x => x.DateCreated < continueToken);
             }
 
-            var rows = await query.Take(take).ToListAsync();
+            var rows = await query.OrderByDescending(x => x.DateCreated).Take(take).ToListAsync();
 
             var page = new Page<CommentSummary>
             {
