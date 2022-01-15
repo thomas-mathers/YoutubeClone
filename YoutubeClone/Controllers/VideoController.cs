@@ -28,7 +28,10 @@ namespace YoutubeClone.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Page<CommentSummary>>> GetCommentsAsync(Guid videoId, [FromQuery] DateTime? continueToken = null, [FromQuery] int take = 100)
         {
-            var query = databaseContext.Comments.Include(x => x.User).Where(x => x.VideoId == videoId && x.ParentCommentId == null);
+            var query = databaseContext.Comments
+                .Include(x => x.User)
+                .Include(x => x.Replies)
+                .Where(x => x.VideoId == videoId && x.ParentCommentId == null);
 
             if (continueToken != null)
             {
@@ -42,7 +45,11 @@ namespace YoutubeClone.Controllers
             var page = new Page<CommentSummary>
             {
                 ContinueToken = rows.Count == take + 1 ? rows.Last().DateCreated : null,
-                Rows = rows.Take(take).Select(mapper.Map<CommentSummary>).ToList()
+                Rows = rows.Take(take).Select(x => {
+                    var dto = mapper.Map<CommentSummary>(x);
+                    dto.Replies = x.Replies.Count();
+                    return dto;
+                })
             };
 
             return Ok(page);
@@ -51,7 +58,10 @@ namespace YoutubeClone.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<VideoDetail>> GetAsync(Guid id)
         {
-            var video = await databaseContext.Videos.Include(x => x.Channel).ThenInclude(x => x.Subscriptions).FirstOrDefaultAsync(x => x.Id == id);
+            var video = await databaseContext.Videos
+                .Include(x => x.Channel)
+                .ThenInclude(x => x.Subscriptions)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (video == null)
             {
@@ -59,6 +69,8 @@ namespace YoutubeClone.Controllers
             }
 
             var videoDetail = mapper.Map<VideoDetail>(video);
+
+            videoDetail.Comments = await databaseContext.Comments.Where(x => x.VideoId == id && x.ParentCommentId == null).LongCountAsync();
 
             return Ok(videoDetail);
         }

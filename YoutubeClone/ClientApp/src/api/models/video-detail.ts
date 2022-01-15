@@ -11,6 +11,7 @@ export interface VideoDetail {
     views: number;
     likes: number;
     dislikes: number;
+    comments: number;
     dateCreated: Date;
 }
 
@@ -28,6 +29,7 @@ export function mapJsonToVideoDetail(json: any): VideoDetail {
         views: json.views,
         likes: json.likes,
         dislikes: json.dislikes,
+        comments: json.comments,
         dateCreated: new Date(json.dateCreated)
     }
 }

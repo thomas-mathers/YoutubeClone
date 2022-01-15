@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { Avatar, Button, Stack, Typography } from "@mui/material";
+import { Avatar, Button, Link, Stack, Typography } from "@mui/material";
 import { CommentSummary } from "../api/models";
 import elapsedTimeToString from "../elapsed-time-to-string";
 import LikeButton from "./like-button";
@@ -8,15 +8,20 @@ import CommentTextField from "./comment-text-field";
 import { ReplyList } from "./reply-list";
 
 const Comment = (props: CommentSummary) => {
-    const { id, videoId, userName, userProfilePictureUrl, text, likes, dislikes, dateCreated } = props;
+    const { id, videoId, userName, userProfilePictureUrl, text, likes, dislikes, replies, dateCreated } = props;
 
-    const [replyVisible, setReplyVisible] = useState<boolean>(false);
+    const [replyListVisible, setReplyListVisible] = useState<boolean>(false);
+    const [replyTextVisible, setReplyTextVisible] = useState<boolean>(false);
 
     const dateTime = useMemo(() => elapsedTimeToString(dateCreated.getTime() - Date.now()), [dateCreated]);
 
     const handleClickReply = useCallback(() => {
-        setReplyVisible(true);
+        setReplyTextVisible(true);
     }, []);
+
+    const handleClickToggleShowReplyList = useCallback(() => {
+        setReplyListVisible(!replyListVisible);
+    }, [replyListVisible]);
 
     return (
         <Stack direction="row" spacing={2}>
@@ -33,10 +38,16 @@ const Comment = (props: CommentSummary) => {
                     <Button onClick={handleClickReply}>Reply</Button>
                 </Stack>
                 {
-                    replyVisible &&
+                    replyTextVisible &&
                     <CommentTextField videoId={videoId} parentCommentId={id} />
                 }
-                <ReplyList commentId={id}/>
+                {
+                    replies > 0 &&
+                    <Link onClick={handleClickToggleShowReplyList} marginBottom={1}>{replyListVisible ? 'Hide' : 'Show'} {replies} replies</Link>
+                }
+                {
+                    replyListVisible && <ReplyList commentId={id} />
+                }
             </Stack>
         </Stack>
     );

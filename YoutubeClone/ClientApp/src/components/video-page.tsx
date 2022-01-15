@@ -26,6 +26,7 @@ const VideoPage = () => {
             url: '',
             views: 0,
             likes: 0,
+            comments: 0,
             dislikes: 0,
             dateCreated: new Date()
         }
@@ -44,7 +45,7 @@ const VideoPage = () => {
                         <CollapsibleText text={video!.description} maxLines={3} />
                         <Divider />
                         <Stack direction="row">
-                            <Typography>{0} comments</Typography>
+                            <Typography>{video!.comments} comments</Typography>
                         </Stack>
                         <CommentTextField videoId={id!}/>
                         <CommentList videoId={id!} />

@@ -49,7 +49,10 @@ namespace YoutubeClone.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Page<CommentSummary>>> GetRepliesAsync(Guid commentId, [FromQuery] DateTime? continueToken, [FromQuery] int take = 100)
         {
-            var query = databaseContext.Comments.Include(x => x.User).Where(x => x.ParentCommentId == commentId);
+            var query = databaseContext.Comments
+                .Include(x => x.User)
+                .Include(x => x.Replies)
+                .Where(x => x.ParentCommentId == commentId);
 
             if (continueToken != null)
             {
@@ -61,7 +64,12 @@ namespace YoutubeClone.Controllers
             var page = new Page<CommentSummary>
             {
                 ContinueToken = rows.Count == take + 1 ? rows.Last().DateCreated : null,
-                Rows = rows.Take(take).Select(x => mapper.Map<CommentSummary>(x)).ToList()
+                Rows = rows.Take(take).Select(x =>
+                {
+                    var dto = mapper.Map<CommentSummary>(x);
+                    dto.Replies = x.Replies.Count();
+                    return dto;
+                })
             };
 
             return Ok(page);
@@ -78,7 +86,7 @@ namespace YoutubeClone.Controllers
             [FromQuery] DateTime? continueToken = null,
             [FromQuery] int take = 100)
         {
-            var query = databaseContext.Comments.AsQueryable();
+            var query = databaseContext.Comments.Include(x => x.User).Include(x => x.Replies).AsQueryable();
 
             if (string.IsNullOrEmpty(filter) == false)
             {
@@ -109,7 +117,12 @@ namespace YoutubeClone.Controllers
             var page = new Page<CommentSummary>
             {
                 ContinueToken = rows.Count == take + 1 ? rows.Last().DateCreated : null,
-                Rows = rows.Take(take).Select(x => mapper.Map<CommentSummary>(x)).ToList()
+                Rows = rows.Take(take).Select(x => 
+                {
+                    var dto = mapper.Map<CommentSummary>(x);
+                    dto.Replies = x.Replies.Count();
+                    return dto;
+                })
             };
 
             return Ok(page);

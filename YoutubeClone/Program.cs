@@ -53,7 +53,8 @@ builder.Services.AddTransient<IMapper>(serviceProvider =>
 
         cfg.CreateMap<Comment, CommentSummary>()
             .ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.UserName))
-            .ForMember(m => m.UserProfilePictureUrl, opt => opt.MapFrom(src => src.User.ProfilePictureUrl));
+            .ForMember(m => m.UserProfilePictureUrl, opt => opt.MapFrom(src => src.User.ProfilePictureUrl))
+            .ForMember(m => m.Replies, opt => opt.Ignore());
 
         cfg.CreateMap<Subscription, SubscriptionSummary>()
             .ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.UserName))
@@ -63,12 +64,13 @@ builder.Services.AddTransient<IMapper>(serviceProvider =>
 
         cfg.CreateMap<Video, VideoSummary>()
             .ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name))
-            .ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl));
+            .ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl));            
 
         cfg.CreateMap<Video, VideoDetail>()
             .ForMember(m => m.ChannelName, opt => opt.MapFrom(src => src.Channel.Name))
             .ForMember(m => m.ChannelThumbnailUrl, opt => opt.MapFrom(src => src.Channel.ThumbnailUrl))
-            .ForMember(m => m.ChannelSubscriptions, opt => opt.MapFrom(src => src.Channel.Subscriptions.Count()));
+            .ForMember(m => m.ChannelSubscriptions, opt => opt.MapFrom(src => src.Channel.Subscriptions.Count()))
+            .ForMember(m => m.Comments, opt => opt.Ignore());
 
         cfg.CreateMap<User, UserSummary>();
     });

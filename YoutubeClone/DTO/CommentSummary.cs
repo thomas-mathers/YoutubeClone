@@ -11,6 +11,7 @@
         public string Text { get; set; } = string.Empty;
         public long Likes { get; set; }
         public long Dislikes { get; set; }
+        public long Replies { get; set; }
         public DateTime DateCreated { get; set; }
     }
 }
