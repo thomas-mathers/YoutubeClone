@@ -30,22 +30,19 @@ namespace YoutubeClone.Controllers
         {
             var query = databaseContext.Comments.Include(x => x.User).Where(x => x.VideoId == videoId && x.ParentCommentId == null);
 
-            var totalRows = await query.LongCountAsync();
-
             if (continueToken != null)
             {
-                query = query.Where(x => x.DateCreated < continueToken);
+                query = query.Where(x => x.DateCreated <= continueToken);
             }
 
             query = query.OrderByDescending(x => x.DateCreated);
 
-            var rows = await query.Take(take).ToListAsync();
+            var rows = await query.Take(take + 1).ToListAsync();
 
             var page = new Page<CommentSummary>
             {
-                ContinueToken = rows.LastOrDefault()?.DateCreated,
-                TotalRows = totalRows,
-                Rows = rows.Select(mapper.Map<CommentSummary>).ToList()
+                ContinueToken = rows.Count == take + 1 ? rows.Last().DateCreated : null,
+                Rows = rows.Take(take).Select(mapper.Map<CommentSummary>).ToList()
             };
 
             return Ok(page);
@@ -90,11 +87,9 @@ namespace YoutubeClone.Controllers
                 }
             }
 
-            var totalRows = await query.LongCountAsync();
-
             if (continueToken != null)
             {
-                query = query.Where(x => x.DateCreated < continueToken);
+                query = query.Where(x => x.DateCreated <= continueToken);
             }
 
             switch (orderBy)
@@ -116,13 +111,12 @@ namespace YoutubeClone.Controllers
                     break;
             }
 
-            var rows = await query.Take(take).ToListAsync();
+            var rows = await query.Take(take + 1).ToListAsync();
 
             var page = new Page<VideoSummary>
             {
-                ContinueToken = rows.LastOrDefault()?.DateCreated,
-                TotalRows = totalRows,
-                Rows = rows.Select(mapper.Map<VideoSummary>).ToList()
+                ContinueToken = rows.Count == take + 1 ? rows.Last().DateCreated : null,
+                Rows = rows.Take(take).Select(mapper.Map<VideoSummary>).ToList()
             };
 
             return Ok(page);

@@ -1,5 +1,5 @@
 import { Avatar, Button, Stack, TextField } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { createComment } from "../api/services/comment-service";
 import { useAuthService } from "../hooks/use-auth-service";
@@ -37,11 +37,7 @@ const CommentTextField = (props: CommentTextFieldProps) => {
     const handleSubmitComment = useCallback((e) => {
         setCommentText('');
         createCommentMutation.mutate();
-    }, [createCommentMutation])
-
-    useEffect(() => {
-        console.log(queryClient.getQueryCache());
-    })
+    }, [createCommentMutation]);
 
     return (
         <Stack direction="row" spacing={2}>

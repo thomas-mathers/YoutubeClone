@@ -30,7 +30,6 @@ async function getFeed(query: GetFeedQuery): Promise<Page<VideoSummary>> {
 
     return {
         continueToken: json.continueToken,
-        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToVideoSummary)
     }
 }

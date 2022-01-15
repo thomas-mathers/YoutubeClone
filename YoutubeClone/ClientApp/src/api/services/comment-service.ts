@@ -78,7 +78,6 @@ async function getComments(query: GetCommentsQuery): Promise<Page<CommentSummary
 
     return {
         continueToken: json.continueToken,
-        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToCommentSummary)
     }
 }
@@ -113,7 +112,6 @@ async function getReplies(query: GetRepliesQuery): Promise<Page<CommentSummary>>
 
     return {
         continueToken: json.continueToken,
-        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToCommentSummary)
     }
 }

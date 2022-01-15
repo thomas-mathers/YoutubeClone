@@ -87,7 +87,6 @@ async function getChannels(query: GetChannelsQuery): Promise<Page<ChannelSummary
 
     return {
         continueToken: json.continueToken,
-        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToChannelSummary)
     }
 }
@@ -152,7 +151,6 @@ async function getChannelVideos(query: GetChannelVideosQuery): Promise<Page<Vide
 
     return {
         continueToken: json.continueToken,
-        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToVideoSummary)
     }
 }

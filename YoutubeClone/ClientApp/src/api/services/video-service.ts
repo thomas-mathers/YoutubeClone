@@ -63,7 +63,6 @@ async function getVideos(options: GetVideoRequestOptions): Promise<Page<VideoSum
 
     return {
         continueToken: json.continueToken,
-        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToVideoSummary)
     }
 }
@@ -98,7 +97,6 @@ async function getVideoComments(query: GetVideoCommentsQuery): Promise<Page<Comm
 
     return {
         continueToken: json.continueToken,
-        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToCommentSummary)
     }
 }

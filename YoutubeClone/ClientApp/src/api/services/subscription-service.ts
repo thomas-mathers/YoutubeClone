@@ -47,7 +47,6 @@ async function getSubscriptions(query: GetSubscriptionsQuery): Promise<Page<Subs
 
     return {
         continueToken: json.continueToken,
-        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToSubscriptionSummary)
     }
 }

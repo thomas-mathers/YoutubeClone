@@ -78,7 +78,6 @@ async function getUsers(query: GetUsersQuery): Promise<Page<UserSummary>> {
 
     return {
         continueToken: json.continueToken,
-        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToUserSummary)
     }
 }
@@ -174,7 +173,6 @@ async function getUserFeed(query: GetUserFeedQuery): Promise<Page<VideoSummary>>
 
     return {
         continueToken: json.continueToken,
-        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToVideoSummary)
     }
 }
@@ -210,7 +208,6 @@ async function getUserSubscriptions(query: GetUserSubscriptionsQuery): Promise<P
 
     return {
         continueToken: json.continueToken,
-        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToSubscriptionSummary)
     }
 }
@@ -246,7 +243,6 @@ async function getUserChannels(query: GetUserChannelsQuery): Promise<Page<Channe
 
     return {
         continueToken: json.continueToken,
-        totalRows: json.totalRows,
         rows: json.rows.map(mapJsonToChannelSummary)
     }
 }

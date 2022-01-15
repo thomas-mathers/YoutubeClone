@@ -84,11 +84,9 @@ namespace YoutubeClone.Controllers
                 }
             }
 
-            var totalRows = await query.LongCountAsync();
-
             if (continueToken != null)
             {
-                query = query.Where(x => x.DateCreated < continueToken);
+                query = query.Where(x => x.DateCreated <= continueToken);
             }
 
             switch (orderBy)
@@ -120,13 +118,12 @@ namespace YoutubeClone.Controllers
                     break;
             }
 
-            var rows = await query.Take(take).ToListAsync();
+            var rows = await query.Take(take + 1).ToListAsync();
 
             var page = new Page<UserSummary>
             {
-                ContinueToken = rows.LastOrDefault()?.DateCreated,
-                TotalRows = totalRows,
-                Rows = rows.Select(x => mapper.Map<UserSummary>(x)).ToList()
+                ContinueToken = rows.Count == take + 1 ? rows.Last().DateCreated : null,
+                Rows = rows.Take(take).Select(x => mapper.Map<UserSummary>(x)).ToList()
             };
 
             return Ok(page);
@@ -260,20 +257,17 @@ namespace YoutubeClone.Controllers
 
             query = query.Join(userChannels, video => video.ChannelId, channelId => channelId, (video, channelId) => video).OrderByDescending(x => x.DateCreated);
 
-            var totalRows = await query.LongCountAsync();
-
             if (continueToken != null)
             {
-                query = query.Where(x => x.DateCreated < continueToken);
+                query = query.Where(x => x.DateCreated <= continueToken);
             }
 
-            var rows = await query.Take(take).ToListAsync();
+            var rows = await query.Take(take + 1).ToListAsync();
 
             var page = new Page<VideoSummary>
             {
-                ContinueToken = rows.LastOrDefault()?.DateCreated,
-                TotalRows = totalRows,
-                Rows = rows.Select(x => mapper.Map<VideoSummary>(x)).ToList()
+                ContinueToken = rows.Count == take + 1 ? rows.Last().DateCreated : null,
+                Rows = rows.Take(take).Select(x => mapper.Map<VideoSummary>(x)).ToList()
             };
 
             return Ok(page);
@@ -298,20 +292,17 @@ namespace YoutubeClone.Controllers
 
             var query = databaseContext.Subscriptions.Include(s => s.Channel).Where(s => s.UserId == userId);
 
-            var totalRows = await query.LongCountAsync();
-
             if (continueToken != null)
             {
-                query = query.Where(x => x.DateCreated > continueToken);
+                query = query.Where(x => x.DateCreated <= continueToken);
             }
 
-            var rows = await query.Take(take).ToListAsync();
+            var rows = await query.Take(take + 1).ToListAsync();
 
             var page = new Page<SubscriptionSummary>
             {
-                ContinueToken = rows.LastOrDefault()?.DateCreated,
-                TotalRows = totalRows,
-                Rows = rows.Select(x => mapper.Map<SubscriptionSummary>(x)).ToList()
+                ContinueToken = rows.Count == take + 1 ? rows.Last().DateCreated : null,
+                Rows = rows.Take(take).Select(x => mapper.Map<SubscriptionSummary>(x)).ToList()
             };
 
             return Ok(page);
@@ -336,20 +327,17 @@ namespace YoutubeClone.Controllers
 
             var query = databaseContext.Channels.Where(s => s.UserId == userId);
 
-            var totalRows = await query.LongCountAsync();
-
             if (continueToken != null)
             {
-                query = query.Where(x => x.DateCreated > continueToken);
+                query = query.Where(x => x.DateCreated <= continueToken);
             }
 
-            var rows = await query.Take(take).ToListAsync();
+            var rows = await query.Take(take + 1).ToListAsync();
 
             var page = new Page<ChannelSummary>
             {
-                ContinueToken = rows.LastOrDefault()?.DateCreated,
-                TotalRows = totalRows,
-                Rows = rows.Select(x => mapper.Map<ChannelSummary>(x)).ToList()
+                ContinueToken = rows.Count == take + 1 ? rows.Last().DateCreated : null,
+                Rows = rows.Take(take).Select(x => mapper.Map<ChannelSummary>(x)).ToList()
             };
 
             return Ok(page);

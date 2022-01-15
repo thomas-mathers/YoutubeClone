@@ -29,20 +29,17 @@ namespace YoutubeClone.Controllers
         {
             var query = databaseContext.Videos.AsQueryable();
 
-            var totalRows = await query.LongCountAsync();
-
             if (continueToken != null)
             {
-                query = query.Where(x => x.DateCreated < continueToken);
+                query = query.Where(x => x.DateCreated <= continueToken);
             }
 
-            var rows = await query.Take(take).ToListAsync();
+            var rows = await query.Take(take + 1).ToListAsync();
 
             var page = new Page<VideoSummary>
             {
-                ContinueToken = rows.LastOrDefault()?.DateCreated,
-                TotalRows = totalRows,
-                Rows = rows.Select(x => mapper.Map<VideoSummary>(x)).ToList()
+                ContinueToken = rows.Count == take + 1 ? rows.Last().DateCreated : null,
+                Rows = rows.Take(take).Select(x => mapper.Map<VideoSummary>(x)).ToList()
             };
 
             return Ok(page);

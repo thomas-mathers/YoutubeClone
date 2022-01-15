@@ -51,20 +51,17 @@ namespace YoutubeClone.Controllers
         {
             var query = databaseContext.Comments.Include(x => x.User).Where(x => x.ParentCommentId == commentId);
 
-            var totalRows = await query.LongCountAsync();
-
             if (continueToken != null)
             {
-                query = query.Where(x => x.DateCreated < continueToken);
+                query = query.Where(x => x.DateCreated <= continueToken);
             }
 
-            var rows = await query.OrderByDescending(x => x.DateCreated).Take(take).ToListAsync();
+            var rows = await query.OrderByDescending(x => x.DateCreated).Take(take + 1).ToListAsync();
 
             var page = new Page<CommentSummary>
             {
-                ContinueToken = rows.LastOrDefault()?.DateCreated,
-                TotalRows = totalRows,
-                Rows = rows.Select(x => mapper.Map<CommentSummary>(x)).ToList()
+                ContinueToken = rows.Count == take + 1 ? rows.Last().DateCreated : null,
+                Rows = rows.Take(take).Select(x => mapper.Map<CommentSummary>(x)).ToList()
             };
 
             return Ok(page);
@@ -93,11 +90,9 @@ namespace YoutubeClone.Controllers
                 }
             }
 
-            var totalRows = await query.LongCountAsync();
-
             if (continueToken != null)
             {
-                query = query.Where(x => x.DateCreated < continueToken);
+                query = query.Where(x => x.DateCreated <= continueToken);
             }
 
             switch (orderBy)
@@ -109,13 +104,12 @@ namespace YoutubeClone.Controllers
                     break;
             }
 
-            var rows = await query.Take(take).ToListAsync();
+            var rows = await query.Take(take + 1).ToListAsync();
 
             var page = new Page<CommentSummary>
             {
-                ContinueToken = rows.LastOrDefault()?.DateCreated,
-                TotalRows = totalRows,
-                Rows = rows.Select(x => mapper.Map<CommentSummary>(x)).ToList()
+                ContinueToken = rows.Count == take + 1 ? rows.Last().DateCreated : null,
+                Rows = rows.Take(take).Select(x => mapper.Map<CommentSummary>(x)).ToList()
             };
 
             return Ok(page);
