@@ -1,5 +1,6 @@
 import { Children, cloneElement, ReactNode } from 'react';
-import { Grid, Box, GridSize, Button } from '@mui/material';
+import { Grid, Box, GridSize, Stack, Icon, Typography, Link } from '@mui/material';
+import { SubdirectoryArrowRight } from '@mui/icons-material';
 
 interface LoadMoreScrollerProps {
     xs?: boolean | GridSize;
@@ -11,10 +12,11 @@ interface LoadMoreScrollerProps {
     fetching: boolean;
     hasNextPage: boolean;
     onFetchNextPage: () => void;
+    fetchNextPageLabel: string;
 }
 
 const LoadMoreScroller = (props: LoadMoreScrollerProps) => {
-    const { hasNextPage, onFetchNextPage, children, xs = 12, sm = undefined, md = undefined, lg = undefined, xl = undefined } = props;
+    const { hasNextPage, onFetchNextPage, fetchNextPageLabel = 'Load more', children, xs = 12, sm = undefined, md = undefined, lg = undefined, xl = undefined } = props;
 
     return (
         <Box style={{ width: '100%', height: '100%', overflowY: 'auto' }}>
@@ -25,7 +27,14 @@ const LoadMoreScroller = (props: LoadMoreScrollerProps) => {
             </Grid>
             {
                 hasNextPage &&
-                <Button onClick={onFetchNextPage}>Load more</Button>
+                <Link component="button" onClick={onFetchNextPage}>
+                    <Stack direction="row" spacing={1}>
+                        <Icon>
+                            <SubdirectoryArrowRight />
+                        </Icon>
+                        <Typography>{fetchNextPageLabel}</Typography>
+                    </Stack>
+                </Link>
             }
         </Box>
     );

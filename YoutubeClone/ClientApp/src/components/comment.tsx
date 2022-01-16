@@ -1,11 +1,12 @@
 import { useCallback, useMemo, useState } from "react";
-import { Avatar, Button, Link, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Icon, Link, Stack, Typography } from "@mui/material";
 import { CommentSummary } from "../api/models";
 import elapsedTimeToString from "../elapsed-time-to-string";
 import LikeButton from "./like-button";
 import DislikeButton from "./dislike-button";
 import CommentTextField from "./comment-text-field";
 import { ReplyList } from "./reply-list";
+import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 
 const Comment = (props: CommentSummary) => {
     const { id, videoId, userName, userProfilePictureUrl, text, likes, dislikes, replies, dateCreated } = props;
@@ -30,24 +31,45 @@ const Comment = (props: CommentSummary) => {
     return (
         <Stack direction="row" spacing={2}>
             <Avatar src={userProfilePictureUrl} />
-            <Stack flex={1}>
-                <Stack direction="row" spacing={1} alignItems="center">
-                    <Typography variant="subtitle2">{userName}</Typography>
-                    <Typography variant="caption">{dateTime}</Typography>
-                </Stack>
-                <Typography variant="body1">{text}</Typography>
-                <Stack direction="row">
-                    <LikeButton likes={likes} />
-                    <DislikeButton dislikes={dislikes} />
-                    <Button onClick={showReplyText}>Reply</Button>
-                </Stack>
+            <Stack flex={1} spacing={1}>
+                <Box>
+                    <Box>
+                        <Typography component="span" variant="subtitle2">{userName}</Typography>
+                        <Typography component="span" variant="caption">{dateTime}</Typography>
+                    </Box>
+                    <Typography variant="body1">{text}</Typography>
+                    <Stack direction="row" spacing={1}>
+                        <LikeButton likes={likes} />
+                        <DislikeButton dislikes={dislikes} />
+                        <Button onClick={showReplyText}>Reply</Button>
+                    </Stack>
+                </Box>
                 {
                     replyTextVisible &&
                     <CommentTextField videoId={videoId} parentCommentId={id} onSubmitComment={hideReplyText} onCancelComment={hideReplyText} />
                 }
                 {
-                    replies > 0 &&
-                    <Link onClick={handleClickToggleShowReplyList} marginBottom={1}>{replyListVisible ? 'Hide' : 'Show'} {replies} replies</Link>
+                    replies > 0 && (
+                        replyListVisible ?
+                            <Link component="button" onClick={handleClickToggleShowReplyList}>
+                                <Stack direction="row" spacing={1}>
+                                    <Icon>
+                                        <ArrowDropUp />
+                                    </Icon>
+                                    <Typography variant="body1">Hide {replies} replies</Typography>
+                                </Stack>
+                            </Link>
+                            :
+                            <Link component="button" onClick={handleClickToggleShowReplyList}>
+                                <Stack direction="row" spacing={1}>
+                                    <Icon>
+                                        <ArrowDropDown />
+                                    </Icon>
+                                    <Typography variant="body1">Show {replies} replies</Typography>
+                                </Stack>
+                            </Link>
+                    )
+
                 }
                 {
                     replyListVisible && <ReplyList commentId={id} />

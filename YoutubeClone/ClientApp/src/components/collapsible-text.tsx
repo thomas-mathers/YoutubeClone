@@ -31,7 +31,7 @@ const CollapsibleText = (props: CollapsibleTextProps) => {
                         {text}
                     </Typography>
             }
-            <Link underline="none" variant="button" onClick={handleClick}>{expanded ? "Show less" : "Show more"}</Link>
+            <Link component="button" variant="body1" onClick={handleClick}>{expanded ? "Show less" : "Show more"}</Link>
         </Box>
     )
 }

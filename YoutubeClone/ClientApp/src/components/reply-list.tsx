@@ -26,7 +26,7 @@ const ReplyList = (props: ReplyListProps) => {
     }, [replyPages]);
 
     return (
-        <LoadMoreScroller fetching={fetchingReplies} hasNextPage={hasMoreReplies ?? false} onFetchNextPage={fetchNextReplies}>
+        <LoadMoreScroller fetching={fetchingReplies} hasNextPage={hasMoreReplies ?? false} onFetchNextPage={fetchNextReplies} fetchNextPageLabel="Show more replies">
             {
                 replies.map(c => <Comment {...c} />)
             }
