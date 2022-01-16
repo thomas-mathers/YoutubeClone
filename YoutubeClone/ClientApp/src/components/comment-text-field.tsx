@@ -7,10 +7,12 @@ import { useAuthService } from "../hooks/use-auth-service";
 interface CommentTextFieldProps {
     videoId: string;
     parentCommentId?: string;
+    onCancelComment?: () => void;
+    onSubmitComment?: () => void;
 }
 
 const CommentTextField = (props: CommentTextFieldProps) => {
-    const { videoId, parentCommentId } = props;
+    const { videoId, parentCommentId, onCancelComment, onSubmitComment } = props;
 
     const { token, user } = useAuthService();
 
@@ -32,12 +34,14 @@ const CommentTextField = (props: CommentTextFieldProps) => {
 
     const handleCancelComment = useCallback((e) => {
         setCommentText('');
-    }, []);
+        onCancelComment?.();
+    }, [onCancelComment]);
 
     const handleSubmitComment = useCallback((e) => {
         setCommentText('');
         createCommentMutation.mutate();
-    }, [createCommentMutation]);
+        onSubmitComment?.();
+    }, [createCommentMutation, onSubmitComment]);
 
     return (
         <Stack direction="row" spacing={2}>

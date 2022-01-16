@@ -15,8 +15,12 @@ const Comment = (props: CommentSummary) => {
 
     const dateTime = useMemo(() => elapsedTimeToString(dateCreated.getTime() - Date.now()), [dateCreated]);
 
-    const handleClickReply = useCallback(() => {
+    const showReplyText = useCallback(() => {
         setReplyTextVisible(true);
+    }, []);
+
+    const hideReplyText = useCallback(() => {
+        setReplyTextVisible(false);
     }, []);
 
     const handleClickToggleShowReplyList = useCallback(() => {
@@ -35,11 +39,11 @@ const Comment = (props: CommentSummary) => {
                 <Stack direction="row">
                     <LikeButton likes={likes} />
                     <DislikeButton dislikes={dislikes} />
-                    <Button onClick={handleClickReply}>Reply</Button>
+                    <Button onClick={showReplyText}>Reply</Button>
                 </Stack>
                 {
                     replyTextVisible &&
-                    <CommentTextField videoId={videoId} parentCommentId={id} />
+                    <CommentTextField videoId={videoId} parentCommentId={id} onSubmitComment={hideReplyText} onCancelComment={hideReplyText} />
                 }
                 {
                     replies > 0 &&
