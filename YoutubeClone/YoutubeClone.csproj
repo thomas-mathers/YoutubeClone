@@ -42,6 +42,7 @@
     <None Remove="ClientApp\src\components\comment-text-field.tsx" />
     <None Remove="ClientApp\src\components\comment.tsx" />
     <None Remove="ClientApp\src\components\dislike-button.tsx" />
+    <None Remove="ClientApp\src\components\hide-reply-list.tsx" />
     <None Remove="ClientApp\src\components\infinite-scroller.tsx" />
     <None Remove="ClientApp\src\components\like-button.tsx" />
     <None Remove="ClientApp\src\components\load-more-scroller.tsx" />
@@ -51,6 +52,7 @@
     <None Remove="ClientApp\src\components\result.tsx" />
     <None Remove="ClientApp\src\components\results-list.tsx" />
     <None Remove="ClientApp\src\components\results-page.tsx" />
+    <None Remove="ClientApp\src\components\show-reply-list.tsx" />
     <None Remove="ClientApp\src\components\subscribe-button.tsx" />
     <None Remove="ClientApp\src\components\upload-file.tsx" />
     <None Remove="ClientApp\src\components\upload-video-dialog.tsx" />
@@ -92,6 +94,10 @@
     <TypeScriptCompile Include="ClientApp\src\components\result.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\results-list.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\results-page.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\hide-reply-list.tsx">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="ClientApp\src\components\show-reply-list.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\subscribe-button.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\upload-video-dialog.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\upload-file.tsx" />

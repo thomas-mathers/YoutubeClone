@@ -1,12 +1,13 @@
 import { useCallback, useMemo, useState } from "react";
-import { Avatar, Box, Button, Icon, Link, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Stack, Typography } from "@mui/material";
 import { CommentSummary } from "../api/models";
 import elapsedTimeToString from "../elapsed-time-to-string";
 import LikeButton from "./like-button";
 import DislikeButton from "./dislike-button";
 import CommentTextField from "./comment-text-field";
 import { ReplyList } from "./reply-list";
-import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
+import { HideReplyList } from "./hide-reply-list";
+import { ShowReplyList } from "./show-reply-list";
 
 const Comment = (props: CommentSummary) => {
     const { id, videoId, userName, userProfilePictureUrl, text, likes, dislikes, replies, dateCreated } = props;
@@ -51,23 +52,9 @@ const Comment = (props: CommentSummary) => {
                 {
                     replies > 0 && (
                         replyListVisible ?
-                            <Link component="button" onClick={handleClickToggleShowReplyList}>
-                                <Stack direction="row" spacing={1}>
-                                    <Icon>
-                                        <ArrowDropUp />
-                                    </Icon>
-                                    <Typography variant="body1">Hide {replies} replies</Typography>
-                                </Stack>
-                            </Link>
+                            <HideReplyList replies={replies} onClick={handleClickToggleShowReplyList}/>
                             :
-                            <Link component="button" onClick={handleClickToggleShowReplyList}>
-                                <Stack direction="row" spacing={1}>
-                                    <Icon>
-                                        <ArrowDropDown />
-                                    </Icon>
-                                    <Typography variant="body1">Show {replies} replies</Typography>
-                                </Stack>
-                            </Link>
+                            <ShowReplyList replies={replies} onClick={handleClickToggleShowReplyList}/>
                     )
 
                 }
