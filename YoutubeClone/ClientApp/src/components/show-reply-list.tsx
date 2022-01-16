@@ -1,4 +1,4 @@
-﻿import { ArrowDropDown } from "@mui/icons-material"
+import { ArrowDropDown } from "@mui/icons-material"
 import { Icon, Link, Stack, Typography } from "@mui/material"
 
 interface ShowReplyListProps {

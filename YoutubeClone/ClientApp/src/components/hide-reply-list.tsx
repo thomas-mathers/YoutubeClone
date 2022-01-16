@@ -1,4 +1,4 @@
-﻿import { ArrowDropUp } from "@mui/icons-material"
+import { ArrowDropUp } from "@mui/icons-material"
 import { Icon, Link, Stack, Typography } from "@mui/material"
 
 interface HideReplyListProps {
