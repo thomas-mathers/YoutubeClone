@@ -56,7 +56,6 @@ const Comment = (props: CommentSummary) => {
                             :
                             <ShowReplyList replies={replies} onClick={handleClickToggleShowReplyList}/>
                     )
-
                 }
                 {
                     replyListVisible && <ReplyList commentId={id} />

@@ -29,6 +29,12 @@ namespace YoutubeClone.Infrastructure
             builder.Entity<Comment>().HasOne(p => p.Video).WithMany(p => p.Comments).OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Comment>().HasMany(p => p.Replies).WithOne(p => p.ParentComment).HasForeignKey(p => p.ParentCommentId).OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<CommentReaction>().HasOne(p => p.Comment).WithMany(p => p.Reactions).HasForeignKey(p => p.CommentId).OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<CommentReaction>().HasIndex(p => new { p.CommentId, p.UserId }).IsUnique();
+
+            builder.Entity<VideoReaction>().HasOne(p => p.Video).WithMany(p => p.Reactions).HasForeignKey(p => p.VideoId).OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<VideoReaction>().HasIndex(p => new { p.VideoId, p.UserId }).IsUnique();
         }
     }
 }

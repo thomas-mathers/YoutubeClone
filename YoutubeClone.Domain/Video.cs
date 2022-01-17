@@ -3,6 +3,7 @@
     public class Video
     {
         private readonly HashSet<Comment> comments = new();
+        private readonly HashSet<VideoReaction> reactions = new();
 
         public Guid Id { get; private set; }
         public Guid ChannelId { get; private set; }
@@ -12,10 +13,9 @@
         public string Url { get; private set; }
         public string ThumbnailUrl { get; private set; }
         public long Views { get; private set; }
-        public long Likes { get; private set; }
-        public long Dislikes { get; private set; }
         public DateTime DateCreated { get; private set; } = DateTime.UtcNow;
         public IEnumerable<Comment> Comments => comments;
+        public IEnumerable<VideoReaction> Reactions => reactions;
 
         public Video(Guid id, Guid channelId, string title, string url, string thumbnailUrl)
         {
@@ -31,14 +31,14 @@
             Views++;
         }
 
-        public void Like()
+        public void Like(Guid userId)
         {
-            Likes++;
+            reactions.Add(new VideoReaction(Id, userId, ReactionType.Like));
         }
 
-        public void Dislike()
+        public void Dislike(Guid userId)
         {
-            Dislikes++;
+            reactions.Add(new VideoReaction(Id, userId, ReactionType.Dislike));
         }
 
         public void AddComment(Comment comment)

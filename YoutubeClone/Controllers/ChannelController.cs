@@ -168,16 +168,6 @@ namespace YoutubeClone.Controllers
                         query.OrderBy(x => x.Title) :
                         query.OrderByDescending(x => x.Title);
                     break;
-                case nameof(Video.Likes):
-                    query = orderDir == "ASC" ?
-                        query.OrderBy(x => x.Likes) :
-                        query.OrderByDescending(x => x.Likes);
-                    break;
-                case nameof(Video.Dislikes):
-                    query = orderDir == "ASC" ?
-                        query.OrderBy(x => x.Dislikes) :
-                        query.OrderByDescending(x => x.Dislikes);
-                    break;
                 default:
                     query = orderDir == "ASC" ?
                         query.OrderBy(x => x.DateCreated) :

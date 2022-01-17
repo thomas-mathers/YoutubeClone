@@ -3,6 +3,7 @@
     public class Comment
     {
         private readonly HashSet<Comment> replies = new();
+        private readonly HashSet<CommentReaction> reactions = new();
 
         public Guid Id { get; private set; } = Guid.NewGuid();
         public Guid UserId { get; private set; }
@@ -12,10 +13,9 @@
         public Guid? ParentCommentId { get; init; }
         public Comment? ParentComment { get; private set; }
         public string Text { get; private set; }
-        public long Likes { get; private set; }
-        public long Dislikes { get; private set; }
         public DateTime DateCreated { get; private set; } = DateTime.UtcNow;
         public IEnumerable<Comment> Replies => replies;
+        public IEnumerable<CommentReaction> Reactions => reactions;
 
         public Comment(Guid userId, Guid videoId, string text)
         {
@@ -24,14 +24,14 @@
             Text = text;
         }
 
-        public void Like()
+        public void Like(Guid userId)
         {
-            Likes++;
+            reactions.Add(new CommentReaction(Id, userId, ReactionType.Like));
         }
 
-        public void Dislike()
+        public void Dislike(Guid userId)
         {
-            Dislikes++;
+            reactions.Add(new CommentReaction(Id, userId, ReactionType.Dislike));
         }
 
         public void AddReply(Comment comment)
